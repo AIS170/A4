@@ -2,15 +2,17 @@
 # All functions may also be subject to return error message
 
 
+# Mailbox ROUTE
 # View all received/incoming e-invoices for specified user through userId. Returns senderAddress, timeSent and invoiceSubject
-def mailBox(userId: str) -> list or str:
+def mailbox(userId):
+    
 
-    return list
+    return
 
 
 # View received e-invoice through userId and incomingInvoiceId, returns list that contains senderAddress, timeSent, invoiceSubject, 
 # invoiceBody, list of eInvoices containing name, content, timeCreated and owner.
-def incomingInvoiceId(userId: str, incomingInvoiceId: int) -> list or str:
+def incomingInvoiceId(userId, incomingInvoiceId):
 
     return list
 
