@@ -1,5 +1,6 @@
 import pytest
-from auth import signup
+from auth import signup, login
+from user import logout
 
 def test_signup_successful():
     user_id = signup('first', 'user', 'user@example.com', 'val1dPassword', 'val1dPassword')
@@ -78,3 +79,26 @@ def signup_test_password_does_not_contain_letter():
         signup('', 'user', 'userexample.com', '123456789', '123456789')
     
     assert str(exc_info.value) == "Password should contain atleast one letter and one number"
+
+def login_test_successful():
+    user_id_1 = signup('first', 'user', 'user@example.com', 'val1dPassword', 'val1dPassword')
+    logout(user_id_1)
+    user_id_2 = login('user@example.com', 'val1dPassword')
+    assert isinstance(user_id_2, str)
+    assert (user_id_1 == user_id_2)                          # May not work (Maybe use assert equals)
+
+def login_test_incorrect_password():
+    user_id_1 = signup('first', 'user', 'user@example.com', 'val1dPassword', 'val1dPassword')
+    logout(user_id_1)
+    with pytest.raises(ValueError) as exc_info:
+        login('user@example.com', 'val0dPassword')
+    
+    assert str(exc_info.value) == "Password is incorrect"
+
+def login_test_user_does_not_exist():
+    with pytest.raises(ValueError) as exc_info:
+        login('user@example.com', 'val1dPassword')
+    
+    assert str(exc_info.value) == "User email is not registered"
+
+
