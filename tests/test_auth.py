@@ -1,6 +1,6 @@
 import pytest
 from auth import signup, login
-from user import logout
+from user import userLogout
 
 def test_signup_successful():
     user_id = signup('first', 'user', 'user@example.com', 'val1dPassword', 'val1dPassword')
@@ -11,7 +11,7 @@ def test_signup_successful_two_users():
     user_id_2 = signup('second', 'user', 'user2@example.com', 'val1dPassword', 'val1dPassword')
     assert isinstance(user_id_1, str)
     assert isinstance(user_id_2, str)
-    assert (user_id_1 != user_id_2)                          # May not work (Maybe use assert equals)
+    assert user_id_1 != user_id_2                         # May not work (Maybe use assert equals)
 
 def signup_test_email_in_use():
     signup('first', 'user', 'user@example.com', 'val1dPassword', 'val1dPassword')
@@ -82,14 +82,14 @@ def signup_test_password_does_not_contain_letter():
 
 def login_test_successful():
     user_id_1 = signup('first', 'user', 'user@example.com', 'val1dPassword', 'val1dPassword')
-    logout(user_id_1)
+    userLogout(user_id_1)
     user_id_2 = login('user@example.com', 'val1dPassword')
     assert isinstance(user_id_2, str)
-    assert (user_id_1 == user_id_2)                          # May not work (Maybe use assert equals)
+    assert user_id_1 == user_id_2                         # May not work (Maybe use assert equals)
 
 def login_test_incorrect_password():
     user_id_1 = signup('first', 'user', 'user@example.com', 'val1dPassword', 'val1dPassword')
-    logout(user_id_1)
+    userLogout(user_id_1)
     with pytest.raises(ValueError) as exc_info:
         login('user@example.com', 'val0dPassword')
     
