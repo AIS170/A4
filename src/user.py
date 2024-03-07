@@ -1,5 +1,3 @@
-import auth.py
-
 # Stub code for authorisation functions
 
 # Returns user details based on userId input, includes name, email, password, dateRegistered.
