@@ -4,7 +4,7 @@ import requests
 from auth import signup, login
 from user import userLogout
 
-BASE_URL = "http://yourapi.com"
+BASE_URL = "http://127.0.0.1:5000"
 
 # Define valid test data
 valid_registration_data1 = {
@@ -130,7 +130,7 @@ def test_signup_password_does_not_contain_letter():
 def test_login_successful():
     response1 = requests.post(f"{BASE_URL}/a4/auth/signup", data=valid_registration_data1)
     user_id_1 = response1.json()['userId']
-    requests.post(f"{BASE_URL}/a4/auth/logout", data={'userId': user_id_1})
+    requests.post(f"{BASE_URL}/a4/user/logout", data={"userId": user_id_1})
     response2 = requests.post(f"{BASE_URL}/a4/auth/login", data=valid_login_data)
     assert response2.status_code == 200       # May need to test each function 
 
@@ -138,7 +138,7 @@ def test_login_successful():
 def test_login_incorrect_password():
     response1 = requests.post(f"{BASE_URL}/a4/auth/signup", data=valid_registration_data1)
     user_id_1 = response1.json()['userId']
-    requests.post(f"{BASE_URL}/a4/auth/logout", data={'userId': user_id_1})
+    requests.post(f"{BASE_URL}/a4/user/logout", data={"userId": user_id_1})
     invalid_data = valid_login_data.copy()
     invalid_data['password'] = 'p0sswords'
     response2 = requests.post(f"{BASE_URL}/a4/auth/login", data=invalid_data)
