@@ -1,105 +1,152 @@
 import pytest
 import uuid
+import requests
 from auth import signup, login
 from user import userLogout
 
-def test_signup_successful():
-    user_id = signup('first', 'user', 'user@example.com', 'val1dPassword', 'val1dPassword')
-    assert isinstance(user_id, uuid.UUID)
+BASE_URL = "http://yourapi.com"
 
-def test_signup_successful_two_users():
-    user_id_1 = signup('first', 'user', 'user@example.com', 'val1dPassword', 'val1dPassword')
-    user_id_2 = signup('second', 'user', 'user2@example.com', 'val1dPassword', 'val1dPassword')
-    assert isinstance(user_id_1, uuid.UUID)
-    assert isinstance(user_id_2, uuid.UUID)
-    assert user_id_1 != user_id_2                         # May not work (Maybe use assert equals)
+# Define valid test data
+valid_registration_data1 = {
+    "firstName": "First",
+    "lastName": "User",
+    "email": "user@example.com",
+    "password": "val1dPassword",
+    "confirmPassword": "val1dPassword"
+}
 
-# def test_signup_email_in_use():
-#     signup('first', 'user', 'user@example.com', 'val1dPassword', 'val1dPassword')
-#     with pytest.raises(ValueError) as exc_info:
-#         signup('second', 'user', 'user@example.com', 'val1dPassword', 'val1dPassword')
-    
-#     assert str(exc_info.value) == "Email is already in use"
+valid_registration_data2 = {
+    "firstName": "Second",
+    "lastName": "User",
+    "email": "user2@example.com",
+    "password": "val1dPassword",
+    "confirmPassword": "val1dPassword"
+}
 
+valid_login_data = {
+    "email": "user@example.com",
+    "password": "val1dPassword",
+}
+
+# Test successful user registration
+def test_signup_success():
+    response = requests.post(f"{BASE_URL}/a4/auth/signup", data=valid_registration_data1)
+    assert response.status_code == 200
+    assert 'userId' in response.json()
+
+# Test two successful user registrations
+def test_signup_success_two_users():
+    response1 = requests.post(f"{BASE_URL}/a4/auth/signup", data=valid_registration_data1)
+    assert response1.status_code == 200
+    assert 'userId' in response1.json()
+    response2 = requests.post(f"{BASE_URL}/a4/auth/signup", data=valid_registration_data2)
+    assert response2.status_code == 200
+    assert 'userId' in response2.json()
+    assert response1.json()['userId'] != response2.json()['userId']
+
+# Test user registration with same email
+def test_signup_email_in_use():
+    response1 = requests.post(f"{BASE_URL}/a4/auth/signup", data=valid_registration_data1)
+    assert response1.status_code == 200
+    assert 'userId' in response1.json()
+    response2 = requests.post(f"{BASE_URL}/a4/auth/signup", data=valid_registration_data1)
+    assert response2.status_code == 400
+
+# Test user registration with non matching passwords
 def test_signup_password_not_matching():
-    with pytest.raises(ValueError) as exc_info:
-        signup('second', 'user', 'user@example.com', 'validPassword1', 'validPassword0')
-    
-    assert str(exc_info.value) == "Password doesn't match"
+    invalid_data = valid_registration_data1.copy()
+    invalid_data['confirmPassword'] = 'val0dPassword'
+    response1 = requests.post(f"{BASE_URL}/a4/auth/signup", data=invalid_data)
+    assert response1.status_code == 400
 
-def test_signup_first_name_too_long():
-    with pytest.raises(ValueError) as exc_info:
-        signup('secondsecondsecond', 'user', 'user@example.com', 'val1dPassword', 'val1dPassword')
-    
-    assert str(exc_info.value) == "First name cannot exceed 15 characters"
+# Test user registration with long first name
+def test_signup_long_first_name():
+    invalid_data = valid_registration_data1.copy()
+    invalid_data['firstName'] = 'a' * 16
+    response = requests.post(f"{BASE_URL}/a4/auth/signup", data=invalid_data)
+    assert response.status_code == 400
 
+# Test user registration with empty first name
 def test_signup_first_name_empty():
-    with pytest.raises(ValueError) as exc_info:
-        signup('', 'user', 'user@example.com', 'val1dPassword', 'val1dPassword')
-    
-    assert str(exc_info.value) == "First name cannot be empty"
+    invalid_data = valid_registration_data1.copy()
+    invalid_data['firstName'] = ''
+    response = requests.post(f"{BASE_URL}/a4/auth/signup", data=invalid_data)
+    assert response.status_code == 400
 
+# Test user registration with long last name
 def test_signup_last_name_too_long():
-    with pytest.raises(ValueError) as exc_info:
-        signup('user', 'secondsecondsecond', 'user@example.com', 'val1dPassword', 'val1dPassword')
-    
-    assert str(exc_info.value) == "Last name cannot exceed 15 characters"
+    invalid_data = valid_registration_data1.copy()
+    invalid_data['lastName'] = 'a' * 16
+    response = requests.post(f"{BASE_URL}/a4/auth/signup", data=invalid_data)
+    assert response.status_code == 400
 
+# Test user registration with empty last name
 def test_signup_last_name_empty():
-    with pytest.raises(ValueError) as exc_info:
-        signup('First', '', 'user@example.com', 'val1dPassword', 'val1dPassword')
-    
-    assert str(exc_info.value) == "Last name cannot be empty"
+    invalid_data = valid_registration_data1.copy()
+    invalid_data['lastName'] = ''
+    response = requests.post(f"{BASE_URL}/a4/auth/signup", data=invalid_data)
+    assert response.status_code == 400
 
+# Test user registration with invalid email
 def test_signup_invalid_email():
-    with pytest.raises(ValueError) as exc_info:
-        signup('First', 'user', 'userexamplecom', 'val1dPassword', 'val1dPassword')
-    
-    assert str(exc_info.value) == "Email must be of a valid format"
+    invalid_data = valid_registration_data1.copy()
+    invalid_data['email'] = 'example.com'
+    response = requests.post(f"{BASE_URL}/a4/auth/signup", data=invalid_data)
+    assert response.status_code == 400
 
+# Test user registration with short password
 def test_signup_password_too_short():
-    with pytest.raises(ValueError) as exc_info:
-        signup('First', 'user', 'user@example.com', 'val1d', 'val1d')
-    
-    assert str(exc_info.value) == "Password should be atleast 8 characters"
+    invalid_data = valid_registration_data1.copy()
+    invalid_data['password'] = 'a1'
+    invalid_data['confirmPassword'] = 'a1'
+    response = requests.post(f"{BASE_URL}/a4/auth/signup", data=invalid_data)
+    assert response.status_code == 400
 
+# Test user registration with long password
 def test_signup_password_too_long():
-    with pytest.raises(ValueError) as exc_info:
-        signup('First', 'user', 'user@example.com', 'val1dval1dval1dval1d', 'val1dval1dval1dval1d')
-    
-    assert str(exc_info.value) == "Password shouldn't exceed 15 characters"
+    invalid_data = valid_registration_data1.copy()
+    invalid_data['password'] = 'a1' * 8
+    invalid_data['confirmPassword'] = 'a1' * 8
+    response = requests.post(f"{BASE_URL}/a4/auth/signup", data=invalid_data)
+    assert response.status_code == 400
 
+# Test user registration with password not containing numbers
 def test_signup_password_does_not_contain_number():
-    with pytest.raises(ValueError) as exc_info:
-        signup('First', 'user', 'user@example.com', 'validPassword', 'validPassword')
-    
-    assert str(exc_info.value) == "Password should contain atleast one letter and one number"
+    invalid_data = valid_registration_data1.copy()
+    invalid_data['password'] = 'p' * 9
+    invalid_data['confirmPassword'] = 'p' * 9
+    response = requests.post(f"{BASE_URL}/a4/auth/signup", data=invalid_data)
+    assert response.status_code == 400
 
+# Test user registration with password not containing letters
 def test_signup_password_does_not_contain_letter():
-    with pytest.raises(ValueError) as exc_info:
-        signup('First', 'user', 'user@example.com', '123456789', '123456789')
-    
-    assert str(exc_info.value) == "Password should contain atleast one letter and one number"
+    invalid_data = valid_registration_data1.copy()
+    invalid_data['password'] = '1' * 9
+    invalid_data['confirmPassword'] = '1' * 9
+    response = requests.post(f"{BASE_URL}/a4/auth/signup", data=invalid_data)
+    assert response.status_code == 400
 
+# Test successful login
 def test_login_successful():
-    user_id_1 = signup('first', 'user', 'user@example.com', 'val1dPassword', 'val1dPassword')
-    userLogout(user_id_1)
-    user_id_2 = login('user@example.com', 'val1dPassword')
-    assert isinstance(user_id_2, str)
-    assert user_id_1 == user_id_2                         # May not work (Maybe use assert equals)
+    response1 = requests.post(f"{BASE_URL}/a4/auth/signup", data=valid_registration_data1)
+    user_id_1 = response1.json()['userId']
+    requests.post(f"{BASE_URL}/a4/auth/logout", data={'userId': user_id_1})
+    response2 = requests.post(f"{BASE_URL}/a4/auth/login", data=valid_login_data)
+    assert response2.status_code == 200       # May need to test each function 
 
+# Test login with incorrect password
 def test_login_incorrect_password():
-    user_id_1 = signup('first', 'user', 'user@example.com', 'val1dPassword', 'val1dPassword')
-    userLogout(user_id_1)
-    with pytest.raises(ValueError) as exc_info:
-        login('user@example.com', 'val0dPassword')
-    
-    assert str(exc_info.value) == "Password is incorrect"
+    response1 = requests.post(f"{BASE_URL}/a4/auth/signup", data=valid_registration_data1)
+    user_id_1 = response1.json()['userId']
+    requests.post(f"{BASE_URL}/a4/auth/logout", data={'userId': user_id_1})
+    invalid_data = valid_login_data.copy()
+    invalid_data['password'] = 'p0sswords'
+    response2 = requests.post(f"{BASE_URL}/a4/auth/login", data=invalid_data)
+    assert response2.status_code == 400
 
+# Test login for user that doesn't exist
 def test_login_user_does_not_exist():
-    with pytest.raises(ValueError) as exc_info:
-        login('user@example.com', 'val1dPassword')
-    
-    assert str(exc_info.value) == "User email is not registered"
+    response2 = requests.post(f"{BASE_URL}/a4/auth/login", data=valid_login_data)
+    assert response2.status_code == 400
 
 
