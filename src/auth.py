@@ -5,7 +5,7 @@ import re
 
 authenticateUser = Blueprint('authenticate_user', __name__)
 
-@authenticateUser.route('/a4/signup/', methods=['GET', 'POST'])
+@authenticateUser.route('/signup/', methods=['GET', 'POST'])
 # Registers a new user and redirects them to their mailbox
 def signup():
     if request.method == 'POST':
@@ -15,25 +15,26 @@ def signup():
         password = request.form['password']
         confirm_password = request.form['confirmPassword']
         if password != confirm_password:
-            return 'Passwords do not match', 400
+            return {'Passwords do not match'}, 400
         elif len(first_name) > 15:
-            return 'First name cannot exceed 15 characters', 400
+            return {'First name cannot exceed 15 characters'}, 400
         elif len(first_name) == 0:
-            return 'First name cannot be empty', 400
+            return {'First name cannot be empty'}, 400
         elif len(last_name) > 15:
-            return 'Last name cannot exceed 15 characters', 400
+            return {'Last name cannot exceed 15 characters'}, 400
         elif len(last_name) == 0:
-            return 'Last name cannot be empty', 400
+            return {'Last name cannot be empty'}, 400
         elif not validEmail(email):
-            return 'Email must be of a valid format', 400
+            return {'Email must be of a valid format'}, 400
         elif len(password) < 8:
-            return 'Password should be atleast 8 characters', 400
+            return {'Password should be atleast 8 characters'}, 400
         elif len(password) > 15:
-            return 'Password shouldn\'t exceed 15 characters', 400
+            return {'Password shouldn\'t exceed 15 characters'}, 400
         elif not (any(char.isalpha() for char in password) and any(char.isdigit() for char in password)):
-            return 'Password should contain atleast one letter and one number', 400
+            return {'Password should contain atleast one letter and one number'}, 400
         else:
-            return uuid.uuid4()
+            user_id = uuid.uuid4()
+            return user_id, 200
     return render_template('register.html')
 
 def validEmail(email: str) -> bool:
@@ -45,9 +46,9 @@ def validEmail(email: str) -> bool:
 
 
 # Login page for registered users. Redirects the user to their mailbox
-@authenticateUser.route('/a4/login/', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        # email, password
-        return 'u1'
-    return render_template('login.html')
+# @authenticateUser.route('/a4/login/', methods=['GET', 'POST'])
+# def login():
+#     if request.method == 'POST':
+#         # email, password
+#         return 'u1'
+#     return render_template('login.html')
