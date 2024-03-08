@@ -1,9 +1,9 @@
 import pytest
 import uuid
 import requests
-from clear import clear
-from auth import signup
-from user import userLogout
+from A4.src.clear import clear
+from A4.src.auth import signup
+from A4.src.user import userLogout
 
 BASE_URL = "http://localhost:5000"
 
