@@ -10,4 +10,4 @@ def home():
 app.register_blueprint(authenticateUser, url_prefix='/auth/')  # Assume 'authenticateUser' is a Blueprint object
 
 if __name__ == '__main__':  # Correct equality check for the special variable
-    app.run(debug=True)
+    app.run(debug=False)
