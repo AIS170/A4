@@ -1,18 +1,59 @@
-# Stub code for mailbox functions
-# All functions may also be subject to return error message
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 
+mailbox = Blueprint('mailbox', __name__)
 
+@mailbox.route('/mailbox/', methods=['GET'])
 # View all received/incoming e-invoices for specified user through userId. Returns senderAddress, timeSent and invoiceSubject
-def mailBox(userId: str) -> list or str:
+def mailBox():
+    userId = request.args.get('userId')
+    
+    if not userId or not userId.isalnum():  
+        return jsonify({'error': 'Invalid userId'}), 400
+    
+    # Simulate fetching data for the valid userId (replace with actual data fetching logic)
+    incoming_previews = [
+        {"senderAddress": "sender@example.com", "timeSent": 123456789, "invoiceSubject": "Invoice #123"},
+        {"senderAddress": "another@example.com", "timeSent": 987654321, "invoiceSubject": "Invoice #456"}
+    ]
+    
+    return jsonify(incoming_previews), 200
 
-    return list
 
 
 # View received e-invoice through userId and incomingInvoiceId, returns list that contains senderAddress, timeSent, invoiceSubject, 
 # invoiceBody, list of eInvoices containing name, content, timeCreated and owner.
-def incomingInvoiceId(userId: str, incomingInvoiceId: int) -> list or str:
+@mailbox.route('/mailbox/incomingInvoice/', methods=['GET'])
+def incomingInvoiceId():
+    user_id = request.args.get('userId')
+    incoming_invoice_id = request.args.get('incomingInvoiceId')
+    
+    
+    if not user_id or not incoming_invoice_id:
+        return jsonify({'error': 'Invalid request parameters'}), 400
 
-    return list
+    
+    try:
+        incoming_invoice_id = int(incoming_invoice_id)
+    except ValueError:
+        return jsonify({'error': 'Invalid incomingInvoiceId.'}), 400
+
+    
+    authorized = True  
+    if not authorized:
+        return jsonify({'error': 'User is not a recipient of this Invoice.'}), 401
+    
+    
+    incoming_invoice = {
+        "senderAddress": "sender@example.com",
+        "timeSent": 123456789,
+        "invoiceSubject": "Invoice #123",
+        "invoiceBody": "This is an example invoice body.",
+        "e-invoices": ["file1.pdf", "file2.pdf"]
+    }
+    
+    return jsonify(incoming_invoice), 200
+
+
 
 
 # Lookup e-invoice in mailbox using lookupString and userId, returns list that contains senderAdress, timeSent and invoiceSubject.

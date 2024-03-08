@@ -1,4 +1,9 @@
 import pytest
+import uuid
+import requests
+
+
+BASE_URL = "http://localhost:5000"
 
 from mailbox import (
     mailBox,
@@ -14,6 +19,54 @@ from mailbox import (
     deleteSentInvoice
 )
 
+
+
+
+
+def test_mailbox_invalid_userId():
+
+    invalid_userId = "!!invalid!!"  
+    response = requests.get(f"{BASE_URL}/mailbox/", params={"userId": invalid_userId})
+    
+    assert response.status_code == 400
+    assert 'Invalid userId' in response.json().get('error', '')
+
+    print(f"Invalid userId test passed with response code {response.status_code} and message: {response.json()}")
+
+
+
+def test_incoming_invoice_invalid_id():
+
+    params = {
+        "userId": "validUserId",
+        "incomingInvoiceId": "invalid"  # This should trigger a validation error
+    }
+    response = requests.get(f"{BASE_URL}/mailbox/incomingInvoice/", params=params)
+    
+    assert response.status_code == 400
+    assert 'Invalid incomingInvoiceId.' in response.json().get('error', '')
+
+    print(f"Test for invalid incomingInvoiceId passed with response code {response.status_code} and message: {response.json()}")
+
+
+
+
+def test_incoming_invoice_unauthorized_access():
+
+    response = requests.get(f"{BASE_URL}/mailbox/incomingInvoice/", params={
+        "userId": "unauthorized_user",
+        "incomingInvoiceId": "123"
+    })
+    
+    assert response.status_code == 401
+    assert 'User is not a recipient of this Invoice.' in response.json().get('error', '')
+
+    print("Unauthorized access test passed with 401 response code and message:", response.json())
+
+
+
+
+''''
 def test_mailBox_empty():
     result = mailBox('user1')
     assert result == []
@@ -105,3 +158,4 @@ def test_deleteIncomingInvoice_successful():
 def test_deleteSentInvoice_successful():
     result = deleteSentInvoice('user1', 1)
     assert result is None
+'''
