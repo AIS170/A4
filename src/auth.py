@@ -2,6 +2,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 import uuid
 import re
+from models import *
 
 authenticateUser = Blueprint('authenticate_user', __name__)
 
@@ -34,6 +35,9 @@ def signup():
             return jsonify({'error': 'Password should contain atleast one letter and one number'}), 400
         else:
             user_id = uuid.uuid4()
+            new_user = User(id=user_id, first_name=first_name, last_name=last_name, email=email, password=password)
+            db.session.add(new_user)
+            db.session.commit()
             return jsonify({'userId': user_id}), 200
     return render_template('register.html')
 
