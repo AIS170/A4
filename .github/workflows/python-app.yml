@@ -29,9 +29,11 @@ jobs:
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Start server
-      run: python3 app.py
+      run: python3 app.py &
     - name: Wait for server to start
-      run: sleep 10
+      run: |
+        SERVER_LOG=$(mktemp)
+        timeout 10s grep -q "Running on http://127.0.0.1:5000" <(tail -f $SERVER_LOG) || (cat $SERVER_LOG && exit 1)
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
