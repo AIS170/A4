@@ -1,13 +1,18 @@
 from flask import Flask, render_template
-from src.auth import authenticateUser  # This should define a Blueprint named, for example, `auth_blueprint`
+from src.auth import authenticateUser 
+#from src.user import user_details
+from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)  # Correct initialization with double underscores
+app = Flask(__name__)  
+
 
 @app.route('/')
 def home():
-    return render_template('index.html')  # Correct function name
+    return render_template('index.html')  
 
-app.register_blueprint(authenticateUser, url_prefix='/auth/')  # Assume 'authenticateUser' is a Blueprint object
+app.register_blueprint(authenticateUser, url_prefix='/auth/')
+
+#app.register_blueprint(user_details, url_prefix='/user/')
 
 if __name__ == '__main__':  # Correct equality check for the special variable
     app.run(debug=True)

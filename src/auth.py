@@ -1,7 +1,11 @@
 # Stub code for authorisation functions
+import sys
 from flask import Blueprint, render_template, request, redirect, url_for
 import uuid
 import re
+
+from database import add_user, JSON_FILE_PATH
+
 
 authenticateUser = Blueprint('authenticate_user', __name__)
 
@@ -33,7 +37,8 @@ def signup():
         elif not (any(char.isalpha() for char in password) and any(char.isdigit() for char in password)):
             return {'Password should contain atleast one letter and one number'}, 400
         else:
-            user_id = uuid.uuid4()
+            user_id = str(uuid.uuid4())
+            add_user(user_id, first_name, last_name, email, password, JSON_FILE_PATH)
             return user_id, 200
     return render_template('register.html')
 

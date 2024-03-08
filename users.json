@@ -1,0 +1,18 @@
+{
+    "users": [
+        {
+            "user_id": "67d25c91-fdbe-4243-8f31-ff50e1000067",
+            "first_name": "First",
+            "last_name": "User",
+            "email": "user@example.com",
+            "password": "val1dPassword"
+        },
+        {
+            "user_id": "9ea5bdbe-7515-46d6-853f-d9a4ebf5bca4",
+            "first_name": "First",
+            "last_name": "User",
+            "email": "user@example.com",
+            "password": "val1dPassword"
+        }
+    ]
+}
