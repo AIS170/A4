@@ -1,72 +1,93 @@
-# Stub code for mailbox functions
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 # All functions may also be subject to return error message
-
+mailbox = Blueprint('mailbox', __name__)
 
 # View all received/incoming e-invoices for specified user through userId. Returns senderAddress, timeSent and invoiceSubject
-def mailBox(userId: str) -> list or str:
 
-    return list
+@mailbox.route('/', methods=['GET'])
+def mailBox():
+    user_id = request.args.get('user_id')
+    return '[incomingPreviews]'
 
 
 # View received e-invoice through userId and incomingInvoiceId, returns list that contains senderAddress, timeSent, invoiceSubject, 
 # invoiceBody, list of eInvoices containing name, content, timeCreated and owner.
-def incomingInvoiceId(userId: str, incomingInvoiceId: int) -> list or str:
-
-    return list
+@mailbox.route('/<int:incomingInvoiceId>', methods=['GET'])
+def incomingInvoiceId(incomingInvoiceId):
+    user_id = request.args.get('user_id')
+    return 'incomingInvoice'
 
 
 # Lookup e-invoice in mailbox using lookupString and userId, returns list that contains senderAdress, timeSent and invoiceSubject.
-def incomingLookup(userId: str, lookupString: str) -> list or str:
-
-    return list
+@mailbox.route('/mailbox/lookup', methods=['GET'])
+def incomingLookup():
+    user_id = request.args.get('user_id')
+    lookup = request.form.get('lookup_string')
+    return '[incomingPreviews]'
 
 
 # Sends e-invoice to desired recepient given userId, recepientAddress, invoiceSubject, 
 # invoiceBody and list of eInvoices containing name, content, timeCreated and owner. Returns list for sentReport containing content
 # and sentReportId.
-def sending(userId: str, recepientAdresses: list, invoiceSubject: str, invoiceBody: str, eInvoices: list) -> list or str:
-
-    return list
+@mailbox.route('/mailbox/sending', methods=['GET', 'POST'])
+def sending():
+    if request.method == 'POST':
+        user_id = request.args.get('user_id')
+        recepient_address = request.form.get('recepient_address')
+        invoice_subject = request.form.get('invoice_subject')
+        invoice_body = request.form.get('invoice_body')
+        e_invoices = request.form.get('e_invoices')
+        return 'sentReport'
+    return None
 
 
 # View outgoing sent e-invoices given userId, returns recepientAddres, timeSent and invoiceSubject.
-def sent(userId: str) -> list or str:
-
-    return list
+@mailbox.route('/mailbox/sent', methods=['GET'])
+def sent():
+    user_id = request.args.get('user_id')
+    return 'sentPreview'
 
 
 # View sent e-invoice through userId and sentInvoiceId, returns list that contains recepientAddress, timeSent, invoiceSubject, 
 # invoiceBody, list of eInvoices containing name, content, timeCreated and owner, and sendReport list which contains content and sentReportId.
-def sentInvoiceId(userId: str, sentInvoiceId: int) -> list or str:
+@mailbox.route('/mailbox/sent/<int:sentInvoiceId>', methods=['GET'])
+def sentInvoiceId(sentInvoiceId):
+    user_id = request.args.get('user_id')
 
-    return list
+    return 'sentInvoice, sentReport'
 
 
 # Lookup e-invoice in mailbox using lookupString and userId, returns list that contains recepientAdress, timeSent and invoiceSubject.
-def sentLookup(userId: str, lookupString: str) -> list or str:
-
-    return list
+@mailbox.route('/mailbox/sent/lookup', methods=['GET'])
+def sentLookup():
+    user_id = request.args.get('user_id')
+    lookup = request.form.get('lookup_string')
+    return 'sentPreview'
   
 
 # View report for sent e-invoice given userId, sentInvoiceId and sentReportId. Returns sentReport list containing content and sentReportId.
-def sentReportId(userId: str, sentInvoiceId: int, sentReportId: int) -> list or str:
-
+@mailbox.route('/mailbox/sent/<int:sent_invoice_id>/<int:sent_report_id>', methods=['GET'])
+def sentReportId(sentInvoiceId, sentReportId):
+    user_id = request.args.get('user_id')
     return list
 
 
 # verifies sent e-invoice given userId and sentInvoiceId. Returns deliveryStatusReport list containing content and deliveryStatusReportId.
-def verifySent(userId: str, sentInvoiceId: int) -> list or str:
-
+@mailbox.route('/mailbox/sent/<int:sent_invoice_id>/verify_sent', methods=['GET'])
+def verifySent(sentInvoiceId):
+    user_id = request.args.get('user_id')
     return list
 
 
 # Deletes received e-inovice given userId and incomingIncoiveId. Returns nothing.
-def deleteIncomingInvoice(userId: str, incomingInvoiceId: int) -> None or str:
-
+@mailbox.route('/mailbox/sent/<int:incoming_invoice_id>/delete', methods=['GET'])
+def deleteIncomingInvoice(incomingInvoiceId):
+    user_id = request.args.get('user_id')
     return None
 
 
-# Deletes sent e-inovice given userId and sentIncoiveId. Returns nothing.
-def deleteSentInvoice(userId: str, sentInvoiceId: int) -> None or str:
-
-    return None
+# # Deletes sent e-inovice given userId and sentIncoiveId. Returns nothing.
+# @mailbox.route('/mailbox/sent/<int=sent_invoice_id>/delete')
+# def deleteSentInvoice(sentInvoiceId):
+#     user_id = request.args.get('user_id')
+#     return None
