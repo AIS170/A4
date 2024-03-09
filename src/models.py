@@ -21,6 +21,7 @@ class Token(db.Model):
 class Invoice(db.Model):
     id = db.Column(db.String(80), unique=True, primary_key=True)
     subject = db.Column(db.String(255), nullable=False)
+    body = db.Column(db.String(255), nullable=False) #Maybe change db.string to db.text
     date_sent = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.String(80), db.ForeignKey('user.id')) # Foreign key when receiving.
     is_incoming = db.Column(db.Boolean, default=True, nullable=False)
