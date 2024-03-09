@@ -143,7 +143,7 @@ def sent():
 
     return jsonify(sent_invoices), 200
 
-    
+
 
 # View sent e-invoice through userId and sentInvoiceId, returns list that contains recepientAddress, timeSent, invoiceSubject, 
 # invoiceBody, list of eInvoices containing name, content, timeCreated and owner, and sendReport list which contains content and sentReportId.
