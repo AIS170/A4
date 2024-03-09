@@ -7,7 +7,7 @@ import random
 BASE_URL = "http://localhost:5000"
 
 from A4.src.mailbox import (
-    show_mailbox,
+    mailBox,
     incomingInvoiceId,
     incomingLookup,
     sending,
@@ -150,3 +150,48 @@ def test_fail_on_receiptients_not_exists():
 #     response = requests.post(f"{BASE_URL}/mailbox/mailbox/sending/", json=data, )
 #     assert response.status_code == 200
 #     # assert 'No e-invoice attached' in response.json()['error']
+
+
+
+
+
+def test_sent_invoices_invalid_userId():
+
+    params = {"userId": ""}  # Empty userId should trigger a validation error
+    response = requests.get(f"{BASE_URL}/mailbox/mailbox/sent/", params=params)
+    
+    assert response.status_code == 400
+    assert 'Invalid userId' in response.json().get('error', '')
+    
+    print(f"Test for invalid userId passed with response code {response.status_code} and message: {response.json()}")
+
+
+def test_sent_invoices_invalid_sentInvoiceId():
+
+    # Assuming the endpoint was adjusted to also take sentInvoiceId as a parameter
+    params = {
+        "userId": "validUserId",
+        "sentInvoiceId": "invalid"  # This should trigger a validation error for sentInvoiceId
+    }
+    response = requests.get(f"{BASE_URL}/mailbox/mailbox/sent/", params=params)
+    
+    assert response.status_code == 400
+    assert 'Invalid sentInvoiceId' in response.json().get('error', '')
+    
+    print(f"Test for invalid sentInvoiceId passed with response code {response.status_code} and message: {response.json()}")
+
+
+def test_sent_invoices_page_not_found():
+
+    # This test could simulate requesting a page or resource that does not exist
+    response = requests.get(f"{BASE_URL}/mailbox/mailbox/sent/invalidPage/")
+    
+    assert response.status_code == 404
+    assert 'Page not found' in response.json().get('error', '')
+    
+    print(f"Test for page not found passed with response code {response.status_code} and message: {response.json()}")
+
+
+
+
+
