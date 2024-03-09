@@ -30,14 +30,18 @@ def sending():
         recipient_address = request.form.get('recipient_address')
         invoice_subject = request.form.get('invoice_subject')
         invoice_body = request.form.get('invoice_body')
-        auth_user = User.query.filter_by(user_id=user_id)
+        auth_user = User.query.filter_by(id=user_id)
         if auth_user == None:
             return jsonify({'error': 'Invalid user ID'}), 400
         recipient = User.query.filter_by(email=recipient_address)
         if recipient == None:
             return jsonify({'error': 'Recipient does not exist'}), 404
+        if invoice_subject == None:
+            return jsonify({'error': 'Subject cannot be null'}), 400
         if len(invoice_subject) > 50:
             return jsonify({'error': 'Subject cannot be over 50 characters long'}), 400
+        if invoice_body == None:
+            return jsonify({'error': 'Body cannot be null'}), 400
         elif len(invoice_body) > 1000:
             return jsonify({'error': 'Body cannot be over 1000 characters long'}), 400
         new_mail = Invoice(id=os.urandom(24).hex(), subject=invoice_subject, body=invoice_body, date_sent=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), user_id=user_id, is_incoming=False, sent_to_user_id=recipient.id)
