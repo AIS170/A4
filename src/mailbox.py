@@ -8,42 +8,25 @@ def mailBox():
     return render_template('mailbox.html')
 
 
-# View received e-invoice through userId and incomingInvoiceId, returns list that contains senderAddress, timeSent, invoiceSubject, 
-# invoiceBody, list of eInvoices containing name, content, timeCreated and owner.
-def incomingInvoiceId(userId, incomingInvoiceId):
+@mailbox.route('/<string:invoiceId>', methods=['GET'])
+def invoiceId():
 
     return list
 
-
+@mailbox.route('/<string:reportId>', methods=['GET'])
+def reportId():
+    return list
 
 # Sends e-invoice to desired recepient given userId, recepientAddress, invoiceSubject, 
 # invoiceBody and list of eInvoices containing name, content, timeCreated and owner. Returns list for sentReport containing content
 # and sentReportId.
-def sending(userId, recepientAdresses, invoiceSubject, invoiceBody, eInvoices):
+@mailbox.route('/sending', methods=['GET', 'POST'])
+def sending():
+    if request.method == 'POST':
 
-    return list
+        return redirect(url_for('mailbox_route.mailBox'))
+    return render_template('send.html')
 
-
-# View outgoing sent e-invoices given userId, returns recepientAddres, timeSent and invoiceSubject.
-def sent(userId):
-
-    return list
-
-
-# View sent e-invoice through userId and sentInvoiceId, returns list that contains recepientAddress, timeSent, invoiceSubject, 
-# invoiceBody, list of eInvoices containing name, content, timeCreated and owner, and sendReport list which contains content and sentReportId.
-def sentInvoiceId(userId, sentInvoiceId):
-
-    return list
-
-
-
-  
-
-# View report for sent e-invoice given userId, sentInvoiceId and sentReportId. Returns sentReport list containing content and sentReportId.
-def sentReportId(userId: str, sentInvoiceId: int, sentReportId: int):
-
-    return list
 
 
 
