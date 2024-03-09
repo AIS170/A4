@@ -8,8 +8,7 @@ def mailBox():
     return render_template('mailbox.html')
 
 
-# View received e-invoice through userId and incomingInvoiceId, returns list that contains senderAddress, timeSent, invoiceSubject, 
-# invoiceBody, list of eInvoices containing name, content, timeCreated and owner.
+@mailbox.route('/')
 def incomingInvoiceId(userId, incomingInvoiceId):
 
     return list
