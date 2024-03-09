@@ -18,13 +18,6 @@ def incomingInvoiceId(incomingInvoiceId):
     return 'incomingInvoice'
 
 
-# Lookup e-invoice in mailbox using lookupString and userId, returns list that contains senderAdress, timeSent and invoiceSubject.
-@mailbox.route('/mailbox/lookup', methods=['GET'])
-def incomingLookup():
-    user_id = request.args.get('user_id')
-    lookup = request.form.get('lookup_string')
-    return '[incomingPreviews]'
-
 
 # Sends e-invoice to desired recepient given userId, recepientAddress, invoiceSubject, 
 # invoiceBody and list of eInvoices containing name, content, timeCreated and owner. Returns list for sentReport containing content
@@ -56,13 +49,6 @@ def sentInvoiceId(sentInvoiceId):
 
     return 'sentInvoice, sentReport'
 
-
-# Lookup e-invoice in mailbox using lookupString and userId, returns list that contains recepientAdress, timeSent and invoiceSubject.
-@mailbox.route('/mailbox/sent/lookup', methods=['GET'])
-def sentLookup():
-    user_id = request.args.get('user_id')
-    lookup = request.form.get('lookup_string')
-    return 'sentPreview'
   
 
 # View report for sent e-invoice given userId, sentInvoiceId and sentReportId. Returns sentReport list containing content and sentReportId.
@@ -70,24 +56,3 @@ def sentLookup():
 def sentReportId(sentInvoiceId, sentReportId):
     user_id = request.args.get('user_id')
     return list
-
-
-# verifies sent e-invoice given userId and sentInvoiceId. Returns deliveryStatusReport list containing content and deliveryStatusReportId.
-@mailbox.route('/mailbox/sent/<int:sent_invoice_id>/verify_sent', methods=['GET'])
-def verifySent(sentInvoiceId):
-    user_id = request.args.get('user_id')
-    return list
-
-
-# Deletes received e-inovice given userId and incomingIncoiveId. Returns nothing.
-@mailbox.route('/mailbox/sent/<int:incoming_invoice_id>/delete', methods=['GET'])
-def deleteIncomingInvoice(incomingInvoiceId):
-    user_id = request.args.get('user_id')
-    return None
-
-
-# # Deletes sent e-inovice given userId and sentIncoiveId. Returns nothing.
-# @mailbox.route('/mailbox/sent/<int=sent_invoice_id>/delete')
-# def deleteSentInvoice(sentInvoiceId):
-#     user_id = request.args.get('user_id')
-#     return None
