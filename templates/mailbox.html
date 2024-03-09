@@ -7,8 +7,10 @@
 </head>
 <body>
     <h1>Welcome to your Mailbox!</h1>
-    <form action="{{ url_for('mailbox_route.mailBox') }}" method="post"></form>
+    <form action="{{ url_for('mailbox_route.mailBox') }}" method="get"></form>
 
     <div><a href="{{url_for('authenticate_user.userLogout')}}">Log out</a></div>
+    <div><a href="{{url_for('mailbox_route.sending')}}">Send</a></div>
+</body>
 </body>
 </html>
