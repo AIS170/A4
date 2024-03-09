@@ -7,12 +7,15 @@
 </head>
 <body>
     <h1>Login</h1>
-    <div><label for="email">Email:</label></div>
-    <div><input type="text" id="email" name="email"></div>
-    <div><label for="pswd">Password:</label></div>
-    <div><input type="password" id="pswd" name="pswd"></div>
-    <div><a href="mailbox.html">Sign in</a></div>
+    <form action="{{ url_for('authenticate_user.login') }}" method="post">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Log In</button>
     <div><a href="{{url_for('authenticate_user.signup')}}">Don't have an Account?</a></div>
-    <div><a href="{{url_for('index')}}">back</a></div>
+    <div><a href="{{url_for('home')}}">back</a></div>
 </body>
 </html>
