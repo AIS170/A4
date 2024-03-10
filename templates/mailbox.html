@@ -8,9 +8,21 @@
 <body>
     <h1>Welcome to your Mailbox!</h1>
     <form action="{{ url_for('mailbox_route.mailBox') }}" method="get"></form>
-
-    <div><a href="{{url_for('authenticate_user.userLogout')}}">Log out</a></div>
     <div><a href="{{url_for('mailbox_route.sending')}}">Send</a></div>
+    {% if received_mails %}
+        <ul>
+            {% for mail in received_mails %}
+                <li>
+                    <strong>Subject:</strong> {{ mail.subject }} <br>
+                    <strong>Sender:</strong> {{ mail.sent_to_user_id}} <br>
+                    <strong>Date Sent:</strong> {{ mail.date_sent }} <br>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Mailbox empty ;.;</p>
+    {% endif %}
+    <div><a href="{{url_for('authenticate_user.userLogout')}}">Log out</a></div>
 </body>
 </body>
 </html>
