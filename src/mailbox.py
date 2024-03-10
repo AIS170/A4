@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, session
 from .models import User, Invoice
 import os
+import xmltodict, json
 from datetime import datetime
 from .database import db
 mailbox = Blueprint('mailbox_route', __name__)
@@ -31,10 +32,10 @@ def sending():
         invoice_subject = request.form.get('invoice_subject')
         invoice_body = request.form.get('invoice_body')
         auth_user = User.query.filter_by(id=user_id)
-        if auth_user == None:
+        if auth_user is None:
             return jsonify({'error': 'Invalid user ID'}), 400
-        recipient = User.query.filter_by(email=recipient_address)
-        if recipient == None:
+        recipient = User.query.filter_by(email=recipient_address).first()
+        if recipient is None:
             return jsonify({'error': 'Recipient does not exist'}), 404
         if invoice_subject == None:
             return jsonify({'error': 'Subject cannot be null'}), 400
@@ -44,7 +45,8 @@ def sending():
             return jsonify({'error': 'Body cannot be null'}), 400
         elif len(invoice_body) > 1000:
             return jsonify({'error': 'Body cannot be over 1000 characters long'}), 400
-        new_mail = Invoice(id=os.urandom(24).hex(), subject=invoice_subject, body=invoice_body, date_sent=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), user_id=user_id, is_incoming=False, sent_to_user_id=recipient.id)
+        
+        new_mail = Invoice(id=os.urandom(24).hex(), subject=invoice_subject, body=invoice_body, date_sent=datetime.now(), user_id=user_id, is_incoming=False, sent_to_user_id=recipient.id)
         db.session.add(new_mail)
         db.session.commit()
 
@@ -52,7 +54,9 @@ def sending():
     return render_template('send.html')
 
 
-
+def helperConvert(file):
+    o = xmltodict.parse('<e> <a>text</a> <a>text</a> </e>')
+    json.dumps(o)
 
 
 
