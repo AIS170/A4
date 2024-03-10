@@ -3,6 +3,7 @@ from src.auth import authenticateUser
 # from src.user import user_details
 from src.database import db
 from src.mailbox import mailbox
+from src.clear import clear_
 # from .models import User
 
 from os import path
@@ -22,7 +23,9 @@ def home():
 
 app.register_blueprint(authenticateUser, url_prefix='/auth/')
      
-app.register_blueprint(mailbox, url_prefix='/mailbox/')       
+app.register_blueprint(mailbox, url_prefix='/mailbox/')  
+
+app.register_blueprint(clear_, url_prefix='/clear')
 
 if __name__ == '__main__':
     with app.app_context():
