@@ -10,18 +10,23 @@ mailbox = Blueprint('mailbox_route', __name__)
 # View all received/incoming e-invoices for specified user through userId. Returns senderAddress, timeSent and invoiceSubject
 @mailbox.route('', methods=['GET'])
 def mailBox():
-    user_id = request.args.get('user_id')
-    return render_template('mailbox.html')
+    user_id_a = session.get('user_id')
+    if not user_id_a:
+        return jsonify({'error: Invalid userId'})
+    
+    received_mails = Invoice.query.filter_by(sent_to_user_id=user_id_a).all()
+    
+    return render_template('mailbox.html', received_mails=received_mails)
 
 
-@mailbox.route('/<string:invoiceId>', methods=['GET'])
-def invoiceId():
+# @mailbox.route('/<string:invoiceId>', methods=['GET'])
+# def invoiceId():
 
-    return list
+#     return list
 
-@mailbox.route('/<string:reportId>', methods=['GET'])
-def reportId():
-    return list
+# @mailbox.route('/<string:reportId>', methods=['GET'])
+# def reportId():
+#     return list
 
 # Sends e-invoice to desired recepient given userId, recepientAddress, invoiceSubject, 
 # invoiceBody and list of eInvoices containing name, content, timeCreated and owner. Returns list for sentReport containing content
@@ -68,10 +73,6 @@ def sending():
             return jsonify({'error': 'Invalid Invoice'}), 400
     return render_template('send.html')
 
-
-# def helperConvert(file):
-#     o = xmltodict.parse('<e> <a>text</a> <a>text</a> </e>')
-#     json.dumps(o)
 
 
 def allowed_file(filename):
