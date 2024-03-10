@@ -1,12 +1,8 @@
 from .database import db
-from .models import User
+from .models import User, Token, Invoice, CommunicationReport 
 def clear():
-    with db.session() as session:
-        data_clear = session.query(User).filter_by(User.first_name).all()
-        
-        for data in data_clear:
-            session.delete(data)
-            
-        session.commit()
-    
-clear()
+    db.session.query(User).delete()
+    db.session.query(Token).delete()
+    db.session.query(Invoice).delete()
+    db.session.query(CommunicationReport).delete()
+    db.session.commit
