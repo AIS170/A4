@@ -5,6 +5,7 @@ from src.database import db
 from src.mailbox import mailbox
 from src.clear import clear_
 # from .models import User
+from os import environ
 
 from os import path
 
@@ -30,4 +31,4 @@ app.register_blueprint(clear_, url_prefix='/clear')
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=False)
+    app.run(debug=False, port=environ.get('PORT', 5000))
