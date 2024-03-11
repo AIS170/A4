@@ -12,7 +12,7 @@ mailbox = Blueprint('mailbox_route', __name__)
 def mailBox():
     user_id_a = session.get('user_id')
     if not user_id_a:
-        return jsonify({'error: Invalid userId'})
+        return jsonify({'error': 'Invalid userId'}), 400
     
     received_mails = Invoice.query.filter_by(sent_to_user_id=user_id_a).all()
     
@@ -35,13 +35,12 @@ def mailBox():
 def sending():
     if request.method == 'POST':
         user_id_a = session.get('user_id')
+        if user_id_a == None:
+            return jsonify({'error': 'Invalid user ID'}), 400
         recipient_address = request.form.get('recipient_address')
         invoice_subject = request.form.get('invoice_subject')
         # invoice_body = request.form.get('invoice_body')
-        auth_user = User.query.filter_by(id=user_id_a)
-
-        if auth_user is None:
-            return jsonify({'error': 'Invalid user ID'}), 400
+            
         recipient = User.query.filter_by(email=recipient_address).first()
         if recipient is None:
             return jsonify({'error': 'Recipient does not exist'}), 404
