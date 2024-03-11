@@ -15,6 +15,12 @@ def mailBox():
         return jsonify({'error': 'Invalid userId'}), 400
     
     received_mails = Invoice.query.filter_by(sent_to_user_id=user_id_a).all()
+
+    for i in received_mails:
+        report_details = "Invoice Sent Details:\nSubject: {}\nRecipient: \nSender: {}\nDate Sent: {}".format(i.subject, i.sent_to_user_id, user_id_a, datetime.now())
+        new_comm_report = CommunicationReport(id=os.urandom(24).hex(), invoice_id=i.id, details=report_details, date_reported=datetime.now())
+        db.session.add(new_comm_report)
+        db.session.commit()
     
     return render_template('mailbox.html', received_mails=received_mails)
 
