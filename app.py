@@ -6,6 +6,7 @@ from src.mailbox import mailbox
 from src.clear import clear_
 # from .models import User
 from os import environ
+from flask_cors import CORS
 
 from os import path
 
@@ -17,6 +18,7 @@ app.config['SECRET_KEY'] = 'zasdxfcgvhbjnknhbgvfcdretfygh'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
 db.init_app(app)
+CORS(app)
 
 @app.route('/')
 def home():
