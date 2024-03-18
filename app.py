@@ -16,7 +16,7 @@ DB_NAME = 'database.sqlite3'
 app = Flask(__name__)  
 
 app.config['SECRET_KEY'] = 'zasdxfcgvhbjnknhbgvfcdretfygh'
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL') or 'sqlite:///{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL') or f'sqlite:///{DB_NAME}'
 
 db.init_app(app)
 CORS(app)
