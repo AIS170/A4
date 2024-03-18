@@ -8,6 +8,7 @@ from src.clear import clear_
 from os import environ
 from flask_cors import CORS
 
+
 from os import path
 
 DB_NAME = 'database.sqlite3'
@@ -15,8 +16,8 @@ DB_NAME = 'database.sqlite3'
 app = Flask(__name__)  
 
 app.config['SECRET_KEY'] = 'zasdxfcgvhbjnknhbgvfcdretfygh'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL') or 'sqlite:///{DB_NAME}'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
 db.init_app(app)
 CORS(app)
 
