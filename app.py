@@ -7,7 +7,7 @@ from src.clear import clear_
 # from .models import User
 from os import environ
 from flask_cors import CORS
-from sqlalchemy.dialects.postgresql import psycopg2
+import psycopg2
 
 
 from os import path
