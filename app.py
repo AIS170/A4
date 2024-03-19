@@ -16,11 +16,11 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'zasdxfcgvhbjnknhbgvfcdretfygh'
 
-db_uri = environ.get('DATABASE_URL')
-if db_uri:
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri.replace('postgres://', 'postgresql://', 1)
-else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+#db_uri = environ.get('DATABASE_URL')
+#if db_uri:
+    #app.config['SQLALCHEMY_DATABASE_URI'] = db_uri.replace('postgres://', 'postgresql://', 1)
+#else:
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     #print("WARNING: 'DATABASE_URL' environment variable is not set. Using SQLite database.")
 
 db.init_app(app)
