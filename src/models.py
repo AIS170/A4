@@ -2,24 +2,21 @@ from .database import db
 from sqlalchemy.orm import relationship
 
 class User(db.Model):
-    __tablename__ = 'user'  # Specify table name explicitly (lowercase)
 
     id = db.Column(db.String(80), unique=True, primary_key=True)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    token_rel = relationship("Token", back_populates="user")
+    token_rel = relationship("Token", back_populates="user_rel")
 
 class Token(db.Model):
-    __tablename__ = 'token'  # Specify table name explicitly (lowercase)
 
     id = db.Column(db.String(80), unique=True, primary_key=True)
     user_id = db.Column(db.String(80), db.ForeignKey('user.id'))
-    user = relationship("User", back_populates="token_rel")
+    user_rel = relationship("User", back_populates="token_rel")
 
 class Invoice(db.Model):
-    __tablename__ = 'invoice'  # Specify table name explicitly (lowercase)
 
     id = db.Column(db.String(80), unique=True, primary_key=True)
     subject = db.Column(db.String(255), nullable=False)
@@ -31,7 +28,6 @@ class Invoice(db.Model):
     sent_to_user_id = db.Column(db.String(80), db.ForeignKey('user.id'))
 
 class CommunicationReport(db.Model):
-    __tablename__ = 'communication_report'  # Specify table name explicitly (lowercase)
 
     id = db.Column(db.String(80), unique=True, primary_key=True)
     invoice_id = db.Column(db.String(80), db.ForeignKey('invoice.id'))
