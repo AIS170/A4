@@ -1,10 +1,8 @@
 from flask import Flask, render_template
 from src.auth import authenticateUser 
-# from src.user import user_details
 from src.database import db
 from src.mailbox import mailbox
 from src.clear import clear_
-# from .models import User
 from os import environ
 from flask_cors import CORS
 from os import path
