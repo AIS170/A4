@@ -9,14 +9,14 @@ class User(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    token_rel = relationship("Token", back_populates="user")
+    token_rel = relationship("Token", back_populates="user_rel")
 
 class Token(db.Model):
     __tablename__ = 'token'  # Specify table name explicitly (lowercase)
 
     id = db.Column(db.String(80), unique=True, primary_key=True)
     user_id = db.Column(db.String(80), db.ForeignKey('user.id'))
-    user = relationship("User", back_populates="token_rel")
+    user_rel = relationship("User", back_populates="token_rel")
 
 class Invoice(db.Model):
     __tablename__ = 'invoice'  # Specify table name explicitly (lowercase)
