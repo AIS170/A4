@@ -7,7 +7,6 @@ from src.clear import clear_
 # from .models import User
 from os import environ
 from flask_cors import CORS
-
 from os import path
 
 
@@ -16,6 +15,7 @@ DB_NAME = 'database.sqlite3'
 app = Flask(__name__)  
 
 app.config['SECRET_KEY'] = 'zasdxfcgvhbjnknhbgvfcdretfygh'
+
 db_uri = environ.get('DATABASE_URL')
 if db_uri:
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri.replace('postgres://', 'postgresql://', 1)
