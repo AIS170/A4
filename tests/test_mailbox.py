@@ -44,7 +44,7 @@ valid_sent_email_data2 = {
 def session():
     return requests.Session()
 
-#Test successfully send mail
+# Test successfully send mail to self
 def test_sending_to_self_success(session):
     session.delete(f"{BASE_URL}/clear")
     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
@@ -56,6 +56,7 @@ def test_sending_to_self_success(session):
     response = session.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data1, files={'invoice_file': open('tests/data.xml', 'rb')})
     assert response.status_code == 200
 
+# Test successfully send mail to another user
 def test_sending_success(session):
     session.delete(f"{BASE_URL}/clear")
     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
@@ -68,6 +69,7 @@ def test_sending_success(session):
     assert response.status_code == 200
     session.delete(f"{BASE_URL}/clear")
 
+# Test successfully send multiple mail
 def test_sending_multiple_mail_success(session):
     session.delete(f"{BASE_URL}/clear")
     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
@@ -81,6 +83,7 @@ def test_sending_multiple_mail_success(session):
     response = session.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data2, files={'invoice_file': open('tests/data.xml', 'rb')})
     assert response.status_code == 200
 
+# Test send mail with invalid userId
 def test_sending_invalid_user(session):
     session.delete(f"{BASE_URL}/clear")
     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
@@ -95,6 +98,7 @@ def test_sending_invalid_user(session):
     message = response.json()
     assert message['error'] == 'Invalid userId'
 
+# Test send mail to non-existent user
 def test_sending_invalid_recipient(session):
     session.delete(f"{BASE_URL}/clear")
     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
@@ -110,6 +114,7 @@ def test_sending_invalid_recipient(session):
     assert message['error'] == 'Recipient does not exist'
     assert response.status_code == 404
 
+# Test send mail with empty subject
 def test_sending_empty_subject(session):
     session.delete(f"{BASE_URL}/clear")
     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
@@ -125,6 +130,7 @@ def test_sending_empty_subject(session):
     message = response.json()
     assert message['error'] == 'Subject cannot be empty'
 
+# Test send mail with subject over 50 characters long
 def test_sending_subject_too_long(session):
     session.delete(f"{BASE_URL}/clear")
     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
@@ -140,6 +146,21 @@ def test_sending_subject_too_long(session):
     message = response.json()
     assert message['error'] == 'Subject cannot be over 50 characters long'
 
+# Test send mail with subject over 50 characters long
+def test_sending_invalid_file(session):
+    session.delete(f"{BASE_URL}/clear")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
+    session.get(f"{BASE_URL}/auth/logout")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data2)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data2)
+
+    response = session.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data1, files={'invoice_file': open('tests/invalid.txt', 'rb')})
+    assert response.status_code == 400
+    message = response.json()
+    assert message['error'] == 'Invalid Invoice'
+
+# Test successfully view mailbox after sending mail
 # def test_mailbox_success(session):
 #     session.delete(f"{BASE_URL}/clear")
 #     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
@@ -154,6 +175,7 @@ def test_sending_subject_too_long(session):
 #     response = session.get(f"{BASE_URL}/mailbox")
 #     assert response.status_code == 200
 
+# Test successfully view mailbox after sending multiple mail
 # def test_mailbox_success_multiple_mails(session):
 #     session.delete(f"{BASE_URL}/clear")
 #     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
@@ -171,6 +193,7 @@ def test_sending_subject_too_long(session):
 #     response = session.get(f"{BASE_URL}/mailbox")
 #     assert response.status_code == 200
 
+# Test view mailbox with invalid userId
 # def test_mailbox_inavlid_user(session):
 #     session.delete(f"{BASE_URL}/clear")
 #     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
