@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, session
 from .models import User, Invoice, CommunicationReport
 import os
-import xmltodict, json
+import json
 from datetime import datetime
 from .database import db
 from xml.etree import ElementTree as ET
@@ -77,11 +77,11 @@ def sending():
     return render_template('send.html')
 
 
-
+# Helper function to check if a file is valid
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'xml'}
 
-
+# Helper function to convert XML content into a Python dictionary
 def xml_to_dict(xml_content):
     root = ET.fromstring(xml_content)
     return {child.tag: child.text for child in root}

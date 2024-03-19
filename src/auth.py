@@ -44,6 +44,7 @@ def signup():
             return redirect(url_for('authenticate_user.login'))
     return render_template('register.html')
 
+# Helper function to check if an email is of valid format
 def validEmail(email: str) -> bool:
     regexPattern = r'^[a-zA-Z0-9._]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$'
     if re.match(regexPattern, email):
@@ -81,6 +82,7 @@ def login():
         return render_template('login.html')
     
 @authenticateUser.route('/logout')
+# Ends the current users session and redirects them to the login page
 def userLogout():
     user_id = session.get('user_id')
     if user_id:

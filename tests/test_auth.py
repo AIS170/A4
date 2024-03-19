@@ -182,6 +182,7 @@ def test_login_user_does_not_exist(session):
     message = response.json()
     assert message['error'] == 'Invalid email and/or password'
 
+# Test successfull logout
 def test_logout_success(session):
     session.delete(f"{BASE_URL}/clear")
     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
@@ -193,6 +194,7 @@ def test_logout_success(session):
     message = response2.json()
     assert message['error'] == 'Invalid userId'
 
+# Test successfull logout when not logged in
 def test_logout_when_not_logged_in_success(session):
     session.delete(f"{BASE_URL}/clear")
     response = session.get(f"{BASE_URL}/auth/logout")
