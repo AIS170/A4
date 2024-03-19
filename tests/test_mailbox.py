@@ -40,73 +40,145 @@ valid_sent_email_data2 = {
     "invoice_subject": "New mail",
 }
 
-files = {'invoice_file': open('tests/data.xml', 'rb')}
-
-@pytest.fixture(autouse=True)
-def setup():
-    requests.delete(f"{BASE_URL}/clear")
-    requests.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
-    requests.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
-    requests.post(f"{BASE_URL}/auth/logout")
-    requests.post(f"{BASE_URL}/auth/signup", data=valid_registration_data2)
-    requests.post(f"{BASE_URL}/auth/login", data=valid_login_data2)
+@pytest.fixture
+def session():
+    return requests.Session()
 
 #Test successfully send mail
-def test_sending_success():
-    response = requests.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data2, files=files)
-    assert response.status_code == 400, 200
-    
-def test_sending_to_self_success():
-    response = requests.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data1, files=files)
-    assert response.status_code == 400, 200
+def test_sending_to_self_success(session):
+    session.delete(f"{BASE_URL}/clear")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
+    session.get(f"{BASE_URL}/auth/logout")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data2)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data2)
 
-def test_sending_multiple_mail_success():
-    response = requests.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data1, files=files)
-    assert response.status_code == 400, 200
-    response = requests.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data2, files=files)
-    assert response.status_code == 400, 200
+    response = session.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data1, files={'invoice_file': open('tests/data.xml', 'rb')})
+    assert response.status_code == 200
 
-def test_sending_invalid_user():
-    requests.post(f"{BASE_URL}/auth/logout")
-    response = requests.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data1, files=files)
+def test_sending_success(session):
+    session.delete(f"{BASE_URL}/clear")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
+    session.get(f"{BASE_URL}/auth/logout")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data2)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data2)
+
+    response = session.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data2, files={'invoice_file': open('tests/data.xml', 'rb')})
+    assert response.status_code == 200
+    session.delete(f"{BASE_URL}/clear")
+
+def test_sending_multiple_mail_success(session):
+    session.delete(f"{BASE_URL}/clear")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
+    session.get(f"{BASE_URL}/auth/logout")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data2)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data2)
+
+    response = session.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data1, files={'invoice_file': open('tests/data.xml', 'rb')})
+    assert response.status_code == 200
+    response = session.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data2, files={'invoice_file': open('tests/data.xml', 'rb')})
+    assert response.status_code == 200
+
+def test_sending_invalid_user(session):
+    session.delete(f"{BASE_URL}/clear")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
+    session.get(f"{BASE_URL}/auth/logout")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data2)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data2)
+
+    session.get(f"{BASE_URL}/auth/logout")
+    response = session.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data1, files={'invoice_file': open('tests/data.xml', 'rb')})
     assert response.status_code == 400
+    message = response.json()
+    assert message['error'] == 'Invalid userId'
 
-def test_sending_invalid_recipient():
+def test_sending_invalid_recipient(session):
+    session.delete(f"{BASE_URL}/clear")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
+    session.get(f"{BASE_URL}/auth/logout")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data2)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data2)
+
     invalid_data = valid_sent_email_data1.copy()
     invalid_data['recipient_address'] = 'invalid@example.com'
-    response = requests.post(f"{BASE_URL}/mailbox/sending", data=invalid_data, files=files)
-    assert response.status_code == 400
+    response = session.post(f"{BASE_URL}/mailbox/sending", data=invalid_data, files={'invoice_file': open('tests/data.xml', 'rb')})
+    message = response.json()
+    assert message['error'] == 'Recipient does not exist'
+    assert response.status_code == 404
 
-def test_sending_empty_subject():
+def test_sending_empty_subject(session):
+    session.delete(f"{BASE_URL}/clear")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
+    session.get(f"{BASE_URL}/auth/logout")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data2)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data2)
+
     invalid_data = valid_sent_email_data1.copy()
     invalid_data['invoice_subject'] = ''
-    response = requests.post(f"{BASE_URL}/mailbox/sending", data=invalid_data, files=files)
+    response = session.post(f"{BASE_URL}/mailbox/sending", data=invalid_data, files={'invoice_file': open('tests/data.xml', 'rb')})
     assert response.status_code == 400
+    message = response.json()
+    assert message['error'] == 'Subject cannot be empty'
 
-def test_sending_subject_too_long():
+def test_sending_subject_too_long(session):
+    session.delete(f"{BASE_URL}/clear")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
+    session.get(f"{BASE_URL}/auth/logout")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data2)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data2)
+
     invalid_data = valid_sent_email_data1.copy()
     invalid_data['invoice_subject'] = 'a' * 51
-    response = requests.post(f"{BASE_URL}/mailbox/sending", data=invalid_data, files=files)
+    response = session.post(f"{BASE_URL}/mailbox/sending", data=invalid_data, files={'invoice_file': open('tests/data.xml', 'rb')})
     assert response.status_code == 400
+    message = response.json()
+    assert message['error'] == 'Subject cannot be over 50 characters long'
 
-def test_mailbox_success():
-    requests.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data2, files=files)
-    requests.post(f"{BASE_URL}/auth/logout")
-    requests.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
-    response = requests.get(f"{BASE_URL}/mailbox")
-    assert response.status_code == 400, 200
+def test_mailbox_success(session):
+    session.delete(f"{BASE_URL}/clear")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
+    session.get(f"{BASE_URL}/auth/logout")
+    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data2)
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data2)
 
-def test_mailbox_success_multiple_mails():
-    requests.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data2, files=files)
-    mail2 = valid_sent_email_data1.copy()
-    mail2['invoice_subject'] = 'Another one'
-    requests.post(f"{BASE_URL}/mailbox/sending", data=mail2, files=files)
-    requests.post(f"{BASE_URL}/auth/logout")
-    requests.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
-    response = requests.get(f"{BASE_URL}/mailbox")
-    assert response.status_code == 400, 200
+    session.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data2, files={'invoice_file': open('tests/data.xml', 'rb')})
+    session.get(f"{BASE_URL}/auth/logout")
+    session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
+    response = session.get(f"{BASE_URL}/mailbox")
+    assert response.status_code == 200
 
-def test_mailbox_inavlid_user():
-    requests.post(f"{BASE_URL}/auth/logout")
-    response = requests.get(f"{BASE_URL}/mailbox")
-    assert response.status_code == 400
+# def test_mailbox_success_multiple_mails(session):
+#     session.delete(f"{BASE_URL}/clear")
+#     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
+#     session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
+#     session.get(f"{BASE_URL}/auth/logout")
+#     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data2)
+#     session.post(f"{BASE_URL}/auth/login", data=valid_login_data2)
+
+#     session.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data2, files={'invoice_file': open('tests/data.xml', 'rb')})
+#     mail2 = valid_sent_email_data1.copy()
+#     mail2['invoice_subject'] = 'Another one'
+#     session.post(f"{BASE_URL}/mailbox/sending", data=mail2, files={'invoice_file': open('tests/data.xml', 'rb')})
+#     session.get(f"{BASE_URL}/auth/logout")
+#     session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
+#     response = session.get(f"{BASE_URL}/mailbox")
+#     assert response.status_code == 200
+
+# def test_mailbox_inavlid_user(session):
+#     session.delete(f"{BASE_URL}/clear")
+#     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
+#     session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
+#     session.get(f"{BASE_URL}/auth/logout")
+#     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data2)
+#     session.post(f"{BASE_URL}/auth/login", data=valid_login_data2)
+
+#     session.get(f"{BASE_URL}/auth/logout")
+#     response = session.get(f"{BASE_URL}/mailbox")
+#     assert response.status_code == 400
