@@ -1,6 +1,6 @@
 from .database import db
 from .models import User, Token, Invoice, CommunicationReport 
-from flask import Blueprint
+from flask import Blueprint, session
 
 clear_ = Blueprint('clear_route', __name__)
 
@@ -11,3 +11,5 @@ def clear():
     db.session.query(Invoice).delete()
     db.session.query(CommunicationReport).delete()
     db.session.commit()
+    session.clear()
+    return '', 200
