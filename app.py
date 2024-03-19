@@ -7,6 +7,7 @@ from src.clear import clear_
 # from .models import User
 from os import environ
 from flask_cors import CORS
+from sqlalchemy.dialects.postgresql import psycopg2
 
 
 from os import path
@@ -16,8 +17,7 @@ DB_NAME = 'database.sqlite3'
 app = Flask(__name__)  
 
 app.config['SECRET_KEY'] = 'zasdxfcgvhbjnknhbgvfcdretfygh'
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
-# environ.get('DATABASE_URL') need to add for postgre connections
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL') or f'sqlite:///{DB_NAME}'
 
 db.init_app(app)
 CORS(app)
