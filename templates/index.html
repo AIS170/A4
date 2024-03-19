@@ -9,8 +9,16 @@
 </head>
 <body>
     <h1>A4</h1>
-    <div><a href="{{url_for('authenticate_user.signup')}}">register</a></div>
-    <div><a href="{{url_for('authenticate_user.login')}}">login</a></div>
-    <div><a href="{{url_for('home')}}">A4 Page</a></div>
+    <register>
+        <div><a href="{{url_for('authenticate_user.signup')}}">
+            <button>Register</button>
+        </a></div>
+    </register>
+    <login> 
+        <div><a href="{{url_for('authenticate_user.login')}}">
+            <button>Log In</button>
+        </a></div>
+    </login>
+    
 </body>
 </html>
