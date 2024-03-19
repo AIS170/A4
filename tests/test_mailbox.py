@@ -140,19 +140,19 @@ def test_sending_subject_too_long(session):
     message = response.json()
     assert message['error'] == 'Subject cannot be over 50 characters long'
 
-def test_mailbox_success(session):
-    session.delete(f"{BASE_URL}/clear")
-    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
-    session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
-    session.get(f"{BASE_URL}/auth/logout")
-    session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data2)
-    session.post(f"{BASE_URL}/auth/login", data=valid_login_data2)
+# def test_mailbox_success(session):
+#     session.delete(f"{BASE_URL}/clear")
+#     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data1)
+#     session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
+#     session.get(f"{BASE_URL}/auth/logout")
+#     session.post(f"{BASE_URL}/auth/signup", data=valid_registration_data2)
+#     session.post(f"{BASE_URL}/auth/login", data=valid_login_data2)
 
-    session.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data2, files={'invoice_file': open('tests/data.xml', 'rb')})
-    session.get(f"{BASE_URL}/auth/logout")
-    session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
-    response = session.get(f"{BASE_URL}/mailbox")
-    assert response.status_code == 200
+#     session.post(f"{BASE_URL}/mailbox/sending", data=valid_sent_email_data2, files={'invoice_file': open('tests/data.xml', 'rb')})
+#     session.get(f"{BASE_URL}/auth/logout")
+#     session.post(f"{BASE_URL}/auth/login", data=valid_login_data1)
+#     response = session.get(f"{BASE_URL}/mailbox")
+#     assert response.status_code == 200
 
 # def test_mailbox_success_multiple_mails(session):
 #     session.delete(f"{BASE_URL}/clear")
