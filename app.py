@@ -28,6 +28,10 @@ CORS(app)
 def home():
     return render_template('index.html')  
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 app.register_blueprint(authenticateUser, url_prefix='/auth/')
      
 app.register_blueprint(mailbox, url_prefix='/mailbox/')  

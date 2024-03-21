@@ -16,6 +16,12 @@ login {
     align-items: center;
 }
 
+about {
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+}
+
 button {
     position: relative;
     padding: 10px 20px;
