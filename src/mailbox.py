@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, session
 from .models import User, Invoice, CommunicationReport
 import os
-import xmltodict, json
+import json
 from datetime import datetime
 from .database import db
 from xml.etree import ElementTree as ET
@@ -42,23 +42,21 @@ def sending():
     if request.method == 'POST':
         user_id_a = session.get('user_id')
         if user_id_a == None:
-            return jsonify({'error': 'Invalid user ID'}), 400
+            return jsonify({'error': 'Invalid userId'}), 400
         recipient_address = request.form.get('recipient_address')
         invoice_subject = request.form.get('invoice_subject')
-        # invoice_body = request.form.get('invoice_body')
-            
+        # invoice_body = request.form.get('invoice_body')   
         recipient = User.query.filter_by(email=recipient_address).first()
-        if recipient is None:
+        if recipient == None:
             return jsonify({'error': 'Recipient does not exist'}), 404
-        if invoice_subject == None:
-            return jsonify({'error': 'Subject cannot be null'}), 400
+        if invoice_subject == '':
+            return jsonify({'error': 'Subject cannot be empty'}), 400
         if len(invoice_subject) > 50:
             return jsonify({'error': 'Subject cannot be over 50 characters long'}), 400
         # if invoice_body == None:
         #     return jsonify({'error': 'Body cannot be null'}), 400
         # elif len(invoice_body) > 1000:
         #     return jsonify({'error': 'Body cannot be over 1000 characters long'}), 400
-        
         xml_file = request.files.get('invoice_file')
         if xml_file and allowed_file(xml_file.filename):
             xml_content = xml_file.read()
@@ -68,7 +66,7 @@ def sending():
             new_mail = Invoice(id=os.urandom(24).hex(), subject=invoice_subject, body=invoice_json, date_sent=datetime.now(), user_id=user_id_a, is_incoming=False, sent_to_user_id=recipient.id)
             db.session.add(new_mail)
             db.session.commit()
-
+            
             report_details = "Invoice Sent Details:\nSubject: {}\nRecipient: \nSender: {}\nDate Sent: {}".format(invoice_subject, recipient_address, user_id_a, datetime.now())
             new_comm_report = CommunicationReport(id=os.urandom(24).hex(), invoice_id=new_mail.id, details=report_details, date_reported=datetime.now())
             db.session.add(new_comm_report)
@@ -79,11 +77,11 @@ def sending():
     return render_template('send.html')
 
 
-
+# Helper function to check if a file is valid
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'xml'}
 
-
+# Helper function to convert XML content into a Python dictionary
 def xml_to_dict(xml_content):
     root = ET.fromstring(xml_content)
     return {child.tag: child.text for child in root}
