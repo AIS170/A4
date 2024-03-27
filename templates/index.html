@@ -12,7 +12,11 @@
             <h1>Welcome to A4 E-Invoicing Services</h1>
         </div>
     </header>
-
+    <div class="buttons">
+        <a href="{{ url_for('authenticate_user.signup') }}" class="btn btn-primary">Register</a>
+        <a href="{{ url_for('authenticate_user.login') }}" class="btn btn-secondary">Log In</a>
+        <a href="{{ url_for('about') }}" class="btn btn-secondary">About Us</a>
+    </div>
     <footer class="footer">
         <p>&copy; 2024 A4 E-Invoicing Services. All rights reserved.</p>
     </footer>
