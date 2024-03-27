@@ -6,8 +6,11 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+    background-color: #ededed;
+    color: #000000; 
+    align-items: center;
+    display: grid;
+    
 }
 
 .container {
@@ -16,53 +19,70 @@ body {
     padding: 0 20px;
 }
 
-header, footer {
-    background-color: #333;
+header {
+    background-color: #111010;
     color: #fff;
     text-align: center;
-    padding: 20px 0;
+    padding: 30px 0;
 }
 
-header .header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-}
-
-header nav ul {
-    list-style: none;
-    display: flex;
-}
-
-header nav ul li {
-    margin-right: 20px;
-}
-
-header nav ul li a {
-    color: #fff;
-    text-decoration: none;
-}
-
-main {
-    padding: 50px 0;
-}
-
-section {
-    margin-bottom: 40px;
-}
-
-.about-section img {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
+.header-container {
+    text-align: center;
 }
 
 /* Footer styles */
-footer {
-    margin-top: 50px;
+.footer {
+    background-color:#000000;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
-footer p {
+login {
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+}
+
+about {
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+}
+
+register {
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+}
+
+button {
+    position: relative;
+    padding: 10px 20px;
+    border-radius: 7px;
+    border: 1px solid rgb(61, 106, 255);
     font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 2px;
+    background: transparent;
+    color: #fff;
+    overflow: hidden;
+    box-shadow: 0 0 0 0 transparent;
+    -webkit-transition: all 0.2s ease-in;
+    -moz-transition: all 0.2s ease-in;
+    transition: all 0.2s ease-in;
+    justify-content: center;
+    align-items: center;
+}
+
+button:hover {
+    background: rgb(61, 106, 255);
+    box-shadow: 0 0 30px 5px rgba(0, 142, 236, 0.815);
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
 }

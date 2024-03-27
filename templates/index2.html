@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Invoicing</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='indexStyle.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>Welcome to A4 E-Invoicing Services</h1>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('authenticate_user.signup') }}"><img src="register_icon.png" alt="Register"></a></li>
+                    <li><a href="{{ url_for('authenticate_user.login') }}"><img src="login_icon.png" alt="Log In"></a></li>
+                    <li><a href="{{ url_for('about') }}">About Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="cta">
+            <h2>Manage your invoices efficiently</h2>
+            <div class="buttons">
+                <a href="{{ url_for('authenticate_user.signup') }}" class="btn btn-primary">Register</a>
+                <a href="{{ url_for('authenticate_user.login') }}" class="btn btn-secondary">Log In</a>
+                <a href="{{ url_for('about') }}" class="btn btn-secondary">About Us</a>
+            </div>
+        </section>
+
+        <section class="about-section">
+            <h2>About Us</h2>
+            <p>Our E-Invoicing API aims to revolutionize e-commerce platforms by simplifying the invoicing process. We believe in making invoicing easier, faster, and more efficient for businesses of all sizes. With our API, businesses can manage their invoices seamlessly, saving time and resources.</p>
+            <p>"Simplify your invoicing process with A4 E-Invoicing Services."</p>
+            <img src="ecommerce_image.jpg" alt="E-commerce">
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 E-Invoicing. All rights reserved.</p>
+    </footer>
+</body>
+</html>
