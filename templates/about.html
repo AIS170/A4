@@ -4,12 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='aboutStyle.css') }}">
 </head>
 <body>
-    <h1>About Page</h1>
-    <b1>Add some info</b1>
-    <div><a href="{{url_for('home')}}">
-        <button>Back</button>
-    </a></div>
+    <header>
+        <h1>About E-Invoicing</h1>
+    </header>
+
+    <main>
+        <section class="team-info">
+            <h2>Our Team (Team A4)</h2>
+            <ul>
+                <li>Rakshil Mali</li>
+                <li>Anuj Inder Singh</li>
+                <li>Abhisekh Deshpande</li>
+                <li>Aakash Dilip</li>
+                <li>Arvind Chandrasekharan</li>
+            </ul>
+        </section>
+
+        <section class="goal-info">
+            <h2>Our Goal</h2>
+            <p>At E-Invoicing, our goal is to revolutionize the way 
+                businesses handle invoicing. We believe that traditional methods of 
+                invoicing are cumbersome and time-consuming. Our APIs aim to simplify the invoicing process, 
+                making it easier for businesses to generate, send, and manage invoices. By automating invoicing tasks and providing seamless integration with existing 
+                systems, we strive to make e-invoicing more efficient and hassle-free for everyone involved.</p>
+        </section>
+    </main>
+
+    <footer>
+        <div><a href="{{url_for('home')}}">
+            <button>Back</button>
+        </a></div>
+    </footer>
 </body>
 </html>

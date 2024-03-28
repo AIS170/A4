@@ -4,25 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mailbox</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='mailboxStyle.css') }}">
 </head>
 <body>
-    <h1>Welcome to your Mailbox!</h1>
-    <form action="{{ url_for('mailbox_route.mailBox') }}" method="get"></form>
-    <div><a href="{{url_for('mailbox_route.sending')}}">Send</a></div>
-    {% if received_mails %}
-        <ul>
-            {% for mail in received_mails %}
-                <li>
-                    <strong>Subject:</strong> {{ mail.subject }} <br>
-                    <strong>Sender:</strong> {{ mail.sent_to_user_id}} <br>
-                    <strong>Date Sent:</strong> {{ mail.date_sent }} <br>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Mailbox empty ;.;</p>
-    {% endif %}
-    <div><a href="{{url_for('authenticate_user.userLogout')}}">Log out</a></div>
-</body>
+    <div class="sidebar">
+        <a href="{{ url_for('authenticate_user.signup') }}">Register</a>
+        <a href="{{ url_for('authenticate_user.login') }}">Login</a>
+        <a href="{{ url_for('about') }}">About Us</a>
+    </div>
+    <div class="header">
+        <h1>Welcome to your Mailbox!</h1>
+    </div>
+    <div class="content">
+        <form action="{{ url_for('mailbox_route.mailBox') }}" method="get"></form>
+        <div><a href="{{url_for('mailbox_route.sending')}}">Send</a></div>
+        {% if received_mails %}
+            <ul>
+                {% for mail in received_mails %}
+                    <li>
+                        <strong>Subject:</strong> {{ mail.subject }} <br>
+                        <strong>Sender:</strong> {{ mail.sent_to_user_id}} <br>
+                        <strong>Date Sent:</strong> {{ mail.date_sent }} <br>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Mailbox empty ;.;</p>
+        {% endif %}
+        <div><a href="{{url_for('authenticate_user.userLogout')}}">Log out</a></div>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2024 A4 E-Invoicing Services. All rights reserved.</p>
+    </footer>
 </body>
 </html>
