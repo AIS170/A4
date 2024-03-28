@@ -32,6 +32,10 @@ def home():
 def about():
     return render_template('about.html')
 
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
+
 app.register_blueprint(authenticateUser, url_prefix='/auth/')
      
 app.register_blueprint(mailbox, url_prefix='/mailbox/')  
