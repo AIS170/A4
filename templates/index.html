@@ -11,7 +11,9 @@
 <body>
     <header>
         <div class="header-container">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
+            <a href="{{ url_for('admin')}}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
+            </a>
             <nav class="nav-container">
                 <ul>
                     <li>
