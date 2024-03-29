@@ -4,14 +4,16 @@
     box-sizing: border-box;
 }
 
+/* Body Styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 725;
     background-image: url('images/stock.png');
-    background-size: 100vw;
-    color: #000000; 
+    background-size: 100% 100vh; /* Adjusted background size */
+    background-repeat: no-repeat; 
+    color: rgba(133, 76, 76, 0.4); 
     align-items: center;
     display: grid;
-    
 }
 
 .container {
@@ -24,23 +26,16 @@ header {
     background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.5));
     color: #fff;
     text-align: center;
-    padding: 0px 0;
+    padding: 10px 0; /* Decrease header padding */
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 1000;
 }
 
-
 .header-container {
     justify-content: center;
     display: flex;
-}
-
-.logo {
-    float: left;;
-    margin-left: 20px;
-    width: 70px;
 }
 
 .nav-container {
@@ -48,32 +43,20 @@ header {
     margin-top: 10px;
 }
 
-.login-button {
-    background-color: transparent;
-    border: none;
-    color: white;
-    font-size: 28px;
-    padding: 10px 20px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
+.login-button,
 .about-button {
     background-color: transparent;
     border: none;
     color: white;
     font-size: 28px;
-    padding: 10px 20px;
+    padding: 20px 40px; /* Increased padding for a bigger button */
     text-decoration: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    border-radius: 50px; /* Adjusted border radius */
 }
 
-.about-button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
+.about-button:hover,
 .login-button:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
@@ -81,26 +64,26 @@ header {
 .text-elements {
     text-align: center;
     color: #fff;
-    font-size: 70px;
+    font-size: 60px;
     margin-top: 120px;
 }
 
 .start {
     text-align: center;
-    font-size: 30px;
-    margin-top: 180px;
+    font-size: 40px;
+    margin-top: 150px; /* Adjusted margin-top */
     position: relative; 
 }
 
 .start button {
     background: transparent;
-    padding: 5px 15px;
-    font-size: 24px;
-    font-weight: 600;
+    padding: 25px 50px; /* Increased padding for a bigger button */
+    font-size: 30px;
+    font-weight: 750;
     text-decoration: none;
     cursor: pointer;
-    border: 1px solid rgb(146, 163, 255);
-    border-radius: 25px;
+    border: 3px solid rgb(146, 163, 255); /* Adjusted border thickness */
+    border-radius: 50px; /* Adjusted border radius */
     outline: none;
     overflow: hidden;
     color: rgb(255, 255, 255);
@@ -108,42 +91,40 @@ header {
     text-align: center;
     position: relative; 
     z-index: 1; 
+    font-family: 'Open Sans', sans-serif; /* Set font family */
 }
 
 .start button::before {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: -30px; /* Adjusted position to cover the border */
+    left: -30px; /* Adjusted position to cover the border */
+    right: -30px; /* Adjusted position to cover the border */
+    bottom: -30px; /* Adjusted position to cover the border */
     margin: auto;
     content: '';
     border-radius: 50%;
     display: block;
-    width: 20em;
-    height: 20em;
-    left: -5em;
-    text-align: center;
-    transition: box-shadow 0.5s ease-out;
+    background-color: transparent; /* Removed background color */
+    transition: opacity 0.5s ease; /* Added transition for opacity */
     z-index: -1;
+    opacity: 0; /* Initially hidden */
 }
 
 .start button:hover {
     color: #fff;
-    border: 1px solid rgb(0, 0, 0);
+    border-color: rgb(77, 107, 240); /* Changed border color on hover */
 }
 
 .start button:hover::before {
-    box-shadow: inset 0 0 0 10em rgb(77, 107, 240);
+    opacity: 1; /* Show the background color on hover */
+    background-color: rgb(77, 107, 240); /* Fill the border on hover */
 }
-
-
 
 .hidden {
     display: none;
 }
 
- .content-container {
+.content-container {
     position: relative;
     max-height: 5000px;
     overflow-y: auto;
@@ -157,16 +138,15 @@ header {
     margin-bottom: 500px;
 } 
 
-
 .register-button {
     background: transparent;
-    padding: 5px 15px;
-    font-size: 24px;
-    font-weight: 600;
+    padding: 20px 45px; /* Increased padding for a bigger button */
+    font-size: 45px;
+    font-weight: 850;
     text-decoration: none;
     cursor: pointer;
-    border: 1px solid rgb(146, 163, 255);
-    border-radius: 25px;
+    border: 2px solid rgb(146, 163, 255);
+    border-radius: 50px; /* Adjusted border radius */
     outline: none;
     overflow: hidden;
     color: rgb(255, 255, 255);
@@ -194,21 +174,19 @@ header {
     z-index: -1;
 }
 
-
 .register-button:hover {
     color: #fff;
-    border: 1px solid rgb(0, 0, 0);
+    border: 2px solid rgb(0, 0, 0);
 }
 
-
 .register-button:hover::before {
-    box-shadow: inset 0 0 0 10em rgb(77, 107, 240);
+    box-shadow: inset 0 0 0 15em rgb(77, 107, 240);
 }
 
 .footer {
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.7);
     color: white;
-    padding: 10px;
+    padding: 5px;
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -219,6 +197,8 @@ header {
 
 .footer-left {
     text-align: left; /* Align the copyright message to the left */
+    margin-left: 10px; /* Move the footer slightly to the left */
+    font-family: 'Arial', sans-serif; /* Updated font */
 }
 
 .logo-container {
@@ -229,11 +209,28 @@ header {
 .logo {
     max-width: 100px; /* Adjust the size of the logo as needed */
     display: inline-block; /* Ensure the logo is treated as a block element */
+    margin-left: 20px; /* Move the logo 4 tab spaces to the right */
+    width: 70px;
 }
-
 
 nav ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
+}
+
+footer p {
+    margin-bottom: 5px; /* Add spacing between contact details */
+    margin-right: 10px;
+}
+
+/* Style links in the footer */
+footer a {
+    text-decoration: none; /* Remove underline */
+    color: #ccc; /* Lighter shade of black */
+}
+
+/* Style links on hover */
+footer a:hover {
+    color: #aaa; /* Darker shade on hover */
 }
