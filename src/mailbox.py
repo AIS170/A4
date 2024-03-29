@@ -76,6 +76,27 @@ def sending():
             return jsonify({'error': 'Invalid Invoice'}), 400
     return render_template('send.html')
 
+@mailbox.route('/<incomingInvoiceId>/delete', methods=['DELETE'])
+def delete_incoming_invoice(incomingInvoiceId):
+    if request.method == 'DELETE':
+        user_id = session.get('user_id')
+
+        if user_id == None:
+            return jsonify({'error': 'Invalid userId'}), 400
+        invoice = Invoice.query.filter_by(id=incomingInvoiceId).first()
+        if invoice == None:
+            return jsonify({'error': 'Invoice not found'}), 400
+        if invoice.sent_to_user_id != user_id:
+            return jsonify({'error': 'Invoice does not belong to you'}), 403
+        
+        com_report = CommunicationReport.filter_by(invoice_id=incomingInvoiceId).first()
+        if com_report:
+            db.session.delete(com_report)
+
+        db.session.delete(invoice)
+        db.session.commit()
+    return render_template('idk')
+
 
 # Helper function to check if a file is valid
 def allowed_file(filename):
