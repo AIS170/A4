@@ -247,7 +247,7 @@ def test_sending_invalid_file():
 #     assert response.status_code == 200
 
 # Test view mailbox with invalid userId
-# def test_mailbox_inavlid_user():
+# def test_mailbox_invalid_user():
 #     client = app.test_client()
 #     client.delete('/clear')
 #     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
@@ -259,3 +259,84 @@ def test_sending_invalid_file():
 #     client.get('/auth/logout', follow_redirects=True)
 #     response = client.get('/mailbox', follow_redirects=True)
 #     assert response.status_code == 400
+
+# # Test delete mail from mailbox
+# def test_incoming_invoice_delete():
+#     client = app.test_client()
+#     client.delete('/clear')
+#     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+#     client.get('/auth/logout', follow_redirects=True)
+#     client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+#     client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+
+#     with open('tests/data.xml', 'rb') as file:
+#         valid_file_content = BytesIO(file.read())
+#     valid_data = valid_sent_email_data2.copy()
+#     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+#     client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+#     client.get('/auth/logout', follow_redirects=True)
+#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+
+#     client.delete('/mailbox/<incomingInvoiceId>/delete', follow_redirects=True) # Don't have a way to retrieve the incomingInvoiceId
+
+# # Test delete mail from mailbox with invalid userId
+# def test_incoming_invoice_delete_invalid_user_id():
+#     client = app.test_client()
+#     client.delete('/clear')
+#     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+#     client.get('/auth/logout', follow_redirects=True)
+#     client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+#     client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+
+#     with open('tests/data.xml', 'rb') as file:
+#         valid_file_content = BytesIO(file.read())
+#     valid_data = valid_sent_email_data2.copy()
+#     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+#     client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+#     client.get('/auth/logout', follow_redirects=True)
+
+#     response = client.delete('/mailbox/<incomingInvoiceId>/delete', follow_redirects=True)
+#     assert response.status_code == 400
+#     message = json.loads(response.data)
+#     assert message['error'] == 'Invalid userId'
+
+# # Test delete mail from mailbox where invoice doesn't exist
+# def test_incoming_invoice_delete_invalid_user_id():
+#     client = app.test_client()
+#     client.delete('/clear')
+#     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+#     client.get('/auth/logout', follow_redirects=True)
+#     client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+#     client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+
+#     client.get('/auth/logout', follow_redirects=True)
+#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+
+#     response = client.delete('/mailbox/<incomingInvoiceId>/delete', follow_redirects=True)
+#     assert response.status_code == 400
+#     message = json.loads(response.data)
+#     assert message['error'] == 'Invoice not found'
+
+# # Test delete mail from mailbox where invoice doesn't belong to user
+# def test_incoming_invoice_delete_invalid_user_id():
+#     client = app.test_client()
+#     client.delete('/clear')
+#     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+#     client.get('/auth/logout', follow_redirects=True)
+#     client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+#     client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+
+#     with open('tests/data.xml', 'rb') as file:
+#         valid_file_content = BytesIO(file.read())
+#     valid_data = valid_sent_email_data2.copy()
+#     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+#     client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+
+#     response = client.delete('/mailbox/<incomingInvoiceId>/delete', follow_redirects=True)
+#     assert response.status_code == 403
+#     message = json.loads(response.data)
+#     assert message['error'] == 'Invoice does not belong to you'
