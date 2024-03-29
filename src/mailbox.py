@@ -100,4 +100,12 @@ def xml_to_dict(xml_content):
     root = ET.fromstring(xml_content)
     return {child.tag: child.text for child in root}
 
-    
+
+@mailbox.route('/<string:invoiceId>', methods=['GET'])
+def invoiceShow(invoiceId):
+    invoice = Invoice.query.get(invoiceId)
+    if invoice:
+        # Assuming you want to render a template with the details of the invoice
+        return render_template('invoice.html', invoice=invoice)
+    else:
+        return jsonify({'error': 'Invoice not found'}), 404
