@@ -23,7 +23,7 @@
                 {% for mail in received_mails %}
                     <li>
                         <strong>Subject:</strong> {{ mail.subject }} <br>
-                        <strong>Sender:</strong> {{ mail.sent_to_user_id}} <br>
+                        <strong>Sender:</strong> {{ mail.sent_to_user_mail}} <br>
                         <strong>Date Sent:</strong> {{ mail.date_sent }} <br>
                     </li>
                 {% endfor %}
