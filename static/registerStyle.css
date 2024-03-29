@@ -1,101 +1,102 @@
+@font-face {
+    font-family: "San Francisco";
+    font-weight: 400;
+    src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-regular-webfont.woff");
+  }
 
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 350px;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 20px;
-    position: relative;
-    width: 100%;
+body {
+    background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.5));
+    font-family: 'San Francisco', sans-serif; 
 }
 
-h1 {
-    font-size: 28px;
-    color: royalblue;
-    font-weight: 600;
-    letter-spacing: -1px;
-    position: relative;
-    display: flex;
-    padding-left: 30px;
-}
-
-h1::before,h1::after {
+.register-box {
     position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    border-radius: 50%;
-    left: 0px;
-    background-color: royalblue;
-}
-
-h1::before {
-    width: 18px;
-    height: 18px;
-    background-color: royalblue;
-}
-
-h1::after {
-    width: 18px;
-    height: 18px;
-    animation: pulse 1s linear infinite;
-}
-
-p, link {
-    color: rgba(88, 87, 87, 0.822);
-    font-size: 14px;
-}
-
-link {
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    padding: 40px;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.987);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0,0,0,.6);
+    border-radius: 10px;
     text-align: center;
 }
 
-link a {
-    color: royalblue;
-}
-
-link a:hover {
-    text-decoration: underline royalblue;
-}
-
-label {
+.register-box .user-box {
     position: relative;
 }
 
-input {
+.register-box .user-box input {
     width: 100%;
-    padding: 5px 5px 2px 10px;
-    outline: 0;
-    border: 1px solid rgba(105, 105, 105, 0.397);
-    border-radius: 10px;
-}
-
-
-button {
-    border: none;
-    outline: none;
-    background-color: royalblue;
-    padding: 10px;
-    border-radius: 10px;
-    color: #fff;
+    padding: 10px 0;
     font-size: 16px;
-    transform: .3s ease;
+    color: #fff;
+    margin-bottom: 30px;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    background: transparent;
 }
 
-button:hover {
-    background-color: rgb(56, 90, 194);
+.register-box .form-text h1{
+    color: aqua;
+    text-align: center;
 }
 
-@keyframes pulse {
-    from {
-        transform: scale(0.9);
-        opacity: 1;
-    }  
-    
-    to {
-        transform: scale(1.8);
-        opacity: 0;
-    }
+.register-box .form-text span {
+    color: #fff;
+    text-align: center;
+    display: block;
+    margin-top: -10px;
+    margin-bottom: 5px;
+}
+
+.register-box a {
+    color: rgb(0, 255, 0);
+}
+.register-box links {
+    color: rgb(0, 255, 0);
+}
+
+.register-box .user-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    pointer-events: none;
+    transition: .5s;
+}
+
+.register-box .user-box input:focus ~ label,
+.register-box .user-box input:valid ~ label {
+    top: -20px;
+    left: 0;
+    color: #bdb8b8;
+    font-size: 12px;
+}
+
+.register-box form button {
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    color: #ffffff;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin-top: -10px;
+    letter-spacing: 4px;
+    background: none;
+    border: none;
+    margin-bottom: 10px;
+}
+
+.register-box button:hover {
+    background: #03f40f;
+    color: #fff;
+    border-radius: 5px;
 }

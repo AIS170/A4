@@ -16,13 +16,27 @@ def mailBox():
     
     received_mails = Invoice.query.filter_by(sent_to_user_id=user_id_a).all()
 
+    formatted_mail = []
+    for mail in received_mails:
+        user = User.query.filter_by(id=mail.sent_to_user_id).first()
+        new_mail = {
+            'id': mail.id,
+            'subject': mail.subject,
+            'body': mail.body,
+            'date_sent': mail.date_sent,
+            'user_id': mail.user_id,
+            'is_incoming': mail.is_incoming,
+            'sent_to_user_mail': user.email
+        }
+        formatted_mail.append(new_mail)
+
     for i in received_mails:
         report_details = "Invoice Sent Details:\nSubject: {}\nRecipient: \nSender: {}\nDate Sent: {}".format(i.subject, i.sent_to_user_id, user_id_a, datetime.now())
         new_comm_report = CommunicationReport(id=os.urandom(24).hex(), invoice_id=i.id, details=report_details, date_reported=datetime.now())
         db.session.add(new_comm_report)
         db.session.commit()
     
-    return render_template('mailbox.html', received_mails=received_mails)
+    return render_template('mailbox.html', received_mails=formatted_mail)
 
 
 # @mailbox.route('/<string:invoiceId>', methods=['GET'])
