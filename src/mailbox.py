@@ -95,7 +95,7 @@ def delete_incoming_invoice(incomingInvoiceId):
 
         db.session.delete(invoice)
         db.session.commit()
-    return render_template('idk')
+    return redirect(url_for('mailbox_route.mailBox'))
 
 
 # Helper function to check if a file is valid
