@@ -6,7 +6,8 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #ededed;
+    background-image: url('images/stock.png');
+    background-size: 100vw;
     color: #000000; 
     align-items: center;
     display: grid;
@@ -20,23 +21,219 @@ body {
 }
 
 header {
-    background-color: #111010;
+    background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.5));
     color: #fff;
     text-align: center;
-    padding: 30px 0;
+    padding: 0px 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
 }
+
 
 .header-container {
-    text-align: center;
+    justify-content: center;
+    display: flex;
 }
 
-/* Footer styles */
+.logo {
+    float: left;;
+    margin-left: 20px;
+    width: 70px;
+}
+
+.nav-container {
+    margin-left: auto;
+    margin-top: 10px;
+}
+
+.login-button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 28px;
+    padding: 10px 20px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.about-button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 28px;
+    padding: 10px 20px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.about-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.login-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.text-elements {
+    text-align: center;
+    color: #fff;
+    font-size: 70px;
+    margin-top: 120px;
+}
+
+.start {
+    text-align: center;
+    font-size: 30px;
+    margin-top: 180px;
+    position: relative; 
+}
+
+.start button {
+    background: transparent;
+    padding: 5px 15px;
+    font-size: 24px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid rgb(146, 163, 255);
+    border-radius: 25px;
+    outline: none;
+    overflow: hidden;
+    color: rgb(255, 255, 255);
+    transition: color 0.3s 0.1s ease-out;
+    text-align: center;
+    position: relative; 
+    z-index: 1; 
+}
+
+.start button::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    content: '';
+    border-radius: 50%;
+    display: block;
+    width: 20em;
+    height: 20em;
+    left: -5em;
+    text-align: center;
+    transition: box-shadow 0.5s ease-out;
+    z-index: -1;
+}
+
+.start button:hover {
+    color: #fff;
+    border: 1px solid rgb(0, 0, 0);
+}
+
+.start button:hover::before {
+    box-shadow: inset 0 0 0 10em rgb(77, 107, 240);
+}
+
+
+
+.hidden {
+    display: none;
+}
+
+ .content-container {
+    position: relative;
+    max-height: 5000px;
+    overflow-y: auto;
+    margin-top: 50px;
+}
+
+#authSection {
+    margin-top: 500px;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 500px;
+} 
+
+
+.register-button {
+    background: transparent;
+    padding: 5px 15px;
+    font-size: 24px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid rgb(146, 163, 255);
+    border-radius: 25px;
+    outline: none;
+    overflow: hidden;
+    color: rgb(255, 255, 255);
+    transition: color 0.3s 0.1s ease-out;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.register-button::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    content: '';
+    border-radius: 50%;
+    display: block;
+    width: 20em;
+    height: 20em;
+    left: -5em;
+    text-align: center;
+    transition: box-shadow 0.5s ease-out;
+    z-index: -1;
+}
+
+
+.register-button:hover {
+    color: #fff;
+    border: 1px solid rgb(0, 0, 0);
+}
+
+
+.register-button:hover::before {
+    box-shadow: inset 0 0 0 10em rgb(77, 107, 240);
+}
+
 .footer {
-    background-color:#000000;
+    background-color: rgba(0, 0, 0, 0.9);
     color: white;
     padding: 10px;
-    text-align: center;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-left {
+    text-align: left; /* Align the copyright message to the left */
+}
+
+.logo-container {
+    text-align: center; /* Center the logo */
+    flex: 1; /* Take up remaining space */
+}
+
+.logo {
+    max-width: 100px; /* Adjust the size of the logo as needed */
+    display: inline-block; /* Ensure the logo is treated as a block element */
+}
+
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
