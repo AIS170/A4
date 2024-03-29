@@ -7,27 +7,35 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='mailboxStyle.css') }}">
 </head>
 <body>
+
     <div class="sidebar">
         <a href="{{ url_for('authenticate_user.signup') }}">Register</a>
         <a href="{{ url_for('authenticate_user.login') }}">Login</a>
         <a href="{{ url_for('about') }}">About Us</a>
     </div>
+
     <div class="header">
         <h1>Welcome to your Mailbox!</h1>
     </div>
+
     <div class="content">
         <form action="{{ url_for('mailbox_route.mailBox') }}" method="get"></form>
+
         <div><a href="{{url_for('mailbox_route.sending')}}">Send</a></div>
+
         {% if received_mails %}
-            <ul>
+            <div class="mail-list">
                 {% for mail in received_mails %}
-                    <li>
-                        <strong>Subject:</strong> <a href="{{url_for('mailbox_route.invoiceShow', invoiceId=mail.id)}}">{{ mail.subject }}</a> <br>
-                        <strong>Sender:</strong> {{ mail.sent_to_user_mail}} <br>
-                        <strong>Date Sent:</strong> {{ mail.date_sent }} <br>
-                    </li>
+                    <div class="mail-item">
+                        <div class="sender">{{ mail.sent_to_user_mail }}</div>
+                        <div class="subject"><a href="{{ url_for('mailbox_route.invoiceShow', invoiceId=mail.id)}}">{{ mail.subject }}</a></div>
+                        <div class="date-sent">{{ mail.date_sent.strftime('%H:%M') if mail.date_sent.date() == current_datetime.date() else mail.date_sent.strftime('%Y-%m-%d') }}</div>
+                    </div>
+            </div>
+            
                 {% endfor %}
-            </ul>
+    </div>
+
         {% else %}
             <p>Mailbox empty ;.;</p>
         {% endif %}

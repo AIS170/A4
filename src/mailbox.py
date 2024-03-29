@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 from .database import db
 from xml.etree import ElementTree as ET
+from datetime import datetime
 
 mailbox = Blueprint('mailbox_route', __name__)
 # View all received/incoming e-invoices for specified user through userId. Returns senderAddress, timeSent and invoiceSubject
@@ -15,6 +16,8 @@ def mailBox():
         return jsonify({'error': 'Invalid userId'}), 400
     
     received_mails = Invoice.query.filter_by(sent_to_user_id=user_id_a).all()
+
+    current_datetime = datetime.now()
 
     formatted_mail = []
     for mail in received_mails:
@@ -36,7 +39,7 @@ def mailBox():
         db.session.add(new_comm_report)
         db.session.commit()
     
-    return render_template('mailbox.html', received_mails=formatted_mail)
+    return render_template('mailbox.html', received_mails=formatted_mail, current_datetime=current_datetime)
 
 
 # @mailbox.route('/<string:invoiceId>', methods=['GET'])
@@ -109,3 +112,22 @@ def invoiceShow(invoiceId):
         return render_template('invoice.html', invoice=invoice)
     else:
         return jsonify({'error': 'Invoice not found'}), 404
+    
+
+@mailbox.route('/<string:invoiceId>/delete', methods=['DELETE'])
+def delete_invoice(invoiceId):
+    user_id_a = session.get('user_id')
+    invoice = Invoice.query.get(invoiceId)
+    # checks here
+    if not user_id_a:
+        return jsonify({'error': 'Invalid userId'}), 400
+    
+    if not invoice:
+        return jsonify({'error': 'Invoice does not exist'}), 404
+    
+    if invoice.user_id != user_id_a:
+        return jsonify({'error': 'You are not authorized to delete this invoice'}), 403
+
+    db.session.delete(invoice)
+    db.session.commit()
+    return redirect(url_for('mailbox_route.mailBox'))
