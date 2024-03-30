@@ -3,6 +3,7 @@ from src.auth import authenticateUser
 from src.database import db
 from src.mailbox import mailbox
 from src.clear import clear_
+from src.reports import reports
 from os import environ
 from flask_cors import CORS
 from os import path
@@ -41,6 +42,8 @@ app.register_blueprint(authenticateUser, url_prefix='/auth/')
 app.register_blueprint(mailbox, url_prefix='/mailbox/')  
 
 app.register_blueprint(clear_, url_prefix='/clear')
+
+app.register_blueprint(reports, url_prefix='/reports/')
 
 if __name__ == '__main__':
     with app.app_context():

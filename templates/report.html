@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communication Reports</title>
+</head>
+<body>
+    <h1>Communication Reports</h1>
+    <table>
+        <thead>
+            <tr>
+                
+                <th>Details</th>
+                
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in formatted_reports %}
+            <tr>
+                
+                <td>{{ report.details }}</td>
+                
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

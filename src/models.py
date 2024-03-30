@@ -31,9 +31,11 @@ class CommunicationReport(db.Model):
 
     id = db.Column(db.String(80), unique=True, primary_key=True)
     invoice_id = db.Column(db.String(80), db.ForeignKey('invoice.id'))
+    user_id = db.Column(db.String(80), db.ForeignKey('user.id'))
     details = db.Column(db.Text, nullable=False)
     date_reported = db.Column(db.DateTime, nullable=False)
     invoice = relationship("Invoice", back_populates="communication_report")
+    user = relationship("User")
 
 # Define relationships after model definitions
 User.sent_invoices = relationship('Invoice', foreign_keys=[Invoice.sent_to_user_id], backref="sender")
