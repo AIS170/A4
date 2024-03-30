@@ -21,7 +21,7 @@ def mailBox():
 
     formatted_mail = []
     for mail in received_mails:
-        user = User.query.filter_by(id=mail.sent_to_user_id).first()
+        user = User.query.filter_by(id=mail.user_id).first()
         new_mail = {
             'id': mail.id,
             'subject': mail.subject,
@@ -29,7 +29,7 @@ def mailBox():
             'date_sent': mail.date_sent,
             'user_id': mail.user_id,
             'is_incoming': mail.is_incoming,
-            'sent_to_user_mail': user.email
+            'sender_mail': user.email
         }
         formatted_mail.append(new_mail)
 
