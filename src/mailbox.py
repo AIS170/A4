@@ -33,9 +33,12 @@ def mailBox():
         }
         formatted_mail.append(new_mail)
 
+
     for i in received_mails:
-        report_details = "Invoice Sent Details:\nSubject: {}\nRecipient: \nSender: {}\nDate Sent: {}".format(i.subject, i.sent_to_user_id, user_id_a, datetime.now())
-        new_comm_report = CommunicationReport(id=os.urandom(24).hex(), invoice_id=i.id, details=report_details, date_reported=datetime.now())
+        sender = User.query.filter_by(id=i.user_id).first()
+        recepient = User.query.filter_by(id=i.sent_to_user_id).first()
+        report_details = "Invoice Sent Details:\nSubject: {}\nRecipient: {}\nSender: {}\nDate Sent: {}".format(i.subject, recepient.email, sender.email, datetime.now())
+        new_comm_report = CommunicationReport(id=os.urandom(24).hex(), invoice_id=i.id, user_id=user_id_a, details=report_details, date_reported=datetime.now())
         db.session.add(new_comm_report)
         db.session.commit()
     
@@ -64,6 +67,7 @@ def sending():
         invoice_subject = request.form.get('invoice_subject')
         # invoice_body = request.form.get('invoice_body')   
         recipient = User.query.filter_by(email=recipient_address).first()
+        sender = User.query.filter_by(id=user_id_a).first()
         if recipient == None:
             return jsonify({'error': 'Recipient does not exist'}), 404
         if invoice_subject == '':
@@ -84,8 +88,8 @@ def sending():
             db.session.add(new_mail)
             db.session.commit()
             
-            report_details = "Invoice Sent Details:\nSubject: {}\nRecipient: \nSender: {}\nDate Sent: {}".format(invoice_subject, recipient_address, user_id_a, datetime.now())
-            new_comm_report = CommunicationReport(id=os.urandom(24).hex(), invoice_id=new_mail.id, details=report_details, date_reported=datetime.now())
+            report_details = "Invoice Sent Details:\nSubject: {}\nRecipient: {}\nSender: {}\nDate Sent: {}".format(invoice_subject, recipient_address, sender.email, datetime.now())
+            new_comm_report = CommunicationReport(id=os.urandom(24).hex(), invoice_id=new_mail.id, user_id=user_id_a, details=report_details, date_reported=datetime.now())
             db.session.add(new_comm_report)
             db.session.commit()
             return redirect(url_for('mailbox_route.mailBox'))

@@ -7,7 +7,7 @@ from .database import db
 from xml.etree import ElementTree as ET
 from datetime import datetime
 
-reports = Blueprint('report_mailbox', __name__)
+reports = Blueprint('reports', __name__)
 
 @reports.route('', methods=['GET'])
 def reportBox():
@@ -25,4 +25,4 @@ def reportBox():
             'invoice_subject': invoice.subject if invoice else None
         }
         formatted_reports.append(new_report)
-    return formatted_reports
+    return render_template('report.html', formatted_reports=formatted_reports)
