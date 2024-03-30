@@ -5,36 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mailbox</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='mailboxStyle.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
+
     <div class="sidebar">
         <a href="{{ url_for('authenticate_user.signup') }}">Register</a>
         <a href="{{ url_for('authenticate_user.login') }}">Login</a>
         <a href="{{ url_for('about') }}">About Us</a>
     </div>
+
     <div class="header">
         <h1>Welcome to your Mailbox!</h1>
+        <form id="search-form" method="post" action="{{ url_for('mailbox_route.lookup') }}">
+            <input type="text" id="searchInput" placeholder="Search.." name="lookupString">
+            <button type="submit">Search</button>
+        </form>        
     </div>
+
     <div class="content">
         <form action="{{ url_for('mailbox_route.mailBox') }}" method="get"></form>
+
         <div><a href="{{url_for('mailbox_route.sending')}}">Send</a></div>
+
         {% if received_mails %}
-            <ul>
+            <div class="mail-list">
                 {% for mail in received_mails %}
-                    <li>
-                        <strong>Subject:</strong> <a href="{{url_for('mailbox_route.invoiceShow', invoiceId=mail.id)}}">{{ mail.subject }}</a> <br>
-                        <strong>Sender:</strong> {{ mail.sent_to_user_mail}} <br>
-                        <strong>Date Sent:</strong> {{ mail.date_sent }} <br>
-                    </li>
+                    <div class="mail-item">
+                        <div class="sender">{{ mail.sent_to_user_mail }}</div>
+                        <div class="subject"><a href="{{ url_for('mailbox_route.invoiceShow', invoiceId=mail.id)}}">{{ mail.subject }}</a></div>
+                        <div class="date-sent">{{ mail.date_sent.strftime('%H:%M') if mail.date_sent.date() == current_datetime.date() else mail.date_sent.strftime('%Y-%m-%d') }}</div>
+                        <div class="delete-icon">
+                            <a href="#" onclick="event.preventDefault(); deleteInvoice('{{ mail.id }}');"><i class="bi bi-trash3"></i></a>
+                        </div>
+                    </div>
                 {% endfor %}
-            </ul>
+    </div>
+
         {% else %}
             <p>Mailbox empty ;.;</p>
         {% endif %}
+        
+        {% if search_results %}
+        <div class="mail-list">
+            {% for invoice in search_results %}
+                <div class="mail-item">
+                    <div class="sender">{{ invoice.sender }}</div>
+                    <div class="subject"><a href="{{ url_for('mailbox_route.invoiceShow', invoiceId=invoice.id)}}">{{ invoice.subject }}</a></div>
+                    <div class="date-sent">{{ invoice.date_sent }}</div>
+                    
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No search results found.</p>
+        {% endif %}
+
         <div><a href="{{url_for('authenticate_user.userLogout')}}">Log out</a></div>
     </div>
     <footer class="footer">
         <p>&copy; 2024 A4 E-Invoicing Services. All rights reserved.</p>
     </footer>
+    <script>
+        function deleteInvoice(invoiceId) {
+            fetch(`/mailbox/${invoiceId}/delete`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url; // Follow the redirect URL
+                } else if (response.ok) {
+                    window.location.reload(); // Or redirect to a specific URL as needed
+                } else {
+                    throw new Error('Failed to delete the invoice');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+    <script>
+        document.getElementById('search-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+            var lookupString = document.getElementById('searchInput').value;
+            fetch(`/mailbox/lookup?lookupString=${encodeURIComponent(lookupString)}`) // Encode the lookupString to handle special characters
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data as needed
+                    console.log(data);
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>    
+    
 </body>
 </html>
