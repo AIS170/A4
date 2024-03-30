@@ -106,6 +106,7 @@ def xml_to_dict(xml_content):
 
 @mailbox.route('/<string:invoiceId>', methods=['GET'])
 def invoiceShow(invoiceId):
+    user_id_a = session.get('user_id')
     invoice = Invoice.query.get(invoiceId)
     if invoice:
         # Assuming you want to render a template with the details of the invoice
@@ -114,20 +115,72 @@ def invoiceShow(invoiceId):
         return jsonify({'error': 'Invoice not found'}), 404
     
 
-@mailbox.route('/<string:invoiceId>/delete', methods=['DELETE'])
+@mailbox.route('/<string:invoiceId>/delete', methods=['GET', 'DELETE'])
 def delete_invoice(invoiceId):
-    user_id_a = session.get('user_id')
-    invoice = Invoice.query.get(invoiceId)
-    # checks here
-    if not user_id_a:
-        return jsonify({'error': 'Invalid userId'}), 400
-    
-    if not invoice:
-        return jsonify({'error': 'Invoice does not exist'}), 404
-    
-    if invoice.user_id != user_id_a:
-        return jsonify({'error': 'You are not authorized to delete this invoice'}), 403
+    if request.method == 'DELETE':
+        user_id_a = session.get('user_id')
+        invoice = Invoice.query.get(invoiceId)
+        
+        if not user_id_a:
+            return jsonify({'error': 'Invalid userId'}), 400
+        
+        if not invoice:
+            return jsonify({'error': 'Invoice does not exist'}), 404
+        
+        if invoice.user_id != user_id_a:
+            return jsonify({'error': 'You are not authorized to delete this invoice'}), 403
 
-    db.session.delete(invoice)
-    db.session.commit()
-    return redirect(url_for('mailbox_route.mailBox'))
+        db.session.delete(invoice)
+        db.session.commit()
+        return redirect(url_for('mailbox_route.mailBox'))
+    else:
+        return jsonify({'error': 'Method Not Allowed'}), 405
+
+@mailbox.route('/lookup', methods=['GET', 'POST'])
+def lookup():
+    user_id_a = session.get('user_id')
+    
+    if request.method == 'POST':
+        lookup_string = request.form.get('lookupString')
+        
+        if lookup_string:
+            filtered_invoices = Invoice.query.filter(
+                Invoice.subject.contains(lookup_string)
+            ).all()
+            invoices_data = []
+            for invoice in filtered_invoices:
+                invoice_data = {
+                    'id': invoice.id,
+                    'subject': invoice.subject,
+                    'body': invoice.body,
+                    'date_sent': invoice.date_sent.strftime('%Y-%m-%d %H:%M:%S'),
+                    # Add other attributes as needed
+                }
+                invoices_data.append(invoice_data)
+            return jsonify({'invoices': invoices_data})
+        else:
+            return jsonify({'error': 'No lookup string provided'}), 400
+            
+    elif request.method == 'GET':
+        lookup_string = request.args.get('lookupString')
+        
+        if lookup_string:
+            filtered_invoices = Invoice.query.filter(
+                Invoice.subject.contains(lookup_string)
+            ).all()
+            invoices_data = []
+            for invoice in filtered_invoices:
+                invoice_data = {
+                    'id': invoice.id,
+                    'subject': invoice.subject,
+                    'body': invoice.body,
+                    'date_sent': invoice.date_sent.strftime('%Y-%m-%d %H:%M:%S'),
+                    # Add other attributes as needed
+                }
+                invoices_data.append(invoice_data)
+            return jsonify({'invoices': invoices_data})
+        else:
+            return jsonify({'error': 'No lookup string provided'}), 400
+            
+    else:
+        return jsonify({'error': 'Method Not Allowed'}), 405

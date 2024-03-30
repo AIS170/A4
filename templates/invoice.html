@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+</head>
+<body>
+    <h1>Invoice Details</h1>
+    <p><strong>ID:</strong> {{ invoice.id }}</p>
+    <p><strong>Subject:</strong> {{ invoice.subject }}</p>
+    <p><strong>Date Sent:</strong> {{ invoice.date_sent }}</p>
+    <p><strong>Body:</strong></p>
+    <pre>{{ invoice.body }}</pre>
+    
+    <a href="#" id="downloadButton">Download JSON</a>
+    <button id="downloadPDF">Download PDF</button>
+    <button id="downloadHTML">Download HTML</button>
+
+    <script>
+        // Get the invoice data
+        var invoiceData = {
+            id: "{{ invoice.id }}",
+            subject: "{{ invoice.subject }}",
+            date_sent: "{{ invoice.date_sent }}",
+            body: "{{ invoice.body }}"
+        };
+
+        // Function to download JSON
+        function downloadJSON() {
+            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(invoiceData));
+            var downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "invoice.json");
+            document.body.appendChild(downloadAnchorNode); // required for firefox
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        // Event listener for JSON download button
+        document.getElementById("downloadButton").addEventListener("click", downloadJSON, false);
+
+        // Function to generate and download PDF
+        function downloadPDF() {
+            var doc = new jsPDF();
+            var text = JSON.stringify(invoiceData, null, 4);
+            doc.text(text, 10, 10);
+            doc.save('invoice.pdf');
+        }
+
+        // Event listener for PDF download button
+        document.getElementById("downloadPDF").addEventListener("click", downloadPDF, false);
+
+        // Function to generate and download HTML
+        function downloadHTML() {
+            var htmlContent = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Invoice</title>
+                </head>
+                <body>
+                    <h1>Invoice Details</h1>
+                    <p><strong>ID:</strong> ${invoiceData.id}</p>
+                    <p><strong>Subject:</strong> ${invoiceData.subject}</p>
+                    <p><strong>Date Sent:</strong> ${invoiceData.date_sent}</p>
+                    <p><strong>Body:</strong></p>
+                    <pre>${invoiceData.body}</pre>
+                </body>
+                </html>`;
+
+            var blob = new Blob([htmlContent], { type: 'text/html' });
+            var downloadLink = document.createElement('a');
+            downloadLink.href = window.URL.createObjectURL(blob);
+            downloadLink.download = 'invoice.html';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+
+        // Event listener for HTML download button
+        document.getElementById("downloadHTML").addEventListener("click", downloadHTML, false);
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.3/jspdf.umd.min.js"></script>
+</body>
+</html>
