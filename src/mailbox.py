@@ -131,8 +131,6 @@ def delete_invoice(invoiceId):
         if not invoice:
             return jsonify({'error': 'Invoice does not exist'}), 404
         
-        if invoice.user_id != user_id_a:
-            return jsonify({'error': 'You are not authorized to delete this invoice'}), 403
 
         db.session.delete(invoice)
         db.session.commit()
