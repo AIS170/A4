@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.3/jspdf.umd.min.js"></script>
 </head>
 <body>
     <h1>Invoice Details</h1>
@@ -40,7 +41,7 @@
 
         // Function to generate and download PDF
         function downloadPDF() {
-            var pdf = new jsPDF();
+            var pdf = new window.jspdf.jsPDF(); // Initialize jsPDF
             pdf.text(`Invoice Details\n\nID: ${invoiceData.id}\nSubject: ${invoiceData.subject}\nDate Sent: ${invoiceData.date_sent}\n\nBody:\n${invoiceData.body}`, 10, 10);
             pdf.save("invoice.pdf");
         }
@@ -79,6 +80,5 @@
         document.getElementById("downloadPDF").addEventListener("click", downloadPDF, false);
         document.getElementById("downloadHTML").addEventListener("click", downloadHTML, false);
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.3/jspdf.umd.min.js"></script>
 </body>
 </html>
