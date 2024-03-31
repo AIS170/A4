@@ -29,6 +29,8 @@ def signup():
             return jsonify({'error': 'Last name cannot be empty'}), 400
         elif not validEmail(email):
             return jsonify({'error': 'Email must be of a valid format'}), 400
+        elif User.query.filter_by(email=email).first():
+            return jsonify({'error': 'Email is already in use'}), 400
         elif len(password) < 8:
             return jsonify({'error': 'Password should be atleast 8 characters'}), 400
         elif len(password) > 15:
@@ -45,7 +47,7 @@ def signup():
     return render_template('register.html')
 
 # Helper function to check if an email is of valid format
-def validEmail(email: str) -> bool:
+def validEmail(email):
     regexPattern = r'^[a-zA-Z0-9._]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$'
     if re.match(regexPattern, email):
         return True
