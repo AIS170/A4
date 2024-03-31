@@ -137,4 +137,3 @@ def delete_invoice(invoiceId):
         return redirect(url_for('mailbox_route.mailBox'))
     else:
         return jsonify({'error': 'Method Not Allowed'}), 405
-
