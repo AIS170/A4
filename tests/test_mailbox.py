@@ -315,3 +315,92 @@ def test_mailbox_inavlid_user():
     client.get('/auth/logout', follow_redirects=True)
     response = client.get('/mailbox', follow_redirects=True)
     assert response.status_code == 400
+
+# ================================================
+# ==== Test Cases for the Invoice Show route =====
+# ================================================
+    
+# Test successfully view invoice after sending it
+def test_invoice_show_success():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    valid_data = valid_sent_email_data2.copy()
+    valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+    client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+
+    with app.app_context():
+        mail = Invoice.query.filter_by(subject=valid_sent_email_data2['invoice_subject']).first()
+
+    response = client.get(f'/mailbox/{mail.id}')
+    assert response.status_code == 200
+
+# Test view invoice when not logged in
+def test_invoice_show_invalid_user():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    valid_data = valid_sent_email_data2.copy()
+    valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+    client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+
+    with app.app_context():
+        mail = Invoice.query.filter_by(subject=valid_sent_email_data2['invoice_subject']).first()
+
+    response = client.get(f'/mailbox/{mail.id}')
+    assert response.status_code == 400
+    message = json.loads(response.data)
+    assert message['error'] == 'Invalid userId'
+
+# Test view non existent invoice
+def test_invoice_show_invalid_invoice():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+
+    response = client.get(f'/mailbox/{'non_existent_id'}')
+    assert response.status_code == 400
+    message = json.loads(response.data)
+    assert message['error'] == 'Invoice not found'
+
+# # Test view invoice that doesn't belong to current user
+# def test_invoice_show_invalid_user():
+#     client = app.test_client()
+#     client.delete('/clear')
+#     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+#     client.get('/auth/logout', follow_redirects=True)
+#     client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+#     client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+
+#     with open('tests/data.xml', 'rb') as file:
+#         valid_file_content = BytesIO(file.read())
+#     valid_data = valid_sent_email_data2.copy()
+#     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+#     client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+
+#     with app.app_context():
+#         mail = Invoice.query.filter_by(subject=valid_sent_email_data2['invoice_subject']).first()
+
+#     response = client.get(f'/mailbox/{mail.id}')
+#     assert response.status_code == 401
+#     message = json.loads(response.data)
+#     assert message['error'] == 'You do not own this invoice'
