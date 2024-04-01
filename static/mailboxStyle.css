@@ -6,11 +6,11 @@ body {
 
 .sidebar {
     height: 100%;
-    width: 200px;
+    width: 170px;
     position: fixed;
     top: 0;
     left: 0;
-    background-color: #ddb2f1;
+    background-color: #6ac8f3;
     padding-top: 20px;
 }
 

@@ -4,16 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Page</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='aboutStyle.css') }}">
 </head>
 <body>
     <header>
-        <h1>About E-Invoicing</h1>
+        <div class="header-container">
+            <a href="{{ url_for('admin')}}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
+            </a>
+            <nav class="nav-container">
+                <ul>
+                    <li>
+                        <a href="{{ url_for('authenticate_user.login') }}" class="login-button">Login</a>
+                        <a href="{{ url_for('about') }}" class="about-button">About Us</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </header>
-
+    
     <main>
         <section class="team-info">
-            <h2>Our Team (Team A4)</h2>
+            <h2>Our Team(Team A4)</h2>
             <ul>
                 <li>Rakshil Mali</li>
                 <li>Anuj Inder Singh</li>
@@ -33,13 +46,24 @@
         </section>
     </main>
 
-    <footer>
-        <div><a href="{{url_for('home')}}">
-            <button>Return home (you will be loggged out)</button>
-        </a></div>
-        <div><a href="{{url_for('mailbox_route.mailBox')}}">
-            <button>Return mailbox</button>
-        </a></div>
+    <footer class="footer">
+        <div class="footer-left">
+            <p>&copy; 2024 A4 E-Invoicing Services. All rights reserved.</p>
+        </div>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
+        </div>
+        <phone>
+            <p><i class="bi bi-telephone"></i><a href="tel:1300864679">1300 864 679</a></p>
+        </phone>
+        <mail>
+            <p><i class="bi bi-envelope"><a href="mailto:anujindersingh@gmail.com">a4@a4help.com</a></i></p>
+        </mail>
+        <location>
+            <p><i class="bi bi-geo-alt"></i><a href="https://www.google.com/maps?q=37.243165448876255,-115.82409235658486">A4 Headquarters</a></p>
+        </location>
     </footer>
+    
+
 </body>
 </html>

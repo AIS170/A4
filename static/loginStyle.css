@@ -40,8 +40,9 @@ body {
 }
 
 .login-box .form-text h1{
-    color: rgb(0, 255, 0);
+    color: rgb(0, 255, 255);
     text-align: center;
+    margin-top: 5px;
 }
 
 .login-box a {

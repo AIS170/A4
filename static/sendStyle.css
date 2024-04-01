@@ -1,0 +1,100 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: rgba(255, 255, 255, 1);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 1);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 48px 35px -48px rgba(0,0,0,0.1);
+}
+
+.custom-file-upload {
+    position: relative;
+    overflow: hidden;
+    height: 200px;
+    width: 300px;
+    border: 2px dashed #cacaca;
+    padding: 1.5rem;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.custom-file-upload input[type=file] {
+    display: none; /* Hide the file input completely */
+}
+
+.icon {
+    margin-bottom: 10px;
+}
+
+.icon i {
+    font-size: 3rem;
+}
+
+.text {
+    font-size: 1rem;
+    font-weight: 400;
+    color: rgba(75, 85, 99, 1);
+}
+
+input[type=email],
+input[type=text] {
+    margin-bottom: 10px;
+    margin-top: -0px; /* Move recipient address and subject up */
+}
+
+label[for=recipient_address],
+label[for=invoice_subject] {
+    margin-top: 0px; /* Move labels up to align with input boxes */
+}
+
+button[type=submit] {
+    margin-top: 10px; /* Move send button below */
+    padding: 15px 30px; /* Increase button size */
+    font-size: 1.2rem; /* Increase button font size */
+
+}
+
+button {
+    display: flex;
+    height: 3em;
+    width: 100px;
+    align-items: center;
+    justify-content: center;
+    background-color: #007bff;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    transition: all 0.2s linear;
+    cursor: pointer;
+    border: none;
+    background: #007bff;
+}
+
+button span {
+    color: #ffffff;
+}
+
+button:hover {
+    box-shadow: 9px 9px 33px #d1d1d1, -9px -9px 33px #ffffff;
+    transform: translateY(-2px);
+}
+
+label {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
