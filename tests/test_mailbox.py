@@ -338,10 +338,12 @@ def test_invoice_show_success():
     client.get('/auth/logout', follow_redirects=True)
     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
 
+    mail = None
     with app.app_context():
-        mail = Invoice.query.filter_by(subject=valid_sent_email_data2['invoice_subject']).first()
+        user = User.query.filter_by(email=valid_registration_data1['email']).first()
+        mail = Invoice.query.filter_by(sent_to_user_id=user.id).first()
 
-    response = client.get(f'/mailbox/{mail.id}')
+    response = client.get('/mailbox/{}'.format(mail.id), follow_redirects=True)
     assert response.status_code == 200
 
 # Test view invoice when not logged in
@@ -361,10 +363,12 @@ def test_invoice_show_invalid_user():
     client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
     client.get('/auth/logout', follow_redirects=True)
 
+    mail = None
     with app.app_context():
-        mail = Invoice.query.filter_by(subject=valid_sent_email_data2['invoice_subject']).first()
+        user = User.query.filter_by(email=valid_registration_data1['email']).first()
+        mail = Invoice.query.filter_by(sent_to_user_id=user.id).first()
 
-    response = client.get(f'/mailbox/{mail.id}')
+    response = client.get('/mailbox/{}'.format(mail.id), follow_redirects=True)
     assert response.status_code == 400
     message = json.loads(response.data)
     assert message['error'] == 'Invalid userId'
@@ -376,8 +380,8 @@ def test_invoice_show_invalid_invoice():
     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
 
-    response = client.get(f'/mailbox/{'non_existent_id'}')
-    assert response.status_code == 400
+    response = client.get('/mailbox/{}'.format("non_existent_id"), follow_redirects=True)
+    assert response.status_code == 404
     message = json.loads(response.data)
     assert message['error'] == 'Invoice not found'
 
