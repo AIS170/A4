@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User details</title>
+</head>
+<body>
+    <h1>User details</h1>
+    <ul>
+        <li><strong>First Name:</strong> {{ user.first_name }}</li>
+        <li><strong>Last Name:</strong> {{ user.last_name }}</li>
+        <li><strong>Email:</strong> {{ user.email }}</li>
+        <li><strong>Password:</strong> 
+            <span id="passwordField">*********</span> <!-- Password is initially hidden -->
+            <button onclick="togglePasswordVisibility()">Show/Hide</button>
+        </li>
+    </ul>
+
+
+    <form id="changeEmailForm" onsubmit="event.preventDefault(); changeEmail()">
+        <label for="newEmail">New Email Address:</label>
+        <input type="email" id="newEmail" name="new_email" required>
+        <button type="submit">Change Email</button>
+    </form>
+
+    <div class="password-change">
+        <form id="changePasswordForm" onsubmit="event.preventDefault(); changePassword()">
+            <label for="newPassword">New Password:</label>
+            <input type="password" id="newPassword" name="new_password" required>
+            <button type="submit">Change Password</button>
+        </form>
+    </div>
+
+    <div class="sidebar">
+
+        <a href="{{ url_for('mailbox_route.mailBox') }}">Return to mailbox</a>
+        <a href="{{ url_for('authenticate_user.userLogout') }}" >Log out</a>
+    </div>
+
+    <script>
+        function togglePasswordVisibility() {
+            var passwordField = document.getElementById("passwordField");
+            var button = document.querySelector("button");
+            if (passwordField.getAttribute("data-visible") === "true") {
+                passwordField.textContent = "*********"; // Hide the password
+                passwordField.setAttribute("data-visible", "false");
+                button.textContent = "Show";
+            } else {
+                passwordField.textContent = "{{ user.password }}"; // Show the password
+                passwordField.setAttribute("data-visible", "true");
+                button.textContent = "Hide";
+            }
+        }
+
+        function changeEmail() {
+        var form = document.getElementById("changeEmailForm");
+        var formData = new FormData(form);
+
+        fetch("{{ url_for('user_route.email') }}", {
+            method: 'PUT',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                // Handle success
+                console.log("Email changed successfully");
+            } else {
+                // Handle error
+                console.error("Failed to change email");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    }
+
+    function changePassword() {
+            var form = document.getElementById("changePasswordForm");
+            var formData = new FormData(form);
+
+            fetch("{{ url_for('user_route.password') }}", {
+                method: 'PUT',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Handle success
+                    console.log("Password changed successfully");
+                } else {
+                    // Handle error
+                    console.error("Failed to change password");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+    </script>
+</body>
+</html>
