@@ -5,16 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <title>Send Invoice</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='sendStyle.css') }}">
 </head>
 <body>
-    <form action="{{ url_for('mailbox_route.sending') }}" method="post" enctype="multipart/form-data">
+    <form id="invoiceForm" action="{{ url_for('mailbox_route.sending') }}" method="post" enctype="multipart/form-data">
         <label for="recipient_address">Recipient Address:</label>
         <input type="email" id="recipient_address" name="recipient_address" required>
-        <button type="submit">Send</button>
-        <div><label for="invoice_subject">Subject:</label>
-        <input type="text" id="invoice_subject" name="invoice_subject" required></div>
-        <label for="invoice_file">Invoice Attatchement:</label>
-        <input type="file" id="invoice_file" name="invoice_file" required></div>
+        <label for="invoice_subject">Subject:</label>
+        <input type="text" id="invoice_subject" name="invoice_subject" required>
+        <label for="invoice_file">Invoice Attachment:</label>
+        <div class="custom-file-upload">
+            <div class="icon" onclick="document.getElementById('file').click();">
+                <i class="bi bi-file-earmark-arrow-up"></i>
+            </div>
+            <div class="text">
+                <span>Click to upload XML file</span>
+            </div>
+        </div>
+        <input type="file" id="file" name="invoice_file" style="display:none;" onchange="handleFileSelect(this)">
+        <button type="button" onclick="submitForm()">
+            <span>Send</span>
+        </button>
     </form>
+
+    <script>
+        function handleFileSelect(input) {
+            var files = input.files;
+            if (files && files.length > 0) {
+                var file = files[0];
+                var fileName = file.name;
+                document.getElementById("fileLabel").innerText = fileName;
+            }
+        }
+
+        function submitForm() {
+            document.getElementById("invoiceForm").submit();
+        }
+    </script>
 </body>
-</html> 
+</html>
