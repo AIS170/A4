@@ -6,11 +6,11 @@ body {
 
 .sidebar {
     height: 100%;
-    width: 200px;
+    width: 170px;
     position: fixed;
     top: 0;
     left: 0;
-    background-color: #ddb2f1;
+    background-color: #6ac8f3;
     padding-top: 20px;
 }
 
@@ -66,4 +66,26 @@ body {
 .date-sent {
     flex: 1; 
     padding: 0 10px; 
+}
+
+button {
+    display: flex;
+    height: 3em;
+    width: 100px;
+    align-items: center;
+    justify-content: center;
+    background-color: #eeeeee4b;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    transition: all 0.2s linear;
+    cursor: pointer;
+    border: none;
+    background: #007bff;
+    color: white; /* Set button text color */
+    text-decoration: none; /* Remove hyperlink text decoration */
+}
+
+button:hover {
+    box-shadow: 9px 9px 33px #b8b1b1, -9px -9px 33px #cfcbcb;
+    transform: translateY(-2px);
 }
