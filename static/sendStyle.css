@@ -7,6 +7,41 @@ body {
     background-color: rgba(255, 255, 255, 1);
 }
 
+header {
+    background: linear-gradient(to right, rgba(107, 161, 241, 0.8), rgba(148, 225, 255, 0.5));
+    color: #fff;
+    text-align: center;
+    padding: 10px 0; 
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between; /* Distribute items evenly along the header */
+    align-items: center;
+    width: 100%;
+    padding: 10px; /* Add some padding to the header container */
+}
+
+.logo-container {
+    flex-grow: 1; /* Let the logo container grow to occupy the available space */
+    text-align: center; /* Align the logo to the center */
+}
+
+.logo {
+    height: 50px; /* Adjust the height of the logo as needed */
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+
 form {
     display: flex;
     flex-direction: column;
@@ -98,3 +133,98 @@ label {
     font-size: 1.2rem;
     margin-bottom: 5px;
 }
+
+.back-button {
+    text-decoration: none; 
+    display: inline-block;
+    padding: 0.5em 1em; 
+    background-color: #007bff; 
+    color: #fff; 
+    border: none;
+    border-radius: 4px; 
+    cursor: pointer; 
+}
+
+.back-button > i {
+    margin-right: 5px;
+    transition: all 0.4s ease-in;
+}
+
+.back-button:hover > i {
+    font-size: 1.2em;
+    transform: translateX(-5px);
+}
+
+.send-button {
+    font-family: inherit;
+    font-size: 18px;
+    background: linear-gradient(to bottom, #4dc7d9 0%,#66a6ff 100%);
+    color: white;
+    padding: 0.8em 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
+}
+
+.send-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+    padding: 0em;
+    background: linear-gradient(to bottom, #5bd9ec 0%,#97c3ff 100%);
+    cursor: pointer;
+}
+
+.send-button:active {
+    transform: scale(0.95);
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.send-button span {
+    display: block;
+    margin-left: 0.4em;
+    transition: all 0.3s;
+}
+
+.send-button:hover span {
+    scale: 0;
+    font-size: 0%;
+    opacity: 0;
+    transition: all 0.5s;
+}
+
+.send-button svg {
+    width: 18px;
+    height: 18px;
+    fill: white;
+    transition: all 0.3s;
+}
+
+.send-button .svg-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s;
+}
+
+.send-button:hover .svg-wrapper {
+    background-color: rgba(43, 169, 228, 0.897);
+    width: 54px;
+    height: 54px;
+}
+
+.svg-wrapper:hover svg {
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+    transform: rotate(45deg);
+}
+
+
