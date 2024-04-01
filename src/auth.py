@@ -93,3 +93,8 @@ def userLogout():
             db.session.commit()
     session.clear()
     return redirect(url_for('authenticate_user.login'))
+
+
+@authenticateUser.route('/reset/password')
+def forgot_password():
+    return

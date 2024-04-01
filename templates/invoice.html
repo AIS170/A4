@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+</head>
+<body>
+    <h1>Invoice Details</h1>
+    <p><strong>ID:</strong> {{ invoice.id }}</p>
+    <p><strong>Subject:</strong> {{ invoice.subject }}</p>
+    <p><strong>Date Sent:</strong> {{ invoice.date_sent }}</p>
+    <p><strong>Body:</strong></p>
+    <pre>{{ invoice.body }}</pre>
+    
+    <button id="download">Download</button>
+    <button id="downloadPDF">Download PDF</button>
+    <button id="downloadHTML">Download HTML</button>
+
+    <script>
+        // Get the invoice data
+        var invoiceData = {
+            id: "{{ invoice.id }}",
+            subject: "{{ invoice.subject }}",
+            date_sent: "{{ invoice.date_sent }}",
+            body: "{{ invoice.body }}"
+        };
+
+        // Function to download JSON
+        function downloadJSON() {
+            var jsonData = JSON.stringify(invoiceData, null, 2);
+            var blob = new Blob([jsonData], { type: 'application/json' });
+            var downloadLink = document.createElement('a');
+            downloadLink.href = window.URL.createObjectURL(blob);
+            downloadLink.download = 'invoice.json';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+
+        // Function to generate and download PDF
+        function downloadPDF() {
+            var pdf = new jsPDF();
+            pdf.text(`Invoice Details\n\nID: ${invoiceData.id}\nSubject: ${invoiceData.subject}\nDate Sent: ${invoiceData.date_sent}\n\nBody:\n${invoiceData.body}`, 10, 10);
+            pdf.save("invoice.pdf");
+        }
+
+        // Function to generate and download HTML
+        function downloadHTML() {
+            var htmlContent = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Invoice</title>
+                </head>
+                <body>
+                    <h1>Invoice Details</h1>
+                    <p><strong>ID:</strong> ${invoiceData.id}</p>
+                    <p><strong>Subject:</strong> ${invoiceData.subject}</p>
+                    <p><strong>Date Sent:</strong> ${invoiceData.date_sent}</p>
+                    <p><strong>Body:</strong></p>
+                    <pre>${invoiceData.body}</pre>
+                </body>
+                </html>`;
+
+            var blob = new Blob([htmlContent], { type: 'text/html' });
+            var downloadLink = document.createElement('a');
+            downloadLink.href = window.URL.createObjectURL(blob);
+            downloadLink.download = 'invoice.html';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+
+        
+        document.getElementById("download").addEventListener("click", downloadJSON, false);
+        document.getElementById("downloadPDF").addEventListener("click", downloadPDF, false);
+        document.getElementById("downloadHTML").addEventListener("click", downloadHTML, false);
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.3/jspdf.umd.min.js"></script>
+</body>
+</html>
