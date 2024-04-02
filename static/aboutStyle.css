@@ -4,81 +4,110 @@
     box-sizing: border-box;
 }
 
-/* Global styles */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 725;
+    background-repeat: no-repeat; 
+    color: rgba(133, 76, 76, 0.4); 
+    display: grid;
+    padding-top: 70px; /* Adjust according to header height */
 }
+
+main {
+    padding-top: 70px; /* Adjust according to header height */
+    padding-bottom: 60px; /* Adjust according to footer height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(62, 152, 255); /* Change the color of the main text */
+    font-family: 'Montserrat', sans-serif;
+}
+
 
 .container {
     max-width: 1200px;
+    width: 100%; /* Ensure it doesn't exceed screen width */
     margin: 0 auto;
     padding: 0 20px;
 }
 
-header, footer {
-    background-color: #333;
+header {
+    background: #000;
     color: #fff;
     text-align: center;
-    padding: 20px 0;
+    padding: 10px 0; 
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
-main {
-    padding: 50px 0;
+.header-container {
+    justify-content: center;
+    display: flex;
 }
 
-/* Header styles */
-header h1 {
-    font-size: 36px;
+.nav-container {
+    margin-left: auto;
+    margin-top: 10px;
 }
 
-/* Team info styles */
-.team-info {
-    margin-bottom: 30px;
+
+.footer {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.team-info h2 {
-    margin-bottom: 10px;
+.footer-left {
+    text-align: left; /* Align the copyright message to the left */
+    margin-left: 10px; /* Move the footer slightly to the left */
+    font-family: 'Arial', sans-serif; /* Updated font */
 }
 
-.team-info ul {
-    list-style: none;
+.logo-container {
+    text-align: center; /* Center the logo */
+    flex: 1; /* Take up remaining space */
 }
 
-.team-info ul li {
-    margin-bottom: 5px;
+.logo {
+    max-width: 100px; /* Adjust the size of the logo as needed */
+    display: inline-block; /* Ensure the logo is treated as a block element */
+    margin-left: 20px; /* Move the logo 4 tab spaces to the right */
+    width: 70px;
 }
 
-/* Goal info styles */
-.goal-info {
-    text-align: justify;
-    margin-bottom: 30px;
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 
-.goal-info h2 {
-    margin-bottom: 10px;
+footer p {
+    margin-bottom: 5px; /* Add spacing between contact details */
+    margin-right: 10px;
 }
 
-/* Footer styles */
-footer {
-    margin-top: 50px;
+/* Style links in the footer */
+footer a {
+    text-decoration: none; /* Remove underline */
+    color: #ccc; /* Lighter shade of black */
 }
 
-footer div {
-    text-align: center;
+/* Style links on hover */
+footer a:hover {
+    color: #aaa; /* Darker shade on hover */
 }
 
-footer button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-footer button:hover {
-    background-color: #0056b3;
+video {
+    max-width: 100%;
+    max-height: calc(100vh - 200px); /* Adjust this value accordingly */
+    margin: 0 auto;
+    display: block;
 }
