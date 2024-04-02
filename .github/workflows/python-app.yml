@@ -54,4 +54,4 @@ jobs:
         find templates -name "*.html" -exec html-validate {} \;
     - name: Build frontend with Parcel
       run: |
-        npx parcel build templates/**/*.html --out-dir dist
+        npx parcel build templates/**/*.html
