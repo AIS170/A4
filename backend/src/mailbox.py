@@ -111,7 +111,9 @@ def xml_to_dict(xml_content):
 @mailbox.route('/<string:invoiceId>', methods=['GET'])
 def invoiceShow(invoiceId):
     user_id_a = session.get('user_id')
-    invoice = Invoice.query.get(invoiceId)
+    if user_id_a == None:
+        return jsonify({'error': 'Invalid userId'}), 400
+    invoice = Invoice.query.filter_by(id=invoiceId).first()
     if invoice:
         # Assuming you want to render a template with the details of the invoice
         return render_template('invoice.html', invoice=invoice)
@@ -123,7 +125,7 @@ def invoiceShow(invoiceId):
 def delete_invoice(invoiceId):
     if request.method == 'DELETE':
         user_id_a = session.get('user_id')
-        invoice = Invoice.query.get(invoiceId)
+        invoice = Invoice.query.filter_by(id=invoiceId).first()
         
         if not user_id_a:
             return jsonify({'error': 'Invalid userId'}), 400

@@ -5,6 +5,7 @@ import json
 from io import BytesIO
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from app import app
+from src.models import User, Token, Invoice, CommunicationReport
 
 BASE_URL = "http://localhost:5000"
 
@@ -47,6 +48,10 @@ valid_sent_email_data2 = {
     "invoice_file": 'data.xml',
 }
 
+# ================================================
+# ======= Test Cases for the Sending route =======
+# ================================================
+
 # Test successfully send mail to self
 def test_sending_to_self_success():
     client = app.test_client()
@@ -64,6 +69,12 @@ def test_sending_to_self_success():
     response = client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
     assert response.status_code == 200
 
+    with app.app_context():
+        mail = Invoice.query.filter_by(subject=valid_sent_email_data1['invoice_subject']).first()
+        commReport = CommunicationReport.query.filter_by(invoice_id=mail.id).first()
+        assert mail is not None
+        assert commReport is not None
+
 # Test successfully send mail to another user
 def test_sending_success():
     client = app.test_client()
@@ -80,7 +91,12 @@ def test_sending_success():
     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
     response = client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
     assert response.status_code == 200
-    client.delete('/clear')
+
+    with app.app_context():
+        mail = Invoice.query.filter_by(subject=valid_sent_email_data2['invoice_subject']).first()
+        commReport = CommunicationReport.query.filter_by(invoice_id=mail.id).first()
+        assert mail is not None
+        assert commReport is not None
 
 # Test successfully send multiple mail
 def test_sending_multiple_mail_success():
@@ -106,6 +122,16 @@ def test_sending_multiple_mail_success():
 
     response = client.post('/mailbox/sending', data=valid_data2, follow_redirects=True)
     assert response.status_code == 200
+
+    with app.app_context():
+        mail1 = Invoice.query.filter_by(subject=valid_sent_email_data1['invoice_subject']).first()
+        commReport1 = CommunicationReport.query.filter_by(invoice_id=mail1.id).first()
+        mail2 = Invoice.query.filter_by(subject=valid_sent_email_data2['invoice_subject']).first()
+        commReport2 = CommunicationReport.query.filter_by(invoice_id=mail2.id).first()
+        assert mail1 is not None
+        assert mail2 is not None
+        assert commReport1 is not None
+        assert commReport2 is not None
 
 # Test send mail with invalid userId
 def test_sending_invalid_user():
@@ -211,43 +237,156 @@ def test_sending_invalid_file():
     message = json.loads(response.data)
     assert message['error'] == 'Invalid Invoice'
 
-# Test successfully view mailbox after sending mail
-# def test_mailbox_success():
-#     client = app.test_client()
-#     client.delete('/clear')
-#     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
-#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
-#     client.get('/auth/logout', follow_redirects=True)
-#     client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
-#     client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+# ================================================
+# ======= Test Cases for the Mailbox route =======
+# ================================================
 
-#     client.post('/mailbox/sending', data=valid_sent_email_data2, follow_redirects=True)
-#     client.get('/auth/logout', follow_redirects=True)
-#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
-#     response = client.get('/mailbox', follow_redirects=True)
-#     assert response.status_code == 200
+# Test successfully view mailbox after sending mail
+def test_mailbox_success():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    valid_data = valid_sent_email_data2.copy()
+    valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+    client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    response = client.get('/mailbox', follow_redirects=True)
+    assert response.status_code == 200
+
+    with app.app_context():
+        mail = Invoice.query.filter_by(subject=valid_sent_email_data2['invoice_subject']).first()
+        commReports = CommunicationReport.query.filter_by(invoice_id=mail.id).all()
+        assert len(commReports) > 2
 
 # Test successfully view mailbox after sending multiple mail
-# def test_mailbox_success_multiple_mails():
-#     client = app.test_client()
-#     client.delete('/clear')
-#     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
-#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
-#     client.get('/auth/logout', follow_redirects=True)
-#     client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
-#     client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+def test_mailbox_success_multiple_mails():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
 
-#     client.post('/mailbox/sending', data=valid_sent_email_data2)
-#     mail2 = valid_sent_email_data1.copy()
-#     mail2['invoice_subject'] = 'Another one'
-#     client.post('/mailbox/sending', data=mail2, follow_redirects=True)
-#     client.get('/auth/logout', follow_redirects=True)
-#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
-#     response = client.get('/mailbox')
-#     assert response.status_code == 200
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    valid_data = valid_sent_email_data2.copy()
+    valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+    client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+
+    mail2 = valid_sent_email_data1.copy()
+    mail2['invoice_subject'] = 'Another one'
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    valid_data = mail2.copy()
+    valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+    client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    response = client.get('/mailbox', follow_redirects=True)
+    assert response.status_code == 200
+
+    with app.app_context():
+        mail1 = Invoice.query.filter_by(subject=valid_sent_email_data2['invoice_subject']).first()
+        commReports1 = CommunicationReport.query.filter_by(invoice_id=mail1.id).all()
+        mail2 = Invoice.query.filter_by(subject=valid_sent_email_data1['invoice_subject']).first()
+        commReports2 = CommunicationReport.query.filter_by(invoice_id=mail2.id).all()
+        assert len(commReports1) > 2
+        assert len(commReports2) > 2
 
 # Test view mailbox with invalid userId
-# def test_mailbox_inavlid_user():
+def test_mailbox_inavlid_user():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+
+    client.get('/auth/logout', follow_redirects=True)
+    response = client.get('/mailbox', follow_redirects=True)
+    assert response.status_code == 400
+
+# ================================================
+# ==== Test Cases for the Invoice Show route =====
+# ================================================
+    
+# Test successfully view invoice after sending it
+def test_invoice_show_success():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    valid_data = valid_sent_email_data2.copy()
+    valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+    client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+
+    mail = None
+    with app.app_context():
+        user = User.query.filter_by(email=valid_registration_data1['email']).first()
+        mail = Invoice.query.filter_by(sent_to_user_id=user.id).first()
+
+    response = client.get('/mailbox/{}'.format(mail.id), follow_redirects=True)
+    assert response.status_code == 200
+
+# Test view invoice when not logged in
+def test_invoice_show_invalid_user():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    valid_data = valid_sent_email_data2.copy()
+    valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+    client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+
+    mail = None
+    with app.app_context():
+        user = User.query.filter_by(email=valid_registration_data1['email']).first()
+        mail = Invoice.query.filter_by(sent_to_user_id=user.id).first()
+
+    response = client.get('/mailbox/{}'.format(mail.id), follow_redirects=True)
+    assert response.status_code == 400
+    message = json.loads(response.data)
+    assert message['error'] == 'Invalid userId'
+
+# Test view non existent invoice
+def test_invoice_show_invalid_invoice():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+
+    response = client.get('/mailbox/{}'.format("non_existent_id"), follow_redirects=True)
+    assert response.status_code == 404
+    message = json.loads(response.data)
+    assert message['error'] == 'Invoice not found'
+
+# # Test view invoice that doesn't belong to current user
+# def test_invoice_show_invalid_user():
 #     client = app.test_client()
 #     client.delete('/clear')
 #     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
@@ -256,6 +395,89 @@ def test_sending_invalid_file():
 #     client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
 #     client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
 
-#     client.get('/auth/logout', follow_redirects=True)
-#     response = client.get('/mailbox', follow_redirects=True)
-#     assert response.status_code == 400
+#     with open('tests/data.xml', 'rb') as file:
+#         valid_file_content = BytesIO(file.read())
+#     valid_data = valid_sent_email_data2.copy()
+#     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+#     client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+
+#     with app.app_context():
+#         mail = Invoice.query.filter_by(subject=valid_sent_email_data2['invoice_subject']).first()
+
+#     response = client.get(f'/mailbox/{mail.id}')
+#     assert response.status_code == 401
+#     message = json.loads(response.data)
+#     assert message['error'] == 'You do not own this invoice'
+    
+
+
+
+
+
+
+# ================================================
+# ==== Test Cases for the Delete Invoice     =====
+# ================================================
+    
+
+#Test deleted invoice succesfully 
+def test_delete_invoice_success():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = file.read()
+    
+    
+    valid_data = valid_sent_email_data2.copy()
+    valid_data['invoice_file'] = (BytesIO(valid_file_content), 'data.xml')
+    client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+    
+    
+    with app.app_context():
+        latest_invoice = Invoice.query.order_by(Invoice.id.desc()).first()
+        assert latest_invoice is not None, "Failed to create invoice"
+        invoice_id = latest_invoice.id
+
+    
+        delete_response = client.delete(f'/mailbox/{invoice_id}/delete', follow_redirects=True)
+
+    
+        deleted_invoice = Invoice.query.get(invoice_id)
+        assert deleted_invoice is None, "Invoice was not successfully deleted."
+
+        
+
+
+
+
+# Test delete invoice with invalid userId
+def test_delete_invoice_invalid_user():
+
+
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    #client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+
+    some_invoice_id = "someinvoiceid"
+
+    delete_response = client.delete(f'/mailbox/{some_invoice_id}/delete')
+    
+
+    assert delete_response.status_code == 400
+    message = json.loads(delete_response.data)
+    assert message['error'] == 'Invalid userId'
+
+
+
+
+
+
+

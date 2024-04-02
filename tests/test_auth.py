@@ -4,6 +4,7 @@ import os
 import json
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from app import app
+from src.models import User, Token
 
 BASE_URL = "http://localhost:5000"
 
@@ -29,12 +30,20 @@ valid_login_data = {
     "password": "val1dPassword",
 }
 
+# ================================================
+# ======= Test Cases for the Signup route ========
+# ================================================
+
 #Test successful user registration
 def test_signup_success():
     client = app.test_client()
     client.delete('/clear')
     response1 = client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
     assert response1.status_code == 200
+
+    with app.app_context():
+        user = User.query.filter_by(email=valid_registration_data1['email']).first()
+        assert user is not None
 
 def test_signup_success_two_users():
     client = app.test_client()
@@ -44,14 +53,22 @@ def test_signup_success_two_users():
     response2 = client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
     assert response2.status_code == 200
 
-# # Test user registration with same email
-# def test_signup_email_in_use():
-#     client.delete('/clear')
-#     response1 = client.post('auth/signup', data=valid_registration_data1, follow_redirects=True)
-#     assert response1.status_code == 200
-#     assert 'userId' in response1.json()
-#     response2 = client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
-#     assert response2.status_code == 400
+    with app.app_context():
+        user1 = User.query.filter_by(email=valid_registration_data1['email']).first()
+        user2 = User.query.filter_by(email=valid_registration_data2['email']).first()
+        assert user1 is not None
+        assert user2 is not None
+
+# Test user registration with same email
+def test_signup_email_in_use():
+    client = app.test_client()
+    client.delete('/clear')
+    response1 = client.post('auth/signup', data=valid_registration_data1, follow_redirects=True)
+    assert response1.status_code == 200
+    response2 = client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    assert response2.status_code == 400
+    message = json.loads(response2.data)
+    assert message['error'] == 'Email is already in use'
 
 # Test user registration with non matching passwords
 def test_signup_password_not_matching():
@@ -167,13 +184,23 @@ def test_signup_password_does_not_contain_letter():
     message = json.loads(response.data)
     assert message['error'] == 'Password should contain atleast one letter and one number'
 
+# ================================================
+# ======== Test Cases for the login route ========
+# ================================================
+
 # Test successful login
 def test_login_successful():
     client = app.test_client()
     client.delete('/clear')
     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
     response = client.post('/auth/login', data=valid_login_data, follow_redirects=True)
-    assert response.status_code == 200       # May need to test each function 
+    assert response.status_code == 200
+
+    with app.app_context():
+        user = User.query.filter_by(email=valid_registration_data1['email']).first()
+        assert user is not None
+        token = Token.query.filter_by(user_id=user.id).first()
+        assert token is not None
 
 # Test login with incorrect password
 def test_login_incorrect_password():
@@ -195,6 +222,10 @@ def test_login_user_does_not_exist():
     assert response.status_code == 400
     message = json.loads(response.data)
     assert message['error'] == 'Invalid email and/or password'
+
+# ================================================
+# ======= Test Cases for the logout route ========
+# ================================================
 
 # Test successfull logout
 def test_logout_success():
