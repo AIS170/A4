@@ -55,5 +55,5 @@ app.register_blueprint(user_route, url_prefix='/user/')
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True, port=environ.get('PORT', 5040))
+    app.run(debug=True, port=environ.get('PORT', 5000))
 
