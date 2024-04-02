@@ -1,10 +1,10 @@
 from flask import Flask, render_template
-from src.auth import authenticateUser 
-from src.database import db
-from src.mailbox import mailbox
-from src.clear import clear_
-from src.reports import reports
-from src.user import user_route
+from backend.src.auth import authenticateUser 
+from backend.src.database import db
+from backend.src.mailbox import mailbox
+from backend.src.clear import clear_
+from backend.src.reports import reports
+from backend.src.user import user_route
 from os import environ
 from flask_cors import CORS
 from os import path
