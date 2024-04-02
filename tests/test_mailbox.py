@@ -408,3 +408,75 @@ def test_invoice_show_invalid_invoice():
 #     assert response.status_code == 401
 #     message = json.loads(response.data)
 #     assert message['error'] == 'You do not own this invoice'
+    
+
+
+
+
+
+
+# ================================================
+# ==== Test Cases for the Delete Invoice     =====
+# ================================================
+    
+
+#Test deleted invoice succesfully 
+def test_delete_invoice_success():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = file.read()
+    
+    
+    valid_data = valid_sent_email_data2.copy()
+    valid_data['invoice_file'] = (BytesIO(valid_file_content), 'data.xml')
+    client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+    
+    
+    with app.app_context():
+        latest_invoice = Invoice.query.order_by(Invoice.id.desc()).first()
+        assert latest_invoice is not None, "Failed to create invoice"
+        invoice_id = latest_invoice.id
+
+    
+        delete_response = client.delete(f'/mailbox/{invoice_id}/delete', follow_redirects=True)
+        #assert delete_response.status_code == 200, "Invoice should be successfully deleted."
+
+    
+        deleted_invoice = Invoice.query.get(invoice_id)
+        assert deleted_invoice is None, "Invoice was not successfully deleted."
+
+
+
+
+# Test delete invoice with invalid userId
+def test_delete_invoice_invalid_user():
+
+
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    #client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+
+    some_invoice_id = "someinvoiceid"
+
+    delete_response = client.delete(f'/mailbox/{some_invoice_id}/delete')
+    
+
+    assert delete_response.status_code == 400
+    message = json.loads(delete_response.data)
+    assert message['error'] == 'Invalid user id'
+
+
+
+
+
+
+
