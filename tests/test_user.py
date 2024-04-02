@@ -5,7 +5,7 @@ import json
 from io import BytesIO
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from app import app
-from src.models import User
+from backend.src.models import User
 
 BASE_URL = "http://localhost:5000"
 
