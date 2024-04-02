@@ -447,11 +447,12 @@ def test_delete_invoice_success():
 
     
         delete_response = client.delete(f'/mailbox/{invoice_id}/delete', follow_redirects=True)
-        #assert delete_response.status_code == 200, "Invoice should be successfully deleted."
 
     
         deleted_invoice = Invoice.query.get(invoice_id)
         assert deleted_invoice is None, "Invoice was not successfully deleted."
+
+        
 
 
 
@@ -472,7 +473,7 @@ def test_delete_invoice_invalid_user():
 
     assert delete_response.status_code == 400
     message = json.loads(delete_response.data)
-    assert message['error'] == 'Invalid user id'
+    assert message['error'] == 'Invalid userId'
 
 
 
