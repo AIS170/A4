@@ -7,6 +7,7 @@ from .database import db
 from xml.etree import ElementTree as ET
 from datetime import datetime
 
+#made change
 mailbox = Blueprint('mailbox_route', __name__)
 # View all received/incoming e-invoices for specified user through userId. Returns senderAddress, timeSent and invoiceSubject
 @mailbox.route('', methods=['GET'])
