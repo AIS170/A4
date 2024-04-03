@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, jsonify, render_template, request
+import requests
 from backend.src.auth import authenticateUser 
 from backend.src.database import db
 from backend.src.mailbox import mailbox
@@ -52,8 +53,86 @@ app.register_blueprint(reports, url_prefix='/reports/')
 
 app.register_blueprint(user_route, url_prefix='/user/')
 
+
+EXTERNAL_API_URL = "https://ubl-invoice-generator.vercel.app"
+
+@app.route('/external_api')
+def external_api_page():
+    return render_template('external_api.html')
+
+@app.route('/external_api/text_file', methods=['POST'])
+def create_invoice_text_file():
+    try:
+        # Extract file from the request
+        file = request.files['file']
+        
+        # Pass file to external API
+        response = requests.post(EXTERNAL_API_URL + "/invoices/create/user/textFile", files={'file': file})
+        response.raise_for_status()  # Raise an exception for HTTP errors
+
+        # Assuming the API returns JSON data, you can extract it like this
+        data = response.json()
+
+        return render_template('create_invoice_text.html', data=data)
+    except Exception:
+        return jsonify({'error': 'Failed to get textFile link for invoice creation'}, 500)
+
+@app.route('/external_api/gui', methods=['GET'])
+def get_invoice_creation_gui_link():
+    try:
+        # Make request to external API
+        response = requests.get(EXTERNAL_API_URL + "/invoices/create/user/gui")
+        response.raise_for_status()  # Raise an exception for HTTP errors
+
+        # Assuming the API returns JSON data, you can extract it like this
+        data = response.json()
+
+        return render_template('guest_gui.html', data=data), 200
+    except Exception:
+        return jsonify({'error': 'Failed to get textFile link for invoice creation'}, 500)
+
+@app.route('/external_api/database', methods=['POST'])
+def create_invoice_from_database():
+    try:
+        # Extract parameters from the request
+        search_string = request.args.get('searchString')
+        skip = request.args.get('skip', default=0, type=int)
+        limit = request.args.get('limit', default=50, type=int)
+
+        # Pass parameters to external API
+        response = requests.post(EXTERNAL_API_URL + "/invoices/create/user/dataBase",
+                                 params={'searchString': search_string, 'skip': skip, 'limit': limit})
+        response.raise_for_status()  # Raise an exception for HTTP errors
+
+        # Assuming the API returns JSON data, you can extract it like this
+        data = response.json()
+
+        return jsonify(data), 200
+    except requests.exceptions.RequestException as e:
+        app.logger.error('Failed to create invoice from database: %s', e)
+        return jsonify({'error': 'Failed to create invoice from database'}), 500
+
+@app.route('/external_api/guest_image', methods=['POST'])
+def create_invoice_from_image():
+    try:
+        # Extract file from the request
+        pdf_file = request.files['pdf']
+
+        # Pass file to external API
+        response = requests.post(EXTERNAL_API_URL + "/invoices/create/guest/image", files={'pdf': pdf_file})
+        response.raise_for_status()  # Raise an exception for HTTP errors
+
+        # Assuming the API returns JSON data, you can extract it like this
+        data = response.json()
+
+        return jsonify(data), 200
+    except requests.exceptions.RequestException as e:
+        app.logger.error('Failed to create invoice from image: %s', e)
+        return jsonify({'error': 'Failed to create invoice from image'}), 500
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True, port=environ.get('PORT', 5000))
+    app.run(debug=True, port=environ.get('PORT', 5050))
 
