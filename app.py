@@ -41,10 +41,6 @@ def about():
 def admin():
     return render_template('admin.html')
 
-@app.route('/tracking')
-def track():
-    return render_template('track.html')
-
 app.register_blueprint(authenticateUser, url_prefix='/auth/')
      
 app.register_blueprint(mailbox, url_prefix='/mailbox/')  
