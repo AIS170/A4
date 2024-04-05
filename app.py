@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, jsonify, render_template, request
+import requests
 from backend.src.auth import authenticateUser 
 from backend.src.database import db
 from backend.src.mailbox import mailbox
@@ -52,6 +53,28 @@ app.register_blueprint(reports, url_prefix='/reports/')
 
 app.register_blueprint(user_route, url_prefix='/user/')
 
+
+EXTERNAL_API_URL = "http://3.27.23.157"
+
+@app.route('/external_api')
+def external_api_page():
+    deployment_link = EXTERNAL_API_URL  # Your deployment link
+    return render_template('external_api.html', deployment_link=deployment_link)
+
+@app.route('/external_api/CSV', methods=['GET','POST'])
+def create_invoice_text_file():
+    try:
+        # Forward the request to the external API
+        response = requests.post("http://3.27.23.157/invoice/CSV/", data=request.form)
+
+        # Assuming the API returns JSON data, you can extract it like this
+        data = response.json()
+
+        return render_template('create_invoice_text.html', data=data)
+    except Exception:
+        return jsonify({'error': 'Failed to get textFile link for invoice creation'}, 500)
+
+ 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
