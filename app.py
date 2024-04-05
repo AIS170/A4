@@ -17,7 +17,7 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'zasdxfcgvhbjnknhbgvfcdretfygh'
 
-#db_uri = environ.get('DATABASE_URL')  
+#db_uri = environ.get('DATABASE_URL')  yo
 #if db_uri:
     #app.config['SQLALCHEMY_DATABASE_URI'] = db_uri.replace('postgres://', 'postgresql://', 1)
 #else:
