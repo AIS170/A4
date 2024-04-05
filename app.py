@@ -1,5 +1,7 @@
+
 from flask import Flask, jsonify, render_template, request
-import requests
+import requests # type: ignore
+
 from backend.src.auth import authenticateUser 
 from backend.src.database import db
 from backend.src.mailbox import mailbox
@@ -7,13 +9,13 @@ from backend.src.clear import clear_
 from backend.src.reports import reports
 from backend.src.user import user_route
 from os import environ
-from flask_cors import CORS
+from flask_cors import CORS # type: ignore
 from os import path
 
 
 DB_NAME = 'database.sqlite3'
 
-app = Flask(__name__)  
+app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'zasdxfcgvhbjnknhbgvfcdretfygh'
 
