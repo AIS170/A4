@@ -64,7 +64,7 @@ def external_api_page():
 @app.route('/external_api/CSV', methods=['GET','POST'])
 def create_invoice_text_file():
     try:
-        # Forward the request to the external API
+        # Forward the request to the external API yo
         response = requests.post("http://3.27.23.157/invoice/CSV/", data=request.form)
 
         # Assuming the API returns JSON data, you can extract it like this
