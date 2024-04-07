@@ -9,64 +9,77 @@
 </head>
 <body>
 
-    <div class="sidebar">
-        <a href="{{ url_for('user_route.details')}}">User Details</a>
-        <a href="{{ url_for('mailbox_route.sending') }}">Send Invoice</a>
-        <a href="{{ url_for('reports.reportBox') }}">Communication Reports</a>
-        <a href="{{ url_for('external_api_page') }}">External API</a>
-        <a href="{{ url_for('about') }}">About Us</a>
-        <a href="{{ url_for('authenticate_user.userLogout') }}">Log out</a>
-        <a href="{{ url_for('track') }}">Business Tracking</a>
-    </div>
+<div class="sidebar">
+    <a href="{{ url_for('user_route.details')}}">User Details</a>
+    <a href="{{ url_for('mailbox_route.sending') }}">Send Invoice</a>
+    <a href="{{ url_for('reports.reportBox') }}">Communication Reports</a>
+    <a href="{{ url_for('external_api_page') }}">External API</a>
+    <a href="{{ url_for('about') }}">About Us</a>
+    <a href="{{ url_for('authenticate_user.userLogout') }}">Log out</a>
+    <a href="{{ url_for('track') }}">Business Tracking</a>
+</div>
 
-    <div class="header">
+<div class="header">
+    <h1>Welcome to your Mailbox!</h1>
+</div>
 
-        <h1>Welcome to your Mailbox!</h1>       
-
-    </div>
-
-    <div class="content">
-        <form action="{{ url_for('mailbox_route.mailBox') }}" method="get"></form>
-
-        {% if received_mails %}
-            <div class="mail-list">
-                {% for mail in received_mails|sort(attribute='date_sent', reverse=true) %}
-                    <div class="mail-item">
-                        <div class="sender">{{ mail.sender_mail }}</div>
-                        <div class="subject"><a href="{{ url_for('mailbox_route.invoiceShow', invoiceId=mail.id)}}">{{ mail.subject }}</a></div>
-                        <div class="date-sent">{{ mail.date_sent.strftime('%H:%M') if mail.date_sent.date() == current_datetime.date() else mail.date_sent.strftime('%Y-%m-%d') }}</div>
-                        <div class="delete-icon">
-                            <a href="#" onclick="event.preventDefault(); deleteInvoice('{{ mail.id }}');"><i class="bi bi-trash3"></i></a>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p>Mailbox empty ;.;</p>
-        {% endif %}
-
+<div class="content">
+    <!-- Search Form Start -->
+    <form action="{{ url_for('mailbox_route.mailBox') }}" method="get" class="search-form">
+        <input type="text" name="subject" placeholder="Search by Subject" value="{{ request.args.get('subject', '') }}" class="form-control">
+        <input type="text" name="sender_address" placeholder="Search by Sender's Address" value="{{ request.args.get('sender_address', '') }}" class="form-control">
+        <button type="submit" class="btn btn-primary">Search</button>
         
-    </div>
-    <footer class="footer">
-        <p>&copy; 2024 A4 E-Invoicing Services. All rights reserved.</p>
-    </footer>
-    <script>
-        function deleteInvoice(invoiceId) {
-            fetch(`/mailbox/${invoiceId}/delete`, {
-                method: 'DELETE',
-            })
-            .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url; // Follow the redirect URL
-                } else if (response.ok) {
-                    window.location.reload(); // Or redirect to a specific URL as needed
-                } else {
-                    throw new Error('Failed to delete the invoice');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
+    </form>
+    
+    <form action="{{ url_for('mailbox_route.mailBox') }}">
+        <button type="submit" class="btn btn-primary">Remove Filters</button>
+        
+    </form>
+    
+    
+    <!-- Search Form End -->
 
-    </script>  
+
+
+    {% if received_mails %}
+    <div class="mail-list">
+        {% for mail in received_mails|sort(attribute='date_sent', reverse=true) %}
+        <div class="mail-item">
+            <div class="sender">{{ mail.sender_mail }}</div>
+            <div class="subject"><a href="{{ url_for('mailbox_route.invoiceShow', invoiceId=mail.id)}}">{{ mail.subject }}</a></div>
+            <div class="date-sent">{{ mail.date_sent.strftime('%H:%M') if mail.date_sent.date() == current_datetime.date() else mail.date_sent.strftime('%Y-%m-%d') }}</div>
+            <div class="delete-icon">
+                <a href="#" onclick="event.preventDefault(); deleteInvoice('{{ mail.id }}');"><i class="bi bi-trash3"></i></a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>Mailbox empty ;.;</p>
+    {% endif %}
+</div>
+
+<footer class="footer">
+    <p>&copy; 2024 A4 E-Invoicing Services. All rights reserved.</p>
+</footer>
+
+<script>
+    function deleteInvoice(invoiceId) {
+        fetch(`/mailbox/${invoiceId}/delete`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url; // Follow the redirect URL
+            } else if (response.ok) {
+                window.location.reload(); // Or redirect to a specific URL as needed
+            } else {
+                throw new Error('Failed to delete the invoice');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
 </body>
 </html>

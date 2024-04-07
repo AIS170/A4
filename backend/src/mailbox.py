@@ -15,8 +15,22 @@ def mailBox():
     user_id_a = session.get('user_id')
     if not user_id_a:
         return jsonify({'error': 'Invalid userId'}), 400
-    
-    received_mails = Invoice.query.filter_by(sent_to_user_id=user_id_a).all()
+
+    # Retrieve search query parameters
+    search_subject = request.args.get('subject', '')
+    search_sender_address = request.args.get('sender_address', '')
+
+    # Start with a base query
+    received_mails_query = Invoice.query.join(User, Invoice.user_id == User.id).filter(Invoice.sent_to_user_id == user_id_a)
+
+    # Apply filters based on search criteria
+    if search_subject:
+        received_mails_query = received_mails_query.filter(Invoice.subject.ilike(f'%{search_subject}%'))
+    if search_sender_address:
+        received_mails_query = received_mails_query.filter(User.email.ilike(f'%{search_sender_address}%'))
+
+    # Execute the query
+    received_mails = received_mails_query.all()
 
     current_datetime = datetime.now()
 
@@ -34,7 +48,6 @@ def mailBox():
         }
         formatted_mail.append(new_mail)
 
-
     for i in received_mails:
         sender = User.query.filter_by(id=i.user_id).first()
         recepient = User.query.filter_by(id=i.sent_to_user_id).first()
@@ -42,8 +55,9 @@ def mailBox():
         new_comm_report = CommunicationReport(id=os.urandom(24).hex(), invoice_id=i.id, user_id=user_id_a, details=report_details, date_reported=datetime.now())
         db.session.add(new_comm_report)
         db.session.commit()
-    
-    return render_template('mailbox.html', received_mails=formatted_mail, current_datetime=current_datetime)
+
+    return render_template('mailbox.html', received_mails=formatted_mail, current_datetime=current_datetime, search_subject=search_subject, search_sender_address=search_sender_address)
+
 
 
 # @mailbox.route('/<string:invoiceId>', methods=['GET'])
