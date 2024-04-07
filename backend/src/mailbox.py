@@ -99,7 +99,7 @@ def sending():
     return render_template('send.html')
 
 
-# Helper function to check if a file is valid
+# Helper function to check if a file is a valid xml file
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'xml'}
 
@@ -138,5 +138,64 @@ def delete_invoice(invoiceId):
         db.session.delete(invoice)
         db.session.commit()
         return redirect(url_for('mailbox_route.mailBox'))
+    else:
+        return jsonify({'error': 'Method Not Allowed'}), 405
+    
+@mailbox.route('/lookup', methods=['GET', 'POST'])
+def lookup():
+    user_id_a = session.get('user_id')
+    if not user_id_a:
+        return jsonify({'error': 'Invalid userId'}), 400
+    
+    if request.method == 'POST':
+        lookup_string = request.form.get('lookupString')
+        
+        if lookup_string:
+            filtered_invoices = Invoice.query.filter(
+                Invoice.subject.contains(lookup_string),
+                Invoice.sent_to_user_id == user_id_a
+            ).all()
+            formatted_mail = []
+            for mail in filtered_invoices:
+                user = User.query.filter_by(id=mail.user_id).first()
+                new_mail = {
+                    'id': mail.id,
+                    'subject': mail.subject,
+                    'body': mail.body,
+                    'date_sent': mail.date_sent,
+                    'user_id': mail.user_id,
+                    'is_incoming': mail.is_incoming,
+                    'sender_mail': user.email
+                }
+                formatted_mail.append(new_mail)
+            return jsonify({'invoices': formatted_mail})
+        else:
+            return jsonify({'error': 'No lookup string provided'}), 400
+            
+    elif request.method == 'GET':
+        lookup_string = request.args.get('lookupString')
+        
+        if lookup_string:
+            filtered_invoices = Invoice.query.filter(
+                Invoice.subject.contains(lookup_string),
+                Invoice.sent_to_user_id == user_id_a
+            ).all()
+            formatted_mail = []
+            for mail in filtered_invoices:
+                user = User.query.filter_by(id=mail.user_id).first()
+                new_mail = {
+                    'id': mail.id,
+                    'subject': mail.subject,
+                    'body': mail.body,
+                    'date_sent': mail.date_sent,
+                    'user_id': mail.user_id,
+                    'is_incoming': mail.is_incoming,
+                    'sender_mail': user.email
+                }
+                formatted_mail.append(new_mail)
+            return jsonify({'invoices': formatted_mail})
+        else:
+            return jsonify({'error': 'No lookup string provided'}), 400
+            
     else:
         return jsonify({'error': 'Method Not Allowed'}), 405
