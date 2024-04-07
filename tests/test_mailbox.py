@@ -5,7 +5,7 @@ import json
 from io import BytesIO
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from app import app
-from backend.src.models import User, Token, Invoice, CommunicationReport
+from backend.src.models import User, Invoice, CommunicationReport
 
 BASE_URL = "http://localhost:5000"
 
@@ -408,17 +408,10 @@ def test_invoice_show_invalid_invoice():
 #     assert response.status_code == 401
 #     message = json.loads(response.data)
 #     assert message['error'] == 'You do not own this invoice'
-    
-
-
-
-
-
 
 # ================================================
-# ==== Test Cases for the Delete Invoice     =====
+# === Test Cases for the Delete Invoice route ====
 # ================================================
-    
 
 #Test deleted invoice succesfully 
 def test_delete_invoice_success():
@@ -444,18 +437,11 @@ def test_delete_invoice_success():
         latest_invoice = Invoice.query.order_by(Invoice.id.desc()).first()
         assert latest_invoice is not None, "Failed to create invoice"
         invoice_id = latest_invoice.id
-
-    
-        delete_response = client.delete(f'/mailbox/{invoice_id}/delete', follow_redirects=True)
-
-    
-        deleted_invoice = Invoice.query.get(invoice_id)
-        assert deleted_invoice is None, "Invoice was not successfully deleted."
-
         
-
-
-
+        delete_response = client.delete(f'/mailbox/{invoice_id}/delete', follow_redirects=True)
+        assert delete_response.status_code == 200
+        deleted_invoice = Invoice.query.filter(Invoice.id == invoice_id).first()
+        assert deleted_invoice is None, "Invoice was not successfully deleted."
 
 # Test delete invoice with invalid userId
 def test_delete_invoice_invalid_user():
@@ -475,9 +461,112 @@ def test_delete_invoice_invalid_user():
     message = json.loads(delete_response.data)
     assert message['error'] == 'Invalid userId'
 
+# ================================================
+# ======= Test Cases for the Lookup route ========
+# ================================================
 
+# Test successfully lookup an invoice after sending it
+def test_lookup_success():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
 
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    valid_data = valid_sent_email_data2.copy()
+    valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+    client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
 
+    response = client.get('/mailbox/lookup', query_string={'lookupString': "New"}, follow_redirects=True)
+    json_data = response.get_json()
 
+    assert response.status_code == 200
+    assert any(mail['subject'] == 'New mail' for mail in json_data['invoices'])
 
+# Test successfully lookup multiple invoices after sending them
+def test_lookup_multiple_success():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
 
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    valid_data1 = valid_sent_email_data2.copy()
+    valid_data1['invoice_file'] = (valid_file_content, 'data.xml')
+    client.post('/mailbox/sending', data=valid_data1, follow_redirects=True)
+
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    valid_data2 = valid_sent_email_data2.copy()
+    valid_data2['invoice_file'] = (valid_file_content, 'data.xml')
+    valid_data2['invoice_subject'] = "New mail 2"
+    client.post('/mailbox/sending', data=valid_data2, follow_redirects=True)
+
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    valid_data3 = valid_sent_email_data2.copy()
+    valid_data3['invoice_file'] = (valid_file_content, 'data.xml')
+    valid_data3['invoice_subject'] = "New mail 3"
+    client.post('/mailbox/sending', data=valid_data3, follow_redirects=True)
+
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    valid_data4 = valid_sent_email_data2.copy()
+    valid_data4['invoice_file'] = (valid_file_content, 'data.xml')
+    valid_data4['invoice_subject'] = "Old mail"
+    client.post('/mailbox/sending', data=valid_data4, follow_redirects=True)
+
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+
+    response = client.get('/mailbox/lookup', query_string={'lookupString': "New"}, follow_redirects=True)
+    json_data = response.get_json()
+
+    assert response.status_code == 200
+    assert any(mail['subject'] == 'New mail' for mail in json_data['invoices'])
+    assert any(mail['subject'] == 'New mail 2' for mail in json_data['invoices'])
+    assert any(mail['subject'] == 'New mail 3' for mail in json_data['invoices'])
+    assert not any(mail['subject'] == 'Old mail' for mail in json_data['invoices'])
+
+# Test successfully lookup when mailbox is empty
+def test_lookup_empty_mailbox_success():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+
+    response = client.get('/mailbox/lookup', query_string={'lookupString': "New"}, follow_redirects=True)
+    json_data = response.get_json()
+
+    assert response.status_code == 200
+    assert len(json_data['invoices']) == 0
+
+# Test lookup while logged out
+def test_lookup_invalid_id():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    valid_data = valid_sent_email_data2.copy()
+    valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+    client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+
+    response = client.get('/mailbox/lookup', query_string={'lookupString': "New"}, follow_redirects=True)
+    assert response.status_code == 400
