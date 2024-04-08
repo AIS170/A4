@@ -4,8 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mailbox</title>
+    <style>
+        .highlight {
+            background-color: yellow;
+        }
+    </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='mailboxStyle.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Include text-to-speech JavaScript code -->
+    <script>
+        let speaking = false;
+        let queue = [];
+    
+        function speech() {
+            if (!speaking) {
+                startSpeak();
+            } else {
+                stopSpeak();
+            }
+        }
+    
+        function startSpeak() {
+            const elementsToSpeak = document.querySelectorAll('h1, span, label, a, button, .sender, .date-sent, .footer p');
+            elementsToSpeak.forEach(element => {
+                queue.push({
+                    element: element,
+                    text: element.textContent.trim()
+                });
+            });
+    
+            // Add "Mailbox empty" message and footer text to utterance queue
+            queue.push({
+                element: document.querySelector('.content p'),
+                text: 'Mailbox empty'
+            });
+    
+            speaking = true;
+            speak();
+        }
+    
+        function speak() {
+            if (queue.length > 0 && speaking) {
+                const { element, text } = queue.shift();
+                element.classList.add('highlight');
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.onend = function() {
+                    element.classList.remove('highlight');
+                    speak();
+                };
+                speechSynthesis.speak(utterance);
+            } else {
+                speaking = false;
+            }
+        }
+    
+        function stopSpeak() {
+            speaking = false;
+            speechSynthesis.cancel();
+            queue = [];
+            const highlighted = document.querySelectorAll('.highlight');
+            highlighted.forEach(element => {
+                element.classList.remove('highlight');
+            });
+        }
+
+        function deleteInvoice(invoiceId) {
+        fetch(`/mailbox/${invoiceId}/delete`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url; // Follow the redirect URL
+            } else if (response.ok) {
+                window.location.reload(); // Or redirect to a specific URL as needed
+            } else {
+                throw new Error('Failed to delete the invoice');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    </script>    
 </head>
 <body>
 
@@ -20,13 +98,14 @@
     </div>
 
     <div class="header">
-
         <h1>Welcome to your Mailbox!</h1>       
-
     </div>
 
     <div class="content">
         <form action="{{ url_for('mailbox_route.mailBox') }}" method="get"></form>
+
+        <!-- Button to toggle text-to-speech -->
+        <button onclick="speech()">Toggle Text-to-Speech</button>
 
         {% if received_mails %}
             <div class="mail-list">
@@ -44,29 +123,11 @@
         {% else %}
             <p>Mailbox empty ;.;</p>
         {% endif %}
-
-        
     </div>
+
     <footer class="footer">
         <p>&copy; 2024 A4 E-Invoicing Services. All rights reserved.</p>
     </footer>
-    <script>
-        function deleteInvoice(invoiceId) {
-            fetch(`/mailbox/${invoiceId}/delete`, {
-                method: 'DELETE',
-            })
-            .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url; // Follow the redirect URL
-                } else if (response.ok) {
-                    window.location.reload(); // Or redirect to a specific URL as needed
-                } else {
-                    throw new Error('Failed to delete the invoice');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
 
-    </script>  
 </body>
 </html>

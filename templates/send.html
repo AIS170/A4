@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <title>Send Invoice</title>
+    <style>
+        .highlight {
+            background-color: yellow;
+        }
+    </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='sendStyle.css') }}">
 </head>
 <body>
@@ -24,7 +29,7 @@
             </a>
         </div>
     </header>
-    
+    <button onclick="speech()">Toggle Text-to-Speech</button>
 
     <form id="invoiceForm" action="{{ url_for('mailbox_route.sending') }}" method="post" enctype="multipart/form-data">
         <label for="recipient_address">Recipient Address:</label>
@@ -55,6 +60,57 @@
     </form>
 
     <script>
+        let speaking = false;
+        let queue = [];
+
+        function speech() {
+            if (!speaking) {
+                startSpeak();
+            } else {
+                stopSpeak();
+            }
+        }
+
+        function startSpeak() {
+            const elementsToSpeak = document.querySelectorAll('h1, span, label, a:not(.back-button), button');
+            elementsToSpeak.forEach(element => {
+                if (!element.classList.contains('send-button') && !element.closest('.logo-container')) {
+                    queue.push({
+                        element: element,
+                        text: element.textContent.trim()
+                    });
+                }
+            });
+
+            speaking = true;
+            speak();
+        }
+
+        function speak() {
+            if (queue.length > 0 && speaking) {
+                const { element, text } = queue.shift();
+                element.classList.add('highlight');
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.onend = function() {
+                    element.classList.remove('highlight');
+                    speak();
+                };
+                speechSynthesis.speak(utterance);
+            } else {
+                speaking = false;
+            }
+        }
+
+        function stopSpeak() {
+            speaking = false;
+            speechSynthesis.cancel();
+            queue = [];
+            const highlighted = document.querySelectorAll('.highlight');
+            highlighted.forEach(element => {
+                element.classList.remove('highlight');
+            });
+        }
+
         function handleFileSelect(input) {
             var files = input.files;
             if (files && files.length > 0) {

@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='registerStyle.css') }}">
-
+    <style>
+        .highlight {
+            background-color: yellow;
+        }
+    </style>
 </head>
 <body>
 
@@ -42,6 +45,57 @@
             </links>
         </form>
     </div>
-    
+    <button onclick="speech()">Toggle Text-to-Speech</button>
+
+    <script>
+        let speaking = false;
+        let queue = [];
+
+        function speech() {
+            if (!speaking) {
+                startSpeak();
+            } else {
+                stopSpeak();
+            }
+        }
+
+        function startSpeak() {
+            const elementsToSpeak = document.querySelectorAll('h1, span, label, a, button');
+            elementsToSpeak.forEach(element => {
+                queue.push({
+                    element: element,
+                    text: element.textContent.trim()
+                });
+            });
+
+            speaking = true;
+            speak();
+        }
+
+        function speak() {
+            if (queue.length > 0 && speaking) {
+                const { element, text } = queue.shift();
+                element.classList.add('highlight');
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.onend = function() {
+                    element.classList.remove('highlight');
+                    speak();
+                };
+                speechSynthesis.speak(utterance);
+            } else {
+                speaking = false;
+            }
+        }
+
+        function stopSpeak() {
+            speaking = false;
+            speechSynthesis.cancel();
+            queue = [];
+            const highlighted = document.querySelectorAll('.highlight');
+            highlighted.forEach(element => {
+                element.classList.remove('highlight');
+            });
+        }
+    </script>
 </body>
 </html>
