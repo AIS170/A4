@@ -1,0 +1,41 @@
+html,
+body {
+  height: 100%;
+}
+
+.form-signin {
+  max-width: 330px;
+  padding: 1rem;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.image-center {
+  text-align: center;
+}
+
+.form-signin input[type="password"] {
+    margin-bottom: 0; /* Change from margin-bottom: 10px; to margin-bottom: 0; */
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom: 0;
+  }
+
+
+.form-signin input[type="text"] {
+    border-bottom: 0; /* Remove border radius from both top and bottom */
+    border-bottom-style: none; /* Remove border style */
+  }
+  
+.form-signin input[type="text"]:not(:last-child) {
+    border-bottom-style: solid; /* Apply border style only to bottom for all text inputs except the last one */
+  }
+

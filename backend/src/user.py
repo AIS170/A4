@@ -1,7 +1,10 @@
 from .database import db
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify, session
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, session, current_app
 from .models import User
+from werkzeug.utils import secure_filename
 import re
+import os
+
 
 user_route = Blueprint('user_route', __name__)
 
@@ -13,10 +16,11 @@ def details():
     user = User.query.filter_by(id=user_id_a).first()
 
     user_details = {
+        'image_file': user.image_file,
         'first_name': user.first_name,
         'last_name': user.last_name,
         'email': user.email,
-        'password': user.password
+        'password': user.password,
     }
     return render_template('user.html', user = user_details), 200
 
@@ -60,4 +64,34 @@ def password():
         return jsonify({'error': 'Password should contain atleast one letter and one number'}), 400
     user.password = new_password
     db.session.commit()
+    return redirect(url_for('user_route.details'))
+
+@user_route.route('/update-profile-picture', methods=['POST'])
+def update_profile_picture():
+    user_id_a = session.get('user_id')
+    if user_id_a is None:
+        return jsonify({'error': 'Invalid userId'}), 400
+
+    user = User.query.filter_by(id=user_id_a).first()
+    if user is None:
+        return jsonify({'error': 'User not found'}), 404
+    
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part in the request'}), 400
+    
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    
+    allowed_extensions = {'png', 'jpg', 'jpeg', 'gif'}
+    if '.' not in file.filename or file.filename.rsplit('.', 1)[1].lower() not in allowed_extensions:
+        return jsonify({'error': 'Invalid file extension'}), 400
+    
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+
+    user.image_file = filename
+    db.session.commit()
+
     return redirect(url_for('user_route.details'))

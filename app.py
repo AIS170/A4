@@ -11,6 +11,7 @@ from backend.src.user import user_route
 from os import environ
 from flask_cors import CORS # type: ignore
 from os import path
+import os
 
 
 DB_NAME = 'database.sqlite3'
@@ -26,6 +27,11 @@ app.config['SECRET_KEY'] = 'zasdxfcgvhbjnknhbgvfcdretfygh'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     #print("WARNING: 'DATABASE_URL' environment variable is not set. Using SQLite database.")
 
+app.config['UPLOAD_FOLDER'] = 'static/profile_pictures'
+UPLOAD_PATH = os.path.join(os.getcwd(), 'static', 'profile_pictures')
+if not os.path.exists(UPLOAD_PATH):
+    os.makedirs(UPLOAD_PATH)
+
 db.init_app(app)
 CORS(app)
 
@@ -40,10 +46,6 @@ def about():
 @app.route('/admin')
 def admin():
     return render_template('admin.html')
-
-@app.route('/tracking')
-def track():
-    return render_template('track.html')
 
 app.register_blueprint(authenticateUser, url_prefix='/auth/')
      
