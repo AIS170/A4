@@ -8,6 +8,7 @@ from backend.src.mailbox import mailbox
 from backend.src.clear import clear_
 from backend.src.reports import reports
 from backend.src.user import user_route
+from backend.src.create_invoice import create_invoice
 from os import environ
 from flask_cors import CORS # type: ignore
 from os import path
@@ -57,27 +58,7 @@ app.register_blueprint(reports, url_prefix='/reports/')
 
 app.register_blueprint(user_route, url_prefix='/user/')
 
-
-EXTERNAL_API_URL = "http://3.27.23.157"
-
-@app.route('/external_api')
-def external_api_page():
-    deployment_link = EXTERNAL_API_URL  # Your deployment link
-    return render_template('external_api.html', deployment_link=deployment_link)
-
-@app.route('/external_api/CSV', methods=['GET','POST'])
-def create_invoice_text_file():
-    try:
-        # Forward the request to the external API yo
-        response = requests.post("http://3.27.23.157/invoice/CSV/", data=request.form)
-
-        # Assuming the API returns JSON data, you can extract it like this
-        data = response.json()
-
-        return render_template('create_invoice_text.html', data=data)
-    except Exception:
-        return jsonify({'error': 'Failed to get textFile link for invoice creation'}, 500)
-
+app.register_blueprint(create_invoice, url_prefix='/invoice/')
  
 if __name__ == '__main__':
     with app.app_context():
