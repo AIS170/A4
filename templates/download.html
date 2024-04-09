@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice Download</title>
+</head>
+<body>
+    <script>
+        // Function to initiate the download
+        function downloadInvoice() {
+            // Create a hidden iframe element
+            var iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+            
+            // Set the source of the iframe to the download route
+            iframe.src = 'https://ubl-invoice-generator.vercel.app/invoices/guest/file/download';  // Replace with the actual download route
+            
+            // Remove the iframe after download completes
+            setTimeout(function() {
+                document.body.removeChild(iframe);
+            }, 5000);  // Adjust the timeout as needed
+        }
+        
+        // Call the downloadInvoice function when the page loads
+        window.onload = downloadInvoice;
+    </script>
+</body>
+</html>
