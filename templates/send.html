@@ -40,7 +40,7 @@
                 <span>Click to upload XML file</span>
             </div>
         </div>
-        <input type="file" id="file" name="invoice_file" style="display:none;" onchange="handleFileSelect(this)">
+        <input type="file" id="file" name="invoice_files[]" style="display:none;" onchange="handleFileSelect(this)" multiple>
         <button type="button" onclick="submitForm()" class="send-button">
             <div class="svg-wrapper-1">
                 <div class="svg-wrapper">
@@ -57,10 +57,12 @@
     <script>
         function handleFileSelect(input) {
             var files = input.files;
+            var fileNames = [];
             if (files && files.length > 0) {
-                var file = files[0];
-                var fileName = file.name;
-                document.getElementById("fileLabel").innerText = fileName;
+                for(var i = 0; i < files.length; i++) {
+                    fileNames.push(files[i].name);
+                }
+            document.getElementById("fileLabel").innerText = fileNames.join(', ');
             }
         }
 

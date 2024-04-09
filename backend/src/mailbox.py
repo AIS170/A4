@@ -64,16 +64,6 @@ def mailBox():
     return render_template('mailbox.html', received_mails=formatted_mail, current_datetime=current_datetime, search_subject=search_subject, search_sender_address=search_sender_address)
 
 
-
-# @mailbox.route('/<string:invoiceId>', methods=['GET'])
-# def invoiceId():
-
-#     return list
-
-# @mailbox.route('/<string:reportId>', methods=['GET'])
-# def reportId():
-#     return list
-
 # Sends e-invoice to desired recepient given userId, recepientAddress, invoiceSubject, 
 # invoiceBody and list of eInvoices containing name, content, timeCreated and owner. Returns list for sentReport containing content
 # and sentReportId.
@@ -83,38 +73,53 @@ def sending():
         user_id_a = session.get('user_id')
         if user_id_a == None:
             return jsonify({'error': 'Invalid userId'}), 400
+        
         recipient_address = request.form.get('recipient_address')
         invoice_subject = request.form.get('invoice_subject')
-        # invoice_body = request.form.get('invoice_body')   
+
         recipient = User.query.filter_by(email=recipient_address).first()
         sender = User.query.filter_by(id=user_id_a).first()
+
         if recipient == None:
             return jsonify({'error': 'Recipient does not exist'}), 404
         if invoice_subject == '':
             return jsonify({'error': 'Subject cannot be empty'}), 400
         if len(invoice_subject) > 50:
             return jsonify({'error': 'Subject cannot be over 50 characters long'}), 400
-        # if invoice_body == None:
-        #     return jsonify({'error': 'Body cannot be null'}), 400
-        # elif len(invoice_body) > 1000:
-        #     return jsonify({'error': 'Body cannot be over 1000 characters long'}), 400
-        xml_file = request.files.get('invoice_file')
-        if xml_file and allowed_file(xml_file.filename):
-            xml_content = xml_file.read()
+        
+        files = request.files.getlist('invoice_files[]')
+        if not files or any(not allowed_file(file.filename) for file in files):
+            return jsonify({'error': 'Invalid Invoice file(s)'}), 400
+
+        # xml_file = request.files.get('invoice_file')
+        for file in files:
+            xml_content = file.read()
             invoice_dict = xml_to_dict(xml_content)
             invoice_json = json.dumps(invoice_dict)
             
-            new_mail = Invoice(id=os.urandom(24).hex(), subject=invoice_subject, body=invoice_json, date_sent=datetime.now(), user_id=user_id_a, is_incoming=False, sent_to_user_id=recipient.id)
+            new_mail = Invoice(
+                id=os.urandom(24).hex(), 
+                subject=invoice_subject, 
+                body=invoice_json, 
+                date_sent=datetime.now(), 
+                user_id=user_id_a, 
+                is_incoming=False, 
+                sent_to_user_id=recipient.id
+            )
             db.session.add(new_mail)
-            db.session.commit()
             
             report_details = "Invoice Sent Details:\nSubject: {}\nRecipient: {}\nSender: {}\nDate Sent: {}".format(invoice_subject, recipient_address, sender.email, datetime.now())
-            new_comm_report = CommunicationReport(id=os.urandom(24).hex(), invoice_id=new_mail.id, user_id=user_id_a, details=report_details, date_reported=datetime.now())
-            db.session.add(new_comm_report)
-            db.session.commit()
-            return redirect(url_for('mailbox_route.mailBox'))
-        else: 
-            return jsonify({'error': 'Invalid Invoice'}), 400
+            new_comm_report = CommunicationReport(
+                id=os.urandom(24).hex(), 
+                invoice_id=new_mail.id, 
+                user_id=user_id_a, 
+                details=report_details, 
+                date_reported=datetime.now()
+            )
+            db.session.add(new_comm_report)  
+
+        db.session.commit()
+        return redirect(url_for('mailbox_route.mailBox'))
     return render_template('send.html')
 
 
