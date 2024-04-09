@@ -20,6 +20,8 @@ def mailBox():
     search_subject = request.args.get('subject', '')
     search_sender_address = request.args.get('sender_address', '')
 
+    search_invoice_id = request.args.get('invoice_id', '')  
+
     # Start with a base query
     received_mails_query = Invoice.query.join(User, Invoice.user_id == User.id).filter(Invoice.sent_to_user_id == user_id_a)
 
@@ -28,6 +30,9 @@ def mailBox():
         received_mails_query = received_mails_query.filter(Invoice.subject.ilike(f'%{search_subject}%'))
     if search_sender_address:
         received_mails_query = received_mails_query.filter(User.email.ilike(f'%{search_sender_address}%'))
+
+    if search_invoice_id:  
+        received_mails_query = received_mails_query.filter(Invoice.id == search_invoice_id)
 
     # Execute the query
     received_mails = received_mails_query.all()
