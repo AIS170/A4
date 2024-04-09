@@ -31,15 +31,11 @@
         <b2>Get Started Below</b2>
     </div>
     <div class="start">
-        <button id="startButton">Start Your Financial Journey</button>
+        <a href="{{ url_for('authenticate_user.signup') }}">
+            <button id="startButton">Start Your Financial Journey</button>
+        </a>
     </div>
-    <div class="content-container">
-        <div id="authSection" class="hidden">
-            <a href="{{ url_for('authenticate_user.signup') }}">
-                <button id="register" class="register-button">Register New User</button>
-            </a>
-        </div>
-    </div> 
+    
     <footer class="footer">
         <div class="footer-left">
             <p>&copy; 2024 A4 E-Invoicing Services. All rights reserved.</p>
