@@ -2,16 +2,186 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>External API Functionalities</title>
+<title>Invoice Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="/static/CSS.css">
+    <link rel="stylesheet" type="text/css" href="/static/form.css">
 </head>
+
 <body>
-    <div class="sidebar">
-        <!-- Define links/buttons for each functionality -->
-        <a href="/external_api/CSV">Create Invoice from Text File</a><br>
-        
-        
-        <!-- Add more links/buttons for other functionalities -->
+    <!-- Navbar (sit on top) -->
+<div class="w3-top transparent">
+    <div class="w3-bar transparent" id="myNavbar">
+        <a href="/#header" class="w3-bar-item w3-button transparent"><i class="fa fa-home" aria-hidden="true"></i> HOME</a>
+        <a href="/#services" class="w3-bar-item w3-button w3-hide-small transparent"><i class="fa fa-th" aria-hidden="true"></i> SERVICES</a>
     </div>
+</div>
+
+    <h1 style="margin-top: 50px;" id="header">Invoice Form</h1>
+
+    <form action="{{ url_for('create_invoice.invoice_create') }}" method="post">
+        <h2>Invoice Details</h2>
+
+        <label for="issueDate">Issue Date<span class="blueastrc">*</span></label>
+        <input type="date" id="issueDate" name="issueDate" required>
+    
+        <label for="invoiceTypeCode">Invoice Type Code<span class="blueastrc">*</span>:</label>
+        <select id="invoiceTypeCode" name="invoiceTypeCode" required class="invoiceTypeCode">
+            <option value="" disabled selected>Select Invoice Type</option>
+            <option value="CommercialInvoice">Commercial Invoice</option>
+            <option value="CreditNote">Credit Note</option>
+            <option value="DebitNote">Debit Note</option>
+            <option value="SelfBilledInvoice">Self-Billed Invoice</option>
+            <option value="StandardInvoice">Standard Invoice</option>
+        </select>       
+
+        <h2>Supplier Party Details</h2>
+
+        <label for="sellerCompanyName">Company Name<span class="blueastrc">*</span></label>
+        <input type="text" id="sellerCompanyName" name="sellerCompanyName" placeholder="ACME Corp" required>
+        
+        <label for="sellerRegistrationName">Registration Name<span class="blueastrc">*</span></label>
+        <input type="text" id="sellerRegistrationName" name="sellerRegistrationName" placeholder="ACME Corporation Pty Ltd" required>
+    
+        <label for="sellerLegalEntityCompanyId">Legal Entity Company ID<span class="blueastrc">*</span></label>
+        <input type="text" id="sellerLegalEntityCompanyId" name="sellerLegalEntityCompanyId" placeholder="AB123456C" required>
+        
+        <h3> Supplier Address </h3>
+        
+        <label for="sellerCountry">Country<span class="blueastrc">*</span></label>
+        <input type="text" id="sellerCountry" name="sellerCountry" placeholder="AU">
+        
+        <label for="sellerStreet">Street</label>
+        <input type="text" id="sellerStreet" name="sellerStreet" placeholder="Oak St">
+
+        <label for="sellerCity">City</label>
+        <input type="text" id="sellerCity" name="sellerCity" placeholder="Sydney">
+        
+        <label for="sellerState">State</label>
+        <input type="text" id="sellerState" name="sellerState" placeholder="NSW">
+        
+        <label for="sellerZipCode">Zip Code</label>
+        <input type="text" id="sellerZipCode" name="sellerZipCode" placeholder="2000">
+        
+        <h3> Supplier Personal Information </h3>
+        
+        <label for="sellerPhone">Telephone  </label>
+        <input type="text" id="sellerPhone" name="sellerPhone" placeholder="+1234567890">
+        
+        <label for="sellerEmail">Email </label>
+        <input type="email" id="sellerEmail" name="sellerEmail" placeholder="seller@example.com">
+
+        <h2>Customer Party Details</h2>     
+    
+        <label for="buyerCompanyName">Company Name<span class="blueastrc">*</span></label>
+        <input type="text" id="buyerCompanyName" name="buyerCompanyName" placeholder="Widgets Inc" required>
+        
+        <label for="buyerRegistrationName">Registration Name<span class="blueastrc">*</span></label>
+        <input type="text" id="buyerRegistrationName" name="buyerRegistrationName" placeholder="Widgets Incorporated" required>
+    
+        <label for="buyerLegalEntityCompanyId">Legal Entity Company ID<span class="blueastrc">*</span></label>
+        <input type="text" id="buyerLegalEntityCompanyId" name="buyerLegalEntityCompanyId" placeholder="ZX987654C" required>
+    
+        <h3> Customer Address </h3>
+        
+        <label for="buyerCountry">Country*</label>
+        <input type="text" id="buyerCountry" name="buyerCountry" placeholder="US">
+
+        <label for="customerStreet">Street</label>
+        <input type="text" id="customerStreet" name="customerStreet" placeholder="West St">
+
+        <label for="buyerCity">City</label>
+        <input type="text" id="buyerCity" name="buyerCity" placeholder="Brooklyn">
+
+        <label for="buyerState">State</label>
+        <input type="text" id="buyerState" name="buyerState" placeholder="New York">
+
+        <label for="buyerZipCode">Zip Code</label>
+        <input type="text" id="buyerZipCode" name="buyerZipCode" placeholder="11205">
+
+        <h3> Customer Personal Information</h2>
+    
+        <label for="buyerPhone">Telephone </label>
+        <input type="text" id="buyerPhone" name="buyerPhone" placeholder="+19876543210">
+    
+        <label for="buyerEmail">Email </label>
+        <input type="email" id="buyerEmail" name="buyerEmail" placeholder="buyer@example.com">
+    
+        <h2>Tax Information</h2>    
+    
+        <label for="taxSchemeId">Tax Scheme ID<span class="blueastrc">*</span></label>
+        <input type="text" id="taxSchemeId" name="taxSchemeId" placeholder="GST" required>
+    
+        <h2>Monetary Totals</h2> 
+    
+        <label for="taxExclusiveAmount">Tax Exclusive Amount<span class="blueastrc">*</span></label>
+        <input type="text" id="taxExclusiveAmount" name="taxExclusiveAmount" placeholder="5000.00" required>
+    
+        <label for="currency">Currency<span class="blueastrc">*</span></label>
+        <input type="text" id="currency" name="currency" placeholder="USD" required>    
+    
+        <h2>Invoice Line Items</h2>    
+
+            <label for="numberOfItems">Number of Items<span class="blueastrc">*</span></label>
+            <input class="js-number-of-items-input" type="text" id="numberOfItems" name="numberOfItems" placeholder="4" required>
+
+            <p class="js-number-of-items-submission">Select</p>
+
+            <div class="js-item-div">
+                
+            </div>
+
+        <h2>Tax Total</h2>    
+        <label for="taxAmount">Tax Amount<span class="blueastrc">*</span></label>
+        <input type="text" id="taxAmount" name="taxAmount" placeholder="500" required>
+        
+        <label for="taxCurrencyId">Tax Currency<span class="blueastrc">*</span></label>
+        <input type="text" id="taxCurrencyId" name="taxCurrencyId" placeholder="AUD" required>
+        
+        <input type="submit" value="Submit">
+    </form>
+
+    <!-- Footer -->
+<footer class="w3-center w3-padding-64 w3-opacity w3-hover-opacity-off lightBlueOnHover">
+    <a href="#header" class="w3-button"><i class="fa fa-arrow-up w3-margin-right"></i>To the top</a>
+</footer>
+
+<script type="text/javascript" src="/static/scripts.js"></script>
 </body>
+
+<script>
+document.querySelector('.js-number-of-items-submission').addEventListener('click', () => {
+    let numOfLinesInput = document.querySelector('.js-number-of-items-input');
+    let numOfLines = parseInt(numOfLinesInput.value, 10); 
+    let itemsDiv = document.querySelector('.js-item-div');
+    itemsDiv.innerHTML = ''; 
+
+    for (let i = 0; i < numOfLines; i++) {
+        itemsDiv.innerHTML += `
+            <div class="item">
+                <label for="itemName${i}">Item Name<span class="blueastrc">*</span></label>
+                <input type="text" id="itemName${i}" name="itemName${i}" placeholder="Coffee">
+
+                <label for="itemDescription${i}">Item Description </label>
+                <input type="text" id="itemDescription${i}" name="itemDescription${i}" placeholder="Hot Beverage">            
+
+                <label for="itemId${i}">Item Id<span class="blueastrc">*</span></label>
+                <input type="text" id="itemId${i}" name="itemId${i}" placeholder="100423" required>
+
+                <label for="itemCost${i}">Item Cost<span class="blueastrc">*</span></label>
+                <input type="text" id="itemCost${i}" name="itemCost${i}" placeholder="100.00" required>
+
+                <label for="invoicedQuantity${i}">Invoiced Quantity<span class="blueastrc">*</span></label>
+                <input type="text" id="invoicedQuantity${i}" name="invoicedQuantity${i}" placeholder="10" required>
+
+                <label for="unitCode${i}">Unit </label>
+                <input type="text" id="unitCode${i}" name="unitCode${i}" placeholder="250ml">
+
+                <label for="currencyId${i}">Currency<span class="blueastrc">*</span></label>
+                <input type="text" id="currencyId${i}" name="currencyId${i}" placeholder="USD" required>
+            </div>
+        `;
+    }
+});
+</script>
 </html>

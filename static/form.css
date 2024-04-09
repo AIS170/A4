@@ -1,0 +1,167 @@
+@import url(https://fonts.googleapis.com/css?family=Poppins);
+
+/* Default values */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	background-color: white;
+	color: black;
+	overflow-x: hidden; 
+}
+
+/* Overall webpage */
+body, html {
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
+}
+
+/* Heading 1 */
+h1 {
+	text-align: center;
+	font-family: 'Poppins', sans-serif;
+	padding-top: 50px;
+	font-size: 48px;
+	font-weight: 100;
+	background-color: transparent;
+	letter-spacing: 0px;
+	text-transform:none;
+    margin-bottom: 1rem;
+}
+
+/* Heading 2 */
+h2 {
+	text-align: center;
+	padding: 10px;
+	font-family: 'Poppins', sans-serif;
+	font-size: 24px;
+	font-weight: 100;
+	background-color: transparent;
+}
+
+/* Paragraphs */
+p {
+	text-align: justify;
+	font-family: 'Poppins', sans-serif;
+	font-size: 16px;
+	padding: 25px calc(5% + 25px);
+	background-color: transparent;
+}
+
+/* Input fields */
+input, label {
+	font-family: 'Poppins', sans-serif;
+	font-size: 16px;
+	background-color: transparent;
+    display: block;
+};
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 850px;
+    width: 100%;
+}
+
+h2 {
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+label {
+    display: block;
+    margin-top: 20px;
+    color: #666;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    transition: all 0.3s ease; 
+    
+
+}
+
+input[type="submit"] {
+    background-color: #0056b3;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    width: 100%;
+}
+
+input[type="submit"]:hover {
+    background-color: #003d82;
+}
+
+::placeholder {
+    color: #999;
+}
+
+form {
+    margin: auto;
+}
+
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="date"]:hover,
+select:hover {
+    border-color: #0056b3; 
+}
+
+.invoiceTypeCode {
+	font-family: 'Poppins', sans-serif;
+	font-size: 16px;
+	font-weight: 100;
+}
+
+.js-number-of-items-submission {
+    cursor: pointer;
+    border: solid 2px white;
+    width: 100%;
+    text-align: center;
+    padding: 0.85rem;
+    border-radius: 5px;
+    overflow-y: hidden;
+    background-color: #0056b3;
+    color: white;
+}
+
+.js-number-of-items-submission:hover {
+    border-color: #003d82; 
+}
+
+h3 {
+    font-style: italic;
+    margin-top: 1rem;
+    font-weight: 300;
+    font-family: 'Poppins', sans-serif;
+    color: black;
+    text-decoration: underline;
+}
