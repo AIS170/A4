@@ -1,4 +1,5 @@
 
+import io
 from flask import Flask, jsonify, render_template, request
 import requests # type: ignore hi
 
@@ -6,6 +7,7 @@ from backend.src.auth import authenticateUser
 from backend.src.database import db
 from backend.src.mailbox import mailbox
 from backend.src.clear import clear_
+from backend.src.models import Invoice
 from backend.src.reports import reports
 from backend.src.user import user_route
 from os import environ
@@ -79,6 +81,85 @@ def create_invoice_text_file():
         return jsonify({'error': 'Failed to get textFile link for invoice creation'}, 500)
 
  
+
+def register_user_with_service_account():
+    url = "http://rendering.ap-southeast-2.elasticbeanstalk.com/user/register"
+    payload = {
+        "email": "A4Ecommerce@gmail.com",
+        "password": "A4Ecommerce17",
+        "first_name": "A4EcommerceUser",
+        "last_name": "A$ECOMM"
+    }
+
+    response = requests.post(url, json=payload)
+    if response.status_code == 200:
+        # User registration successful
+        return True
+    else:
+        # Handle registration failure
+        return False
+    
+def login_to_external_api():
+    url = "http://rendering.ap-southeast-2.elasticbeanstalk.com/user/login"
+    payload = {
+        "email": "A4Ecommerce@gmail.com",
+        "password": "A4Ecommerce17"
+    }
+    response = requests.post(url, json=payload)
+    if response.status_code == 200:
+        data = response.json()
+        return jsonify({'token': data.get('token')}), 200
+    else:
+        return jsonify({'error': 'Login failed'}), 401
+    
+
+
+def get_invoice_body(invoice_id):
+    invoice = Invoice.query.filter_by(id=invoice_id).first()
+    if invoice:
+        return invoice.body
+    else:
+        return None
+
+def send_invoice_as_xml(invoice_body, output_type, language, token):
+    if invoice_body:
+        url = "http://rendering.ap-southeast-2.elasticbeanstalk.com/render"
+        payload = {
+            "file": invoice_body,
+            "outputType": output_type,
+            "language": language,
+            "token": token
+        }
+        response = requests.post(url, json=payload)
+        if response.status_code == 200:
+            return response.text
+        else:
+            return None
+    else:
+        return None
+
+@app.route('/render_invoice', methods=['POST'])
+def render_invoice_route():
+    data = request.json
+    invoice_id = data.get('invoice_id')
+    output_type = data.get('output_type')
+    language = data.get('language')
+    token = data.get('token')
+
+    if not all([invoice_id, output_type, language, token]):
+        return jsonify({'error': 'Missing parameters'}), 400
+
+    # Retrieve invoice body from the database
+    invoice_body = get_invoice_body(invoice_id)
+
+    # Send invoice for rendering
+    rendered_invoice = send_invoice_as_xml(invoice_body, output_type, language, token)
+    
+    if rendered_invoice:
+        return rendered_invoice, 200
+    else:
+        return jsonify({'error': 'Failed to render invoice'}), 500
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
