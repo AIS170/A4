@@ -42,7 +42,7 @@ def signup():
             return jsonify({'error': 'Password should contain atleast one letter and one number'}), 400
         else:
             user_id = str(uuid.uuid4())
-            new_user = User(id=user_id, first_name=first_name, last_name=last_name, email=email, password=password)
+            new_user = User(id=user_id, first_name=first_name, last_name=last_name, username=username, email=email, password=password)
             db.session.add(new_user)
             db.session.commit()
             

@@ -169,6 +169,7 @@
       <div class="form-floating">
         <input type="text" class="form-control" id="username" name="username" placeholder="brucewayne" required>
         <label for="username">Username</label>
+        <p class="text-muted mt-2">Your email will be automatically generated as <code id="liveEmail">&lt;username&gt;@a4.com</code>.</p>
       </div>
       <div class="form-floating">
         <input type="password" class="form-control" id="password" name="password" placeholder="Password1234" required>
@@ -188,5 +189,20 @@
 
   <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const usernameInput = document.getElementById('username');
+      const liveEmailDisplay = document.getElementById('liveEmail');
+  
+      usernameInput.addEventListener('input', function () {
+          const username = usernameInput.value;
+          liveEmailDisplay.textContent = username ? `${username}@a4.com` : '<username>@a4.com';
+      });
+  });
+  </script>
+  
+
+
       </body>
   </html>
