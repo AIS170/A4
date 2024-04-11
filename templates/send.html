@@ -28,7 +28,7 @@
 
     <form id="invoiceForm" action="{{ url_for('mailbox_route.sending') }}" method="post" enctype="multipart/form-data">
         <label for="recipient_address">Recipient Address:</label>
-        <input type="email" id="recipient_address" name="recipient_address" required>
+        <input type="text" id="recipient_address" name="recipient_addresses" placeholder="Enter comma-separated emails" required>
         <label for="invoice_subject">Subject:</label>
         <input type="text" id="invoice_subject" name="invoice_subject" required>
         <label for="invoice_file">Invoice Attachment:</label>

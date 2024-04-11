@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Rendering</title>
+</head>
+<body>
+    <h1>Invoice Rendering</h1>
+    
+    <label for="invoiceId">Invoice ID:</label>
+    <input type="text" id="invoiceId" name="invoiceId">
+    <br>
+
+    <label for="outputType">Output Type:</label>
+    <select id="outputType" name="outputType">
+        <option value="json">JSON</option>
+        <option value="pdf">PDF</option>
+    </select>
+    <br>
+
+    <label for="language">Language:</label>
+    <select id="language" name="language">
+        <option value="eng">English</option>
+        <option value="fran">French</option>
+    </select>
+    <br>
+
+    <button onclick="renderInvoice()">Render Invoice</button>
+
+    <div id="output"></div>
+
+    <script>
+        function renderInvoice() {
+            const invoiceId = document.getElementById('invoiceId').value;
+            const outputType = document.getElementById('outputType').value;
+            const language = document.getElementById('language').value;
+
+            fetch('/render_invoice', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    invoice_id: invoiceId,
+                    output_type: outputType,
+                    language: language
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('Failed to render invoice');
+                }
+            })
+            .then(data => {
+                document.getElementById('output').innerText = data;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('output').innerText = 'Error: ' + error.message;
+            });
+        }
+    </script>
+</body>
+</html>

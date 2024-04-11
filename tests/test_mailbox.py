@@ -39,13 +39,13 @@ valid_login_data2 = {
 valid_sent_email_data1 = {
     "recipient_address": "user2@example.com",
     "invoice_subject": "New mail",
-    "invoice_file": 'data.xml',
+    "invoice_files[]": [],
 }
 
 valid_sent_email_data2 = {
     "recipient_address": "user@example.com",
     "invoice_subject": "New mail",
-    "invoice_file": 'data.xml',
+    "invoice_files[]": [],
 }
 
 # ================================================
@@ -64,10 +64,15 @@ valid_sent_email_data2 = {
 
 #     with open('tests/data.xml', 'rb') as file:
 #         valid_file_content = BytesIO(file.read())
-#     valid_data = valid_sent_email_data1.copy()
-#     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+#     valid_data = {
+#         "recipient_address": "user2@example.com",
+#         "invoice_subject": "New mail",
+#         "invoice_files[]": [],
+#     }
+#     valid_data['invoice_files[]'].append((valid_file_content, 'data.xml'))
+
 #     response = client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
-#     message = json.loads(response.data)
+#     assert response.status_code == 200
 
 #     with app.app_context():
 #         mail = Invoice.query.filter_by(subject=valid_sent_email_data1['invoice_subject']).first()
@@ -87,8 +92,14 @@ valid_sent_email_data2 = {
 
 #     with open('tests/data.xml', 'rb') as file:
 #         valid_file_content = BytesIO(file.read())
-#     valid_data = valid_sent_email_data2.copy()
-#     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+#     valid_file_content.seek(0)
+#     valid_data = {
+#         "recipient_address": "user2@example.com",
+#         "invoice_subject": "New mail",
+#         "invoice_files[]": [],
+#     }
+#     valid_data['invoice_files[]'].append((valid_file_content, 'data.xml'))
+
 #     response = client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
 #     assert response.status_code == 200
 
@@ -110,15 +121,26 @@ valid_sent_email_data2 = {
 
 #     with open('tests/data.xml', 'rb') as file:
 #         valid_file_content = BytesIO(file.read())
-#     valid_data = valid_sent_email_data1.copy()
-#     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+#     valid_file_content.seek(0)
+#     valid_data = {
+#         "recipient_address": "user2@example.com",
+#         "invoice_subject": "New mail",
+#         "invoice_files[]": [],
+#     }
+#     valid_data['invoice_files[]'].append((valid_file_content, 'data.xml'))
+
 #     response = client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
 #     assert response.status_code == 200
 
-#     with open('tests/data.xml', 'rb') as file:
+#     with open('tests/data5guys.xml', 'rb') as file:
 #         valid_file_content = BytesIO(file.read())
-#     valid_data2 = valid_sent_email_data2.copy()
-#     valid_data2['invoice_file'] = (valid_file_content, 'data.xml')
+#     valid_file_content.seek(0)
+#     valid_data2 = {
+#         "recipient_address": "user@example.com",
+#         "invoice_subject": "New mail",
+#         "invoice_files[]": [],
+#     }
+#     valid_data2['invoice_files[]'].append((valid_file_content, 'data.xml'))
 
 #     response = client.post('/mailbox/sending', data=valid_data2, follow_redirects=True)
 #     assert response.status_code == 200
@@ -133,28 +155,32 @@ valid_sent_email_data2 = {
 #         assert commReport1 is not None
 #         assert commReport2 is not None
 
-# # Test send mail with invalid userId
-# def test_sending_invalid_user():
-#     client = app.test_client()
-#     client.delete('/clear')
-#     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
-#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
-#     client.get('/auth/logout', follow_redirects=True)
-#     client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
-#     client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+# Test send mail with invalid userId
+def test_sending_invalid_user():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
 
-#     with open('tests/data.xml', 'rb') as file:
-#         valid_file_content = BytesIO(file.read())
-#     valid_data = valid_sent_email_data1.copy()
-#     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    valid_data = {
+        "recipient_address": "user2@example.com",
+        "invoice_subject": "New mail",
+        "invoice_files[]": [],
+    }
+    valid_data['invoice_files[]'].append((valid_file_content, 'data.xml'))
 
-#     client.get('/auth/logout', follow_redirects=True)
-#     response = client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
-#     assert response.status_code == 400
-#     message = json.loads(response.data)
-#     assert message['error'] == 'Invalid userId'
+    client.get('/auth/logout', follow_redirects=True)
+    response = client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
+    assert response.status_code == 400
+    message = json.loads(response.data)
+    assert message['error'] == 'Invalid userId'
 
-# # Test send mail to non-existent user
+# Test send mail to non-existent user
 # def test_sending_invalid_recipient():
 #     client = app.test_client()
 #     client.delete('/clear')
@@ -164,78 +190,94 @@ valid_sent_email_data2 = {
 #     client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
 #     client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
 
-#     invalid_data = valid_sent_email_data1.copy()
+#     invalid_data = {
+#         "recipient_address": "user2@example.com",
+#         "invoice_subject": "New mail",
+#         "invoice_files[]": [],
+#     }
 #     invalid_data['recipient_address'] = 'invalid@example.com'
 #     with open('tests/data.xml', 'rb') as file:
 #         valid_file_content = BytesIO(file.read())
-#     invalid_data['invoice_file'] = (valid_file_content, 'data.xml')
+#     invalid_data['invoice_files[]'].append((valid_file_content, 'data.xml'))
 
 #     response = client.post('/mailbox/sending', data=invalid_data, follow_redirects=True)
 #     message = json.loads(response.data)
 #     assert message['error'] == 'Recipient does not exist'
 #     assert response.status_code == 404
 
-# # Test send mail with empty subject
-# def test_sending_empty_subject():
-#     client = app.test_client()
-#     client.delete('/clear')
-#     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
-#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
-#     client.get('/auth/logout', follow_redirects=True)
-#     client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
-#     client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+# Test send mail with empty subject
+def test_sending_empty_subject():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
 
-#     invalid_data = valid_sent_email_data1.copy()
-#     invalid_data['invoice_subject'] = ''
-#     with open('tests/data.xml', 'rb') as file:
-#         valid_file_content = BytesIO(file.read())
-#     invalid_data['invoice_file'] = (valid_file_content, 'data.xml')
+    invalid_data = {
+        "recipient_address": "user2@example.com",
+        "invoice_subject": "New mail",
+        "invoice_files[]": [],
+    }
+    invalid_data['invoice_subject'] = ''
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    invalid_data['invoice_files[]'].append((valid_file_content, 'data.xml'))
 
-#     response = client.post('/mailbox/sending', data=invalid_data, follow_redirects=True)
-#     assert response.status_code == 400
-#     message = json.loads(response.data)
-#     assert message['error'] == 'Subject cannot be empty'
+    response = client.post('/mailbox/sending', data=invalid_data, follow_redirects=True)
+    assert response.status_code == 400
+    message = json.loads(response.data)
+    assert message['error'] == 'Subject cannot be empty'
 
-# # Test send mail with subject over 50 characters long
-# def test_sending_subject_too_long():
-#     client = app.test_client()
-#     client.delete('/clear')
-#     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
-#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
-#     client.get('/auth/logout', follow_redirects=True)
-#     client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
-#     client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+# Test send mail with subject over 50 characters long
+def test_sending_subject_too_long():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
 
-#     invalid_data = valid_sent_email_data1.copy()
-#     invalid_data['invoice_subject'] = 'a' * 51
-#     with open('tests/data.xml', 'rb') as file:
-#         valid_file_content = BytesIO(file.read())
-#     invalid_data['invoice_file'] = (valid_file_content, 'data.xml')
+    invalid_data = {
+        "recipient_address": "user2@example.com",
+        "invoice_subject": "New mail",
+        "invoice_files[]": [],
+    }
+    invalid_data['invoice_subject'] = 'a' * 51
+    with open('tests/data.xml', 'rb') as file:
+        valid_file_content = BytesIO(file.read())
+    invalid_data['invoice_files[]'].append((valid_file_content, 'data.xml'))
 
-#     response = client.post('/mailbox/sending', data=invalid_data, follow_redirects=True)
-#     assert response.status_code == 400
-#     message = json.loads(response.data)
-#     assert message['error'] == 'Subject cannot be over 50 characters long'
+    response = client.post('/mailbox/sending', data=invalid_data, follow_redirects=True)
+    assert response.status_code == 400
+    message = json.loads(response.data)
+    assert message['error'] == 'Subject cannot be over 50 characters long'
 
-# # Test send mail with invalid file
-# def test_sending_invalid_file():
-#     client = app.test_client()
-#     client.delete('/clear')
-#     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
-#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
-#     client.get('/auth/logout', follow_redirects=True)
-#     client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
-#     client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
+# Test send mail with invalid file
+def test_sending_invalid_file():
+    client = app.test_client()
+    client.delete('/clear')
+    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+    client.get('/auth/logout', follow_redirects=True)
+    client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+    client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
 
-#     invalid_data = valid_sent_email_data1.copy()
-#     with open('tests/invalid.txt', 'rb') as file:
-#         valid_file_content = BytesIO(file.read())
-#     invalid_data['invoice_file'] = (valid_file_content, 'invalid.txt')
+    invalid_data = {
+        "recipient_address": "user2@example.com",
+        "invoice_subject": "New mail",
+        "invoice_files[]": [],
+    }
+    with open('tests/invalid.txt', 'rb') as file:
+        invalid_file_content = BytesIO(file.read())
+    invalid_data['invoice_files[]'].append((invalid_file_content, 'invalid.txt'))
 
-#     response = client.post('/mailbox/sending', data=invalid_data, follow_redirects=True)
-#     assert response.status_code == 400
-#     message = json.loads(response.data)
-#     assert message['error'] == 'Invalid Invoice'
+    response = client.post('/mailbox/sending', data=invalid_data, follow_redirects=True)
+    assert response.status_code == 400
+    message = json.loads(response.data)
+    assert message['error'] == 'Invalid Invoice file(s)'
 
 # ================================================
 # ======= Test Cases for the Mailbox route =======
@@ -253,8 +295,12 @@ valid_sent_email_data2 = {
 
 #     with open('tests/data.xml', 'rb') as file:
 #         valid_file_content = BytesIO(file.read())
-#     valid_data = valid_sent_email_data2.copy()
-#     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+#     valid_data = {
+#         "recipient_address": "user@example.com",
+#         "invoice_subject": "New mail",
+#         "invoice_files[]": [],
+#     }
+#     valid_data['invoice_files[]'].append((valid_file_content, 'data.xml'))
 #     client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
 #     client.get('/auth/logout', follow_redirects=True)
 #     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
@@ -278,16 +324,24 @@ valid_sent_email_data2 = {
 
 #     with open('tests/data.xml', 'rb') as file:
 #         valid_file_content = BytesIO(file.read())
-#     valid_data = valid_sent_email_data2.copy()
-#     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+#     valid_data = {
+#         "recipient_address": "user@example.com",
+#         "invoice_subject": "New mail",
+#         "invoice_files[]": [],
+#     }
+#     valid_data['invoice_files[]'].append((valid_file_content, 'data.xml'))
 #     client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
 
-#     mail2 = valid_sent_email_data1.copy()
+#     mail2 = {
+#         "recipient_address": "user2@example.com",
+#         "invoice_subject": "New mail",
+#         "invoice_files[]": [],
+#     }
 #     mail2['invoice_subject'] = 'Another one'
 #     with open('tests/data.xml', 'rb') as file:
 #         valid_file_content = BytesIO(file.read())
 #     valid_data = mail2.copy()
-#     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+#     valid_data['invoice_files[]'].append((valid_file_content, 'data.xml'))
 #     client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
 #     client.get('/auth/logout', follow_redirects=True)
 #     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
@@ -332,8 +386,12 @@ def test_mailbox_inavlid_user():
 
 #     with open('tests/data.xml', 'rb') as file:
 #         valid_file_content = BytesIO(file.read())
-#     valid_data = valid_sent_email_data2.copy()
-#     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+#     valid_data = {
+#         "recipient_address": "user@example.com",
+#         "invoice_subject": "New mail",
+#         "invoice_files[]": [],
+#     }
+#     valid_data['invoice_files[]'].append((valid_file_content, 'data.xml'))
 #     client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
 #     client.get('/auth/logout', follow_redirects=True)
 #     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
@@ -347,7 +405,7 @@ def test_mailbox_inavlid_user():
 #     assert response.status_code == 200
 
 # # Test view invoice when not logged in
-# def test_invoice_show_invalid_user():
+# def test_invoice_show_invalid_user_id():
 #     client = app.test_client()
 #     client.delete('/clear')
 #     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
@@ -358,8 +416,12 @@ def test_mailbox_inavlid_user():
 
 #     with open('tests/data.xml', 'rb') as file:
 #         valid_file_content = BytesIO(file.read())
-#     valid_data = valid_sent_email_data2.copy()
-#     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+#     valid_data = {
+#         "recipient_address": "user@example.com",
+#         "invoice_subject": "New mail",
+#         "invoice_files[]": [],
+#     }
+#     valid_data['invoice_files[]'].append((valid_file_content, 'data.xml'))
 #     client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
 #     client.get('/auth/logout', follow_redirects=True)
 
@@ -397,8 +459,12 @@ def test_invoice_show_invalid_invoice():
 
 #     with open('tests/data.xml', 'rb') as file:
 #         valid_file_content = BytesIO(file.read())
-#     valid_data = valid_sent_email_data2.copy()
-#     valid_data['invoice_file'] = (valid_file_content, 'data.xml')
+#     valid_data = {
+#         "recipient_address": "user@example.com",
+#         "invoice_subject": "New mail",
+#         "invoice_files[]": [],
+#     }
+#     valid_data['invoice_files[]'].append((valid_file_content, 'data.xml'))
 #     client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
 
 #     with app.app_context():
@@ -408,72 +474,80 @@ def test_invoice_show_invalid_invoice():
 #     assert response.status_code == 401
 #     message = json.loads(response.data)
 #     assert message['error'] == 'You do not own this invoice'
-    
-
-
-
-
-
 
 # ================================================
 # ==== Test Cases for the Delete Invoice     =====
 # ================================================
     
-
-#Test deleted invoice succesfully 
+# Test deleted invoice succesfully 
 # def test_delete_invoice_success():
 #     client = app.test_client()
 #     client.delete('/clear')
 #     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
 #     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
-    
 #     client.get('/auth/logout', follow_redirects=True)
 #     client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
 #     client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
 
 #     with open('tests/data.xml', 'rb') as file:
 #         valid_file_content = file.read()
-    
-    
-#     valid_data = valid_sent_email_data2.copy()
-#     valid_data['invoice_file'] = (BytesIO(valid_file_content), 'data.xml')
+#     valid_data = {
+#         "recipient_address": "user@example.com",
+#         "invoice_subject": "New mail",
+#         "invoice_files[]": [],
+#     }
+#     valid_data['invoice_files[]'].append((BytesIO(valid_file_content), 'data.xml'))
 #     client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
-    
     
 #     with app.app_context():
 #         latest_invoice = Invoice.query.order_by(Invoice.id.desc()).first()
 #         assert latest_invoice is not None, "Failed to create invoice"
 #         invoice_id = latest_invoice.id
-
-    
 #         delete_response = client.delete(f'/mailbox/{invoice_id}/delete', follow_redirects=True)
-
-    
-#         deleted_invoice = Invoice.query.get(invoice_id)
+#         deleted_invoice = Invoice.query.filter_by(id=invoice_id).first()
 #         assert deleted_invoice is None, "Invoice was not successfully deleted."
+#         assert delete_response.status_code == 200
 
 
-# Test delete invoice with invalid userId
-def test_delete_invoice_invalid_user():
+# # Test delete invoice with invalid invoice Id
+# def test_delete_invoice_invalid():
+#     client = app.test_client()
+#     client.delete('/clear')
+#     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
 
+#     some_invoice_id = "someinvoiceid"
+#     delete_response = client.delete(f'/mailbox/{some_invoice_id}/delete')
+#     assert delete_response.status_code == 404
+#     message = json.loads(delete_response.data)
+#     assert message['error'] == 'Invoice does not exist'
 
-    client = app.test_client()
-    client.delete('/clear')
-    client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
-    #client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+# # Test delete invoice with invalid userId
+# def test_delete_user_invalid():
+#     client = app.test_client()
+#     client.delete('/clear')
+#     client.post('/auth/signup', data=valid_registration_data1, follow_redirects=True)
+#     client.post('/auth/login', data=valid_login_data1, follow_redirects=True)
+#     client.get('/auth/logout', follow_redirects=True)
+#     client.post('/auth/signup', data=valid_registration_data2, follow_redirects=True)
+#     client.post('/auth/login', data=valid_login_data2, follow_redirects=True)
 
-    some_invoice_id = "someinvoiceid"
-
-    delete_response = client.delete(f'/mailbox/{some_invoice_id}/delete')
+#     with open('tests/data.xml', 'rb') as file:
+#         valid_file_content = file.read()
+#     valid_data = {
+#         "recipient_address": "user@example.com",
+#         "invoice_subject": "New mail",
+#         "invoice_files[]": [],
+#     }
+#     valid_data['invoice_files[]'].append((BytesIO(valid_file_content), 'data.xml'))
+#     client.post('/mailbox/sending', data=valid_data, follow_redirects=True)
     
-
-    assert delete_response.status_code == 400
-    message = json.loads(delete_response.data)
-    assert message['error'] == 'Invalid userId'
-
-
-
-
-
-
-
+#     with app.app_context():
+#         latest_invoice = Invoice.query.order_by(Invoice.id.desc()).first()
+#         assert latest_invoice is not None, "Failed to create invoice"
+#         invoice_id = latest_invoice.id
+#         client.get('/auth/logout', follow_redirects=True)
+#         delete_response = client.delete(f'/mailbox/{invoice_id}/delete', follow_redirects=True)
+#         assert delete_response.status_code == 400
+#         message = json.loads(delete_response.data)
+#         assert message['error'] == 'Invalid userId'
