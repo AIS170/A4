@@ -98,6 +98,35 @@
             display: block !important;
         }
     </style>
+    <style>
+        /* Other styles... */
+      
+        .list-group-item {
+          border: none; /* Remove borders from list items */
+          cursor: pointer; /* Change cursor to indicate the item is clickable */
+          transition: background-color 0.3s; /* Smooth transition for background color */
+        }
+      
+        .list-group-item:not(:last-child) {
+          border-bottom: 1px solid #1e1d25; /* Add a light border between items, if desired */
+        }
+      
+        .list-group-item:hover {
+          background-color: rgba(255, 255, 255, 0.1); /* Slightly white background on hover */
+        }
+        
+        .timestamp, .delete-icon {
+          display: block; /* Make timestamp and delete icon stack vertically */
+          text-align: right; /* Align to the right */
+          margin-top: 0.5rem; /* Give a little space between the elements */
+        }
+      
+        .delete-icon {
+          cursor: default; /* Ensure the delete icon doesn't show the pointer cursor */
+        }
+      
+        /* ...any other custom styles... */
+      </style>
 
     <link href="/static/sidebars.css" rel="stylesheet">
 </head>
@@ -280,7 +309,7 @@
 
         <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary" style="width: 1200px;">
             <span class="d-flex align-items-center flex-shrink-0 p-3 link-body-emphasis text-decoration-none border-bottom fs-5 fw-semibold" style="font-size: 40px !important; text-align: center;">
-                Welcome, {{ user.first_name }}
+                Welcome, {{ user.first_name }}!
             </span>
             <div class="content">
                 <!-- Search Form Start -->
@@ -297,22 +326,23 @@
                     
                 </form>
                 {% if received_mails %}
-                    {% for mail in received_mails|sort(attribute='date_sent', reverse=true) %}
-                    <div class="list-group list-group-flush border-bottom scrollarea mt-4">
-                        <a href="{{ url_for('mailbox_route.invoiceShow', invoiceId=mail.id)}}" class="list-group-item list-group-item-action py-3 lh-sm" aria-current="true">
-                            <div class="d-flex w-100 align-items-center justify-content-between">
+                <div class="list-group list-group-flush mt-4">
+                    {% for mail in received_mails %}
+                    <div class="list-group-item py-3 lh-sm" aria-current="true" onclick="window.location='{{ url_for('mailbox_route.invoiceShow', invoiceId=mail.id) }}'">
+                        <div class="d-flex justify-content-between">
+                            <div class="pe-3">
                                 <strong class="mb-1">{{ mail.subject }}</strong>
-                                <small>{{ mail.date_sent.strftime('%H:%M') if mail.date_sent.date() == current_datetime.date() else mail.date_sent.strftime('%Y-%m-%d') }}</small>
+                                <div class="mb-1 small">{{ mail.sender_mail }}</div>
                             </div>
-                            <div class="col-10 mb-1 small">{{ mail.sender_mail }}</div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small>
-                                    <a href="#" onclick="event.preventDefault(); deleteInvoice('{{ mail.id }}');">
+                            <div class="text-end">
+                                <small class="timestamp">{{ mail.date_sent.strftime('%H:%M') }}</small>
+                                <small class="delete-icon">
+                                    <a href="#" onclick="event.stopPropagation(); deleteInvoice('{{ mail.id }}');">
                                         <i class="bi bi-trash3"></i>
                                     </a>
                                 </small>
                             </div>
-                        </a>
+                        </div>
                     </div>
                     {% endfor %}
                 </div>
