@@ -2,22 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-<title>Invoice Generator</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="/static/CSS.css">
-    <link rel="stylesheet" type="text/css" href="/static/form.css">
+    <title>Invoice Generator</title>
 </head>
 
 <body>
-    <!-- Navbar (sit on top) -->
-<div class="w3-top transparent">
-    <div class="w3-bar transparent" id="myNavbar">
-        <a href="/#header" class="w3-bar-item w3-button transparent"><i class="fa fa-home" aria-hidden="true"></i> HOME</a>
-        <a href="/#services" class="w3-bar-item w3-button w3-hide-small transparent"><i class="fa fa-th" aria-hidden="true"></i> SERVICES</a>
-    </div>
-</div>
-
-    <h1 style="margin-top: 50px;" id="header">Invoice Form</h1>
+    <h1>Invoice Form</h1>
 
     <form action="{{ url_for('create_invoice.invoice_create') }}" method="post">
         <h2>Invoice Details</h2>
@@ -140,48 +129,5 @@
         
         <input type="submit" value="Submit">
     </form>
-
-    <!-- Footer -->
-<footer class="w3-center w3-padding-64 w3-opacity w3-hover-opacity-off lightBlueOnHover">
-    <a href="#header" class="w3-button"><i class="fa fa-arrow-up w3-margin-right"></i>To the top</a>
-</footer>
-
-<script type="text/javascript" src="/static/scripts.js"></script>
 </body>
-
-<script>
-document.querySelector('.js-number-of-items-submission').addEventListener('click', () => {
-    let numOfLinesInput = document.querySelector('.js-number-of-items-input');
-    let numOfLines = parseInt(numOfLinesInput.value, 10); 
-    let itemsDiv = document.querySelector('.js-item-div');
-    itemsDiv.innerHTML = ''; 
-
-    for (let i = 0; i < numOfLines; i++) {
-        itemsDiv.innerHTML += `
-            <div class="item">
-                <label for="itemName${i}">Item Name<span class="blueastrc">*</span></label>
-                <input type="text" id="itemName${i}" name="itemName${i}" placeholder="Coffee">
-
-                <label for="itemDescription${i}">Item Description </label>
-                <input type="text" id="itemDescription${i}" name="itemDescription${i}" placeholder="Hot Beverage">            
-
-                <label for="itemId${i}">Item Id<span class="blueastrc">*</span></label>
-                <input type="text" id="itemId${i}" name="itemId${i}" placeholder="100423" required>
-
-                <label for="itemCost${i}">Item Cost<span class="blueastrc">*</span></label>
-                <input type="text" id="itemCost${i}" name="itemCost${i}" placeholder="100.00" required>
-
-                <label for="invoicedQuantity${i}">Invoiced Quantity<span class="blueastrc">*</span></label>
-                <input type="text" id="invoicedQuantity${i}" name="invoicedQuantity${i}" placeholder="10" required>
-
-                <label for="unitCode${i}">Unit </label>
-                <input type="text" id="unitCode${i}" name="unitCode${i}" placeholder="250ml">
-
-                <label for="currencyId${i}">Currency<span class="blueastrc">*</span></label>
-                <input type="text" id="currencyId${i}" name="currencyId${i}" placeholder="USD" required>
-            </div>
-        `;
-    }
-});
-</script>
 </html>
