@@ -15,6 +15,8 @@ def mailBox():
     user_id_a = session.get('user_id')
     if not user_id_a:
         return jsonify({'error': 'Invalid userId'}), 400
+    
+    user = User.query.filter_by(id=user_id_a).first()
 
     # Retrieve search query parameters
     search_subject = request.args.get('subject', '')
@@ -61,7 +63,7 @@ def mailBox():
         db.session.add(new_comm_report)
         db.session.commit()
 
-    return render_template('mailbox.html', received_mails=formatted_mail, current_datetime=current_datetime, search_subject=search_subject, search_sender_address=search_sender_address)
+    return render_template('mailbox.html', received_mails=formatted_mail, user=user, current_datetime=current_datetime, search_subject=search_subject, search_sender_address=search_sender_address)
 
 
 # Sends e-invoice to desired recepient given userId, recepientAddress, invoiceSubject, 
