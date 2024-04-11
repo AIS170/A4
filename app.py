@@ -1,6 +1,6 @@
 
 from flask import Flask, jsonify, render_template, request
-import requests # type: ignore
+import requests # type: ignore hi
 
 from backend.src.auth import authenticateUser 
 from backend.src.database import db
@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'zasdxfcgvhbjnknhbgvfcdretfygh'
 
-#db_uri = environ.get('DATABASE_URL')  yo
+#db_uri = environ.get('DATABASE_URL')  yo hei
 #if db_uri:
     #app.config['SQLALCHEMY_DATABASE_URI'] = db_uri.replace('postgres://', 'postgresql://', 1)
 #else:

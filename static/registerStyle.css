@@ -20,7 +20,9 @@ body {
 
 .image-center {
   text-align: center;
+  margin-top: -10px; /* Adjust the value as needed */
 }
+
 
 .form-signin input[type="password"] {
     margin-bottom: 0; /* Change from margin-bottom: 10px; to margin-bottom: 0; */
