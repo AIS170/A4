@@ -6,7 +6,8 @@ class User(db.Model):
     id = db.Column(db.String(80), unique=True, primary_key=True)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
-    email = db.Column(db.String(100), unique=True, nullable=False)
+    username = db.Column(db.String(100), unique=True, nullable=False)  # new
+    email = db.Column(db.String(100), unique=True, nullable=False)  # new
     image_file = db.Column(db.String(20), nullable=False, default='default.png')
     password = db.Column(db.String(100), nullable=False)
     token_rel = relationship("Token", back_populates="user_rel")
