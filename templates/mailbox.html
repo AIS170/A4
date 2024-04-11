@@ -12,9 +12,13 @@
 <div class="sidebar">
     <a href="{{ url_for('user_route.details')}}">User Details</a>
     <a href="{{ url_for('mailbox_route.sending') }}">Send Invoice</a>
-    <a href="{{ url_for('reports.reportBox') }}">Communication Reports</a>
+
+    <a href="{{ url_for('reportBox') }}">Communication Reports</a>
+
+    <a href="about.html">About Us</a>
+
     <a href="{{ url_for('create_invoice.invoice_create') }}">External API</a>
-    <a href="{{ url_for('about') }}">About Us</a>
+
     <a href="{{ url_for('authenticate_user.userLogout') }}">Log out</a>
 </div>
 
