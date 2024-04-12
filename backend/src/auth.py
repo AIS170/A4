@@ -14,8 +14,7 @@ def signup():
     if request.method == 'POST':
         first_name = request.form.get('firstName')
         last_name = request.form.get('lastName')
-        username = request.form.get('username') 
-        email = f"{username}@a4.com"
+        email = request.form.get('email')
         password = request.form.get('password')
         confirm_password = request.form.get('confirmPassword')
         if password != confirm_password:
@@ -28,8 +27,6 @@ def signup():
             return jsonify({'error': 'Last name cannot exceed 15 characters'}), 400
         elif len(last_name) == 0:
             return jsonify({'error': 'Last name cannot be empty'}), 400
-        elif User.query.filter_by(username=username).first():
-            return jsonify({'error': 'Username is already in use'}), 400
         elif not validEmail(email):
             return jsonify({'error': 'Email must be of a valid format'}), 400
         elif User.query.filter_by(email=email).first():
@@ -42,15 +39,11 @@ def signup():
             return jsonify({'error': 'Password should contain atleast one letter and one number'}), 400
         else:
             user_id = str(uuid.uuid4())
-            new_user = User(id=user_id, first_name=first_name, last_name=last_name, username=username, email=email, password=password)
+            new_user = User(id=user_id, first_name=first_name, last_name=last_name, email=email, password=password)
             db.session.add(new_user)
             db.session.commit()
             
             return redirect(url_for('authenticate_user.login'))
-              
-        
-       
-
     return render_template('register.html')
 
 # Helper function to check if an email is of valid format
