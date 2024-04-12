@@ -1,9 +1,9 @@
 
 import io
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, redirect, url_for, session
 import requests # type: ignore hi
 
-from backend.src.auth import authenticateUser 
+from backend.src.auth import authenticateUser, logout 
 from backend.src.database import db
 from backend.src.mailbox import mailbox
 from backend.src.clear import clear_
@@ -42,6 +42,14 @@ CORS(app)
 def home():
     return render_template('index.html')  
 
+
+@app.route('/auth/logout')
+def userLogout():
+    token = logout()
+    if token:
+        db.session.delete(token)
+        db.session.commit()
+    return redirect(url_for('authenticate_user.login'))
 
 @app.route('/reports', methods=['GET'])
 def reportBox():

@@ -85,18 +85,10 @@ def login():
     
 @authenticateUser.route('/logout')
 # Ends the current users session and redirects them to the login page
-def userLogout():
-    user_id = session.get('user_id')
-    if user_id:
-        token_entry = Token.query.filter_by(user_id=user_id).first()
-        
-        if token_entry:
-            db.session.delete(token_entry)
-            db.session.commit()
+def logout():
+    user_id_a = session.get('user_id')
+    token_entry = Token.query.filter_by(user_id=user_id_a).first()
     session.clear()
-    return redirect(url_for('authenticate_user.login'))
+    return token_entry
+    
 
-
-@authenticateUser.route('/reset/password')
-def forgot_password():
-    return
