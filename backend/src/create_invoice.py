@@ -29,7 +29,7 @@ def invoice_create():
 
                 if download_response.status_code == 200:
                     # Optionally handle success response for download
-                    return redirect(url_for('create_invoice.download_invoice'))
+                    return redirect(url_for('download_invoice'))
                 else:
                     # Optionally handle error response for download
                     return jsonify({"error": "Failed to download invoice"})
@@ -40,7 +40,3 @@ def invoice_create():
             # Handle exceptions if any
             return jsonify({"error": str(e)})
     return render_template('external_api.html')
-
-@create_invoice.route('/download')
-def download_invoice():
-    return render_template('download.html')

@@ -1,7 +1,9 @@
 
 import io
 from flask import Flask, jsonify, render_template, request
-import requests # type: ignore hi
+import requests
+from backend.src.render_invoice import render_invoice
+from backend.src.create_invoice import create_invoice
 
 from backend.src.auth import authenticateUser 
 from backend.src.database import db
@@ -10,9 +12,8 @@ from backend.src.clear import clear_
 from backend.src.models import Invoice
 from backend.src.reports import getReports
 from backend.src.user import user_route
-from backend.src.create_invoice import create_invoice
 from os import environ
-from flask_cors import CORS # type: ignore
+from flask_cors import CORS
 from os import path
 import os
 
@@ -40,7 +41,7 @@ CORS(app)
 
 @app.route('/')
 def home():
-    return render_template('index.html')  
+    return render_template('index.html') 
 
 
 @app.route('/reports', methods=['GET'])
@@ -48,6 +49,10 @@ def reportBox():
     formatted_reports = getReports()
     return render_template('report.html', formatted_reports=formatted_reports)
 
+
+@app.route('/download')
+def download_invoice():
+    return render_template('download.html')
 
 @app.route('/about')
 def about():
@@ -58,18 +63,16 @@ def admin():
     return render_template('admin.html')
 
 app.register_blueprint(authenticateUser, url_prefix='/auth/')
-     
-app.register_blueprint(mailbox, url_prefix='/mailbox/')  
+
+app.register_blueprint(mailbox, url_prefix='/mailbox/') 
 
 app.register_blueprint(clear_, url_prefix='/clear')
 
-
+app.register_blueprint(create_invoice, url_prefix='/invoice/')
 
 app.register_blueprint(user_route, url_prefix='/user/')
 
-
-app.register_blueprint(create_invoice, url_prefix='/invoice/')
- 
+app.register_blueprint(render_invoice, url_prefix='/render/')
 
 if __name__ == '__main__':
     with app.app_context():
