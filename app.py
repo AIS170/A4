@@ -3,11 +3,11 @@ import io
 from flask import Flask, jsonify, render_template, request, redirect, url_for, session
 import requests # type: ignore hi
 
-from backend.src.auth import authenticateUser, logout 
+from backend.src.auth import authenticateUser, register, logout 
 from backend.src.database import db
 from backend.src.mailbox import mailbox
 from backend.src.clear import clear_
-from backend.src.models import Invoice
+from backend.src.models import Invoice, User
 from backend.src.reports import getReports
 from backend.src.user import user_route
 from backend.src.create_invoice import create_invoice
@@ -41,6 +41,22 @@ CORS(app)
 @app.route('/')
 def home():
     return render_template('index.html')  
+
+
+@app.route('/auth/signup/', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        first_name = request.form.get('firstName')
+        last_name = request.form.get('lastName')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirmPassword')
+        user_id_a = register()
+        new_user = User(id=user_id_a, first_name=first_name, last_name=last_name, email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('authenticate_user.login'))
+    return render_template('register.html')
 
 
 @app.route('/auth/logout')
