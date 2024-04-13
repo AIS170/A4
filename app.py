@@ -45,7 +45,7 @@ def userLogout():
     if token:
         db.session.delete(token)
         db.session.commit()
-    return redirect(url_for('authenticate_user.login')
+    return redirect(url_for('authenticate_user.login'))
 
 @app.route('/download')
 def download_invoice():
