@@ -3,65 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice Rendering</title>
+    <title>Rendering</title>
+    <link rel="stylesheet" href="../style/uploadStyles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
-    <h1>Invoice Rendering</h1>
+    <div id="headerContainer">
+        <h2>Render a new invoice</h2>
+    </div>
+    <form id="renderForm" action="/render" method="POST" enctype="multipart/form-data">
+        <label class="label" for="file">Select XML file:</label><br>
+        <input class="input" type="file" id="file" name="file" accept=".xml" required><br><br>
+        <label class="label" for="outputType">Output Type:</label>
+        <div class="select">
+            <select id="outputType" class="custom-select" name="outputType" required>
+                <option value="JSON">JSON</option>
+                <option value="PDF">PDF</option>
+                <option value="HTML">HTML</option>
+            </select>
+        </div><br>
+        <label class="label" for="language">Language (for PDF only):</label>
+        <input class="input form-control" type="text" id="language" name="language" placeholder="e.g. en, fr, de"><br>
+
+        <div id="buttonContainer">
+            <input type="submit" value="Render" class="btn btn-success">
+            <button type="button" id="cancel" class="btn btn-danger">Cancel</button>
+        </div>
+    </form>
     
-    <label for="invoiceId">Invoice ID:</label>
-    <input type="text" id="invoiceId" name="invoiceId">
-    <br>
-
-    <label for="outputType">Output Type:</label>
-    <select id="outputType" name="outputType">
-        <option value="json">JSON</option>
-        <option value="pdf">PDF</option>
-    </select>
-    <br>
-
-    <label for="language">Language:</label>
-    <select id="language" name="language">
-        <option value="eng">English</option>
-        <option value="fran">French</option>
-    </select>
-    <br>
-
-    <button onclick="renderInvoice()">Render Invoice</button>
-
-    <div id="output"></div>
-
-    <script>
-        function renderInvoice() {
-            const invoiceId = document.getElementById('invoiceId').value;
-            const outputType = document.getElementById('outputType').value;
-            const language = document.getElementById('language').value;
-
-            fetch('/render_invoice', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    invoice_id: invoiceId,
-                    output_type: outputType,
-                    language: language
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.text();
-                } else {
-                    throw new Error('Failed to render invoice');
-                }
-            })
-            .then(data => {
-                document.getElementById('output').innerText = data;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('output').innerText = 'Error: ' + error.message;
-            });
-        }
-    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
