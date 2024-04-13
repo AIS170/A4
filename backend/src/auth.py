@@ -8,43 +8,36 @@ import os
 
 authenticateUser = Blueprint('authenticate_user', __name__)
 
-@authenticateUser.route('/signup/', methods=['GET', 'POST'])
 # Registers a new user and redirects them to their mailbox
-def signup():
-    if request.method == 'POST':
-        first_name = request.form.get('firstName')
-        last_name = request.form.get('lastName')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        confirm_password = request.form.get('confirmPassword')
-        if password != confirm_password:
-            return jsonify({'error': 'Passwords do not match'}), 400
-        elif len(first_name) > 15:
-            return jsonify({'error': 'First name cannot exceed 15 characters'}), 400
-        elif len(first_name) == 0:
-            return jsonify({'error': 'First name cannot be empty'}), 400
-        elif len(last_name) > 15:
-            return jsonify({'error': 'Last name cannot exceed 15 characters'}), 400
-        elif len(last_name) == 0:
-            return jsonify({'error': 'Last name cannot be empty'}), 400
-        elif not validEmail(email):
-            return jsonify({'error': 'Email must be of a valid format'}), 400
-        elif User.query.filter_by(email=email).first():
-            return jsonify({'error': 'Email is already in use'}), 400
-        elif len(password) < 8:
-            return jsonify({'error': 'Password should be atleast 8 characters'}), 400
-        elif len(password) > 15:
-            return jsonify({'error': 'Password shouldn\'t exceed 15 characters'}), 400
-        elif not (any(char.isalpha() for char in password) and any(char.isdigit() for char in password)):
-            return jsonify({'error': 'Password should contain atleast one letter and one number'}), 400
-        else:
-            user_id = str(uuid.uuid4())
-            new_user = User(id=user_id, first_name=first_name, last_name=last_name, email=email, password=password)
-            db.session.add(new_user)
-            db.session.commit()
-            
-            return redirect(url_for('authenticate_user.login'))
-    return render_template('register.html')
+def register():
+    first_name = request.form.get('firstName')
+    last_name = request.form.get('lastName')
+    email = request.form.get('email')
+    password = request.form.get('password')
+    confirm_password = request.form.get('confirmPassword')
+    if password != confirm_password:
+        return jsonify({'error': 'Passwords do not match'}), 400
+    elif len(first_name) > 15:
+        return jsonify({'error': 'First name cannot exceed 15 characters'}), 400
+    elif len(first_name) == 0:
+        return jsonify({'error': 'First name cannot be empty'}), 400
+    elif len(last_name) > 15:
+        return jsonify({'error': 'Last name cannot exceed 15 characters'}), 400
+    elif len(last_name) == 0:
+        return jsonify({'error': 'Last name cannot be empty'}), 400
+    elif not validEmail(email):
+        return jsonify({'error': 'Email must be of a valid format'}), 400
+    elif User.query.filter_by(email=email).first():
+        return jsonify({'error': 'Email is already in use'}), 400
+    elif len(password) < 8:
+        return jsonify({'error': 'Password should be atleast 8 characters'}), 400
+    elif len(password) > 15:
+        return jsonify({'error': 'Password shouldn\'t exceed 15 characters'}), 400
+    elif not (any(char.isalpha() for char in password) and any(char.isdigit() for char in password)):
+        return jsonify({'error': 'Password should contain atleast one letter and one number'}), 400
+    else:
+        user_id_a = str(uuid.uuid4())
+        return user_id_a
 
 # Helper function to check if an email is of valid format
 def validEmail(email):
@@ -83,7 +76,7 @@ def login():
     else:
         return render_template('login.html')
     
-@authenticateUser.route('/logout')
+
 # Ends the current users session and redirects them to the login page
 def logout():
     user_id_a = session.get('user_id')
