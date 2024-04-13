@@ -11,8 +11,8 @@ from backend.src.models import Invoice
 from backend.src.reports import getReports
 from backend.src.user import user_route
 from flask_cors import CORS
-from os import path, environ, os
-
+from os import path, environ
+import os
 
 DB_NAME = 'database.sqlite3'
 
