@@ -9,8 +9,8 @@ from datetime import datetime
 
 reports = Blueprint('reports', __name__)
 
-
-def getReports():
+@reports.route('', methods=['GET'])
+def reportBox():
     user_id_a = session.get('user_id')
     if not user_id_a:
         return jsonify({'error': 'Invalid userId'}), 400
@@ -25,4 +25,4 @@ def getReports():
             'invoice_subject': invoice.subject if invoice else None
         }
         formatted_reports.append(new_report)
-    return formatted_reports, 200
+    return render_template('report.html', formatted_reports=formatted_reports)
