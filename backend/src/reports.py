@@ -15,6 +15,7 @@ def reportBox():
     if not user_id_a:
         return jsonify({'error': 'Invalid userId'}), 400
     communication_reports = CommunicationReport.query.filter_by(user_id=user_id_a).all()
+    user = User.query.filter_by(id=user_id_a).first()
     formatted_reports = []
     for report in communication_reports:
         invoice = Invoice.query.filter_by(id=report.invoice_id).first()
@@ -25,4 +26,4 @@ def reportBox():
             'invoice_subject': invoice.subject if invoice else None
         }
         formatted_reports.append(new_report)
-    return render_template('report.html', formatted_reports=formatted_reports)
+    return render_template('report.html', formatted_reports=formatted_reports, user=user)
