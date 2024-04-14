@@ -71,6 +71,8 @@ def mailBox():
 # and sentReportId.
 @mailbox.route('/sending', methods=['GET', 'POST'])
 def sending():
+    user_id_a = session.get('user_id')
+    user = User.query.filter_by(id=user_id_a).first()
     if request.method == 'POST':
         user_id_a = session.get('user_id')
         if user_id_a == None:
@@ -78,6 +80,7 @@ def sending():
         
         recipient_addresses_raw = request.form.get('recipient_addresses')
         invoice_subject = request.form.get('invoice_subject')
+        user = User.query.filter_by(id=user_id_a).first()
 
         # recipient = User.query.filter_by(email=recipient_addresses_raw).first()
         sender = User.query.filter_by(id=user_id_a).first()
@@ -93,7 +96,7 @@ def sending():
         if not files or any(not allowed_file(file.filename) for file in files):
             return jsonify({'error': 'Invalid Invoice file(s)'}), 400
         
-        recipient_emails = [email.strip() for email in recipient_addresses_raw.split(',')]
+        recipient_emails = [email.strip() for email in recipient_addresses_raw.split(' ')]
         valid_recipients = []
         invalid_emails = []
 
@@ -138,10 +141,10 @@ def sending():
                     date_reported=datetime.now()
                 )
                 db.session.add(new_comm_report)  
-
+        
         db.session.commit()
         return redirect(url_for('mailbox_route.mailBox'))
-    return render_template('send.html')
+    return render_template('send.html', user=user)
 
 
 # Helper function to check if a file is valid

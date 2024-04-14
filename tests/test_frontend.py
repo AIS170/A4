@@ -22,3 +22,4 @@ def test_frontend_login_html(client):
 # def test_frontend_sending_html(client):
 #     response = client.get('/mailbox/sending', follow_redirects=True)
 #     assert response.status_code == 200
+

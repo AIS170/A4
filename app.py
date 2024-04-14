@@ -8,7 +8,7 @@ from backend.src.database import db
 from backend.src.mailbox import mailbox
 from backend.src.clear import clear_
 from backend.src.models import Invoice
-from backend.src.reports import getReports
+from backend.src.reports import reports
 from backend.src.user import user_route
 from flask_cors import CORS
 from os import path, environ
@@ -39,7 +39,6 @@ CORS(app)
 def home():
     return render_template('index.html') 
 
-
 @app.route('/auth/logout')
 def userLogout():
     token = logout()
@@ -48,16 +47,10 @@ def userLogout():
         db.session.commit()
     return redirect(url_for('authenticate_user.login'))
 
-@app.route('/reports', methods=['GET'])
-def reportBox():
-    formatted_reports = getReports()
-    return render_template('report.html', formatted_reports=formatted_reports)
-
-
 @app.route('/download')
 def download_invoice():
     return render_template('download.html')
-
+  
 @app.route('/about')
 def about():
     return render_template('about.html')
@@ -69,6 +62,8 @@ def admin():
 app.register_blueprint(authenticateUser, url_prefix='/auth/')
 
 app.register_blueprint(mailbox, url_prefix='/mailbox/') 
+
+app.register_blueprint(reports, url_prefix='/reports/')
 
 app.register_blueprint(clear_, url_prefix='/clear')
 
