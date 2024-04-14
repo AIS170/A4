@@ -14,16 +14,38 @@ def reportBox():
     user_id_a = session.get('user_id')
     if not user_id_a:
         return jsonify({'error': 'Invalid userId'}), 400
-    communication_reports = CommunicationReport.query.filter_by(user_id=user_id_a).all()
+
+    
+    search_sender = request.args.get('sender')
+    search_subject = request.args.get('subject')
+    search_invoice_id = request.args.get('invoice_id')
+
+    
+    query = CommunicationReport.query.filter(CommunicationReport.user_id == user_id_a)
+
+    
+    if search_sender:
+        
+        query = query.join(CommunicationReport.invoice).join(Invoice.sender).filter(User.first_name.ilike(f"%{search_sender}%") | User.last_name.ilike(f"%{search_sender}%"))
+    if search_subject:
+        
+        query = query.join(CommunicationReport.invoice).filter(Invoice.subject.ilike(f"%{search_subject}%"))
+    if search_invoice_id:
+        query = query.filter(CommunicationReport.invoice_id == search_invoice_id)
+
+    
+    communication_reports = query.all()
+
     user = User.query.filter_by(id=user_id_a).first()
     formatted_reports = []
+
     for report in communication_reports:
-        invoice = Invoice.query.filter_by(id=report.invoice_id).first()
         new_report = {
             'id': report.id,
             'details': report.details,
             'date_reported': report.date_reported,
-            'invoice_subject': invoice.subject if invoice else None
-        }
+            'invoice_subject': report.invoice.subject,
+            }
         formatted_reports.append(new_report)
+    
     return render_template('report.html', formatted_reports=formatted_reports, user=user)
