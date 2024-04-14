@@ -16,23 +16,18 @@ def reportBox():
         return jsonify({'error': 'Invalid userId'}), 400
 
     
-    search_sender = request.args.get('sender')
+    search_sender_email = request.args.get('sender_address')
     search_subject = request.args.get('subject')
     search_invoice_id = request.args.get('invoice_id')
 
-    
     query = CommunicationReport.query.filter(CommunicationReport.user_id == user_id_a)
 
-    
-    if search_sender:
-        
-        query = query.join(CommunicationReport.invoice).join(Invoice.sender).filter(User.first_name.ilike(f"%{search_sender}%") | User.last_name.ilike(f"%{search_sender}%"))
+    if search_sender_email:
+        query = query.join(CommunicationReport.invoice).join(Invoice.sender).filter(User.email.ilike(f"%{search_sender_email}%"))
     if search_subject:
-        
-        query = query.join(CommunicationReport.invoice).filter(Invoice.subject.ilike(f"%{search_subject}%"))
+        query = query.filter(CommunicationReport.invoice.has(Invoice.subject.ilike(f"%{search_subject}%")))
     if search_invoice_id:
         query = query.filter(CommunicationReport.invoice_id == search_invoice_id)
-
     
     communication_reports = query.all()
 
