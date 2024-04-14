@@ -22,8 +22,15 @@ def reportBox():
 
     query = CommunicationReport.query.filter(CommunicationReport.user_id == user_id_a)
 
+    '''
     if search_sender_email:
-        query = query.join(CommunicationReport.invoice).join(Invoice.sender).filter(User.email.ilike(f"%{search_sender_email}%"))
+        query = query.join(Invoice).join(User, User.id == Invoice.sent_to_user_id)
+        query = query.filter(User.email.ilike(f"%{search_sender_email}%"))
+
+        print("Query with Email Filter:", query) 
+        print(f"User ID: {user_id_a}, Email search pattern: %'{search_sender_email.lower()}%'")
+    '''
+
     if search_subject:
         query = query.filter(CommunicationReport.invoice.has(Invoice.subject.ilike(f"%{search_subject}%")))
     if search_invoice_id:
