@@ -26,4 +26,4 @@ def reportBox():
             'invoice_subject': invoice.subject if invoice else None
         }
         formatted_reports.append(new_report)
-    return render_template('report.html', formatted_reports=formatted_reports, user=user)
+    return render_template('report.html', formatted_reports=formatted_reports)
