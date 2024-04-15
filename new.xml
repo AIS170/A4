@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+	<cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+
+	<cbc:ID>10000274</cbc:ID>
+
+	<cbc:IssueDate>2024-04-02</cbc:IssueDate>
+
+	<cbc:InvoiceTypeCode>CommercialInvoice</cbc:InvoiceTypeCode>
+
+	<cac:PartyName>
+		<cbc:Name>ACME Corp</cbc:Name>
+
+		<cac:PostalAddress>
+			<cac:Country>
+				<cbc:IdentificationCode>AU</cbc:IdentificationCode>
+			</cac:Country>
+		</cac:PostalAddress>
+
+		<cac:PartyLegalEntity>
+			<cbc:RegistrationName>ACME Corporation Pty Ltd</cbc:RegistrationName>
+
+			<cbc:CompanyID>AB123456C</cbc:CompanyID>
+		</cac:PartyLegalEntity>
+	</cac:PartyName>
+
+	<cac:PartyName>
+		<cbc:Name>Widgets Inc</cbc:Name>
+
+		<cac:PostalAddress>
+			<cac:Country>
+				<cbc:IdentificationCode>US</cbc:IdentificationCode>
+			</cac:Country>
+		</cac:PostalAddress>
+
+		<cac:PartyLegalEntity>
+			<cbc:RegistrationName>Widgets Incorporated</cbc:RegistrationName>
+
+			<cbc:CompanyID>ZX987654C</cbc:CompanyID>
+		</cac:PartyLegalEntity>
+	</cac:PartyName>
+
+	<cac:TaxTotal>
+		<cbc:TaxAmount currencyID="AUD">500.0</cbc:TaxAmount>
+	</cac:TaxTotal>
+
+	<cac:LegalMonetaryTotal>
+		<cbc:TaxExclusiveAmount currencyID="USD">5000.0</cbc:TaxExclusiveAmount>
+
+		<cbc:TaxInclusiveAmount currencyID="USD">5500.0</cbc:TaxInclusiveAmount>
+	</cac:LegalMonetaryTotal>
+</Invoice>
