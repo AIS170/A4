@@ -20,7 +20,7 @@
         <tbody>
             {% for transaction in transactions %}
             <tr>
-                <td>{{ transaction.number }}</td>
+                <td>{{ transaction.invoice_number }}</td>
                 <td>{{ transaction.description }}</td>
                 <td>{{ '%0.2f' | format(transaction.debit) }}</td>
                 <td>{{ '%0.2f' | format(transaction.credit) }}</td>
