@@ -10,51 +10,55 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f8f9fa;
-        margin: 0;
-        padding: 20px;
-    }
-    h1, h2, h3 {
-        border-bottom: 1px solid #dee2e6;
-        padding-bottom: 10px;
-    }
-    form {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
-    }
-    label {
-        font-weight: bold;
-        margin-top: 15px;
-    }
-    input[type="text"], input[type="email"], input[type="date"], select {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-    .blueastrc {
-        color: #007bff;
-    }
-    input[type="submit"] {
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        margin-top: 20px; /* Adds space above the Submit button */
-    }
-    input[type="submit"]:hover {
-        background-color: #0056b3;
-    }
-</style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+        h3 {
+            margin-top: 40px; /* Adds space above each h3 heading */
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        input[type="text"], input[type="email"], input[type="date"], select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .blueastrc {
+            color: #007bff;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px; /* Adds space above the Submit button */
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    
 
 </head>
 <body>
@@ -70,7 +74,7 @@
             <div class="col-md-12">
                 <h1 class="text-center">Invoice Creation</h1>
                 <form action="{{ url_for('create_invoice.invoice_create') }}" method="post">
-                    <h2>Invoice Details</h2>
+                    <h3>Invoice Details</h3>
                     <label for="issueDate">Issue Date<span class="blueastrc">*</span></label>
                     <input type="date" id="issueDate" name="issueDate" required>
                     <label for="invoiceTypeCode">Invoice Type Code<span class="blueastrc">*</span>:</label>
@@ -83,7 +87,7 @@
                         <option value="StandardInvoice">Standard Invoice</option>
                     </select>  
 
-                    <h2>Supplier Party Details</h2>
+                    <h3>Supplier Party Details</h3>
                     <label for="sellerCompanyName">Company Name<span class="blueastrc">*</span></label>
                     <input type="text" id="sellerCompanyName" name="sellerCompanyName" required>
                     <label for="sellerRegistrationName">Registration Name<span class="blueastrc">*</span></label>
@@ -109,7 +113,7 @@
                     <label for="sellerEmail">Email</label>
                     <input type="email" id="sellerEmail" name="sellerEmail">
 
-                    <h2>Customer Party Details</h2>     
+                    <h3>Customer Party Details</h3>     
                     <label for="buyerCompanyName">Company Name<span class="blueastrc">*</span></label>
                     <input type="text" id="buyerCompanyName" name="buyerCompanyName" required>
                     <label for="buyerRegistrationName">Registration Name<span class="blueastrc">*</span></label>
@@ -135,21 +139,21 @@
                     <label for="buyerEmail">Email</label>
                     <input type="email" id="buyerEmail" name="buyerEmail">
 
-                    <h2>Tax Information</h2>
+                    <h3>Tax Information</h3>
                     <label for="taxSchemeId">Tax Scheme ID<span class="blueastrc">*</span></label>
                     <input type="text" id="taxSchemeId" name="taxSchemeId" required>
 
-                    <h2>Monetary Totals</h2>
+                    <h3>Monetary Totals</h3>
                     <label for="taxExclusiveAmount">Tax Exclusive Amount<span class="blueastrc">*</span></label>
                     <input type="text" id="taxExclusiveAmount" name="taxExclusiveAmount" required>
                     <label for="currency">Currency<span class="blueastrc">*</span></label>
                     <input type="text" id="currency" name="currency" required>
 
-                    <h2>Invoice Line Items</h2>
+                    <h3>Invoice Line Items</h3>
                     <label for="numberOfItems">Number of Items<span class="blueastrc">*</span></label>
                     <input type="text" id="numberOfItems" name="numberOfItems" required>
 
-                    <h2>Tax Total</h2>
+                    <h3>Tax Total</h3>
                     <label for="taxAmount">Tax Amount<span class="blueastrc">*</span></label>
                     <input type="text" id="taxAmount" name="taxAmount" required>
                     <label for="taxCurrencyId">Tax Currency<span class="blueastrc">*</span></label>
