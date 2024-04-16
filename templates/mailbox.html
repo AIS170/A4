@@ -327,16 +327,34 @@
             </span>
             <div class="content">
                 <!-- Search Form Start -->
-                <form action="{{ url_for('mailbox_route.mailBox') }}" method="get" class="search-form">
-                    <input type="text" name="subject" placeholder="Search by Subject" value="{{ request.args.get('subject', '') }}" class="form-control">
-                    <input type="text" name="sender_address" placeholder="Search by Sender's Address" value="{{ request.args.get('sender_address', '') }}" class="form-control">
-                    <input type="text" name="invoice_id" placeholder="Search by Invoice ID" value="{{ request.args.get('invoice_id', '') }}" class="form-control">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                    
+                <form action="{{ url_for('mailbox_route.mailBox') }}" method="get" class="row g-3">
+                    <!-- Search by Subject -->
+                    <div class="col-md-3">
+                        <input type="text" name="subject" placeholder="Search by Subject" value="{{ request.args.get('subject', '') }}" class="form-control">
+                    </div>
+            
+                    <!-- Search by Sender's Address -->
+                    <div class="col-md-3">
+                        <input type="text" name="sender_address" placeholder="Search by Sender's Address" value="{{ request.args.get('sender_address', '') }}" class="form-control">
+                    </div>
+            
+                    <!-- Search by Invoice ID -->
+                    <div class="col-md-3">
+                        <input type="text" name="invoice_id" placeholder="Search by Invoice ID" value="{{ request.args.get('invoice_id', '') }}" class="form-control">
+                    </div>
+            
+                    <!-- Submit Button -->
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-primary mb-3">Search</button>
+                    </div>
+            
+                    <!-- Remove Filters Button -->
+                    <div class="col-md-2">
+                        <a href="{{ url_for('mailbox_route.mailBox') }}" class="btn btn-secondary mb-3">Remove Filters</a>
+                    </div>
                 </form>
                 
-                <form action="{{ url_for('mailbox_route.mailBox') }}">
-                    <button type="submit" class="btn btn-primary">Remove Filters</button>
+                
                     
                 </form>
                 {% if received_mails %}

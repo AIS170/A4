@@ -336,24 +336,17 @@
             <form action="{{ url_for('mailbox_route.sending') }}" method="post" enctype="multipart/form-data">
                 
                 <input type="text" id="recipient_address" name="recipient_addresses" placeholder="Recipients" required
-                    class="form-control">
+                    class="form-control my-3"> <!-- Added my-3 for spacing -->
                     
                 <input type="text" id="invoice_subject" name="invoice_subject" required placeholder="Subject"
-                    class="form-control">
-
-                <div class="custom-file-upload">
-                    <div class="icon" onclick="document.getElementById('file').click();">
-                        <i class="bi bi-file-earmark-arrow-up"></i>
-                    </div>
-                    <div class="text">
-                        <span>Click to upload XML file</span>
-                    </div>
+                    class="form-control my-3"> <!-- Added my-3 for spacing -->
+    
+                <div class="input-group mb-3"> <!-- Added Bootstrap input group for better alignment and size -->
+                    <input type="file" id="file" name="invoice_files[]" class="form-control" style="height: auto;" onchange="handleFileSelect(this)" multiple>
+                    <label class="input-group-text" for="file">Upload XML file</label>
                 </div>
-
-                <input type="file" id="file" name="invoice_files[]" style="display:none;"
-                    onchange="handleFileSelect(this)" multiple>
-
-                <button type="submit" class="btn btn-outline-primary">
+    
+                <button type="submit" class="btn btn-outline-primary mt-3"> <!-- Added mt-3 for spacing -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send"
                         viewBox="0 0 16 16">
                         <path
@@ -362,9 +355,9 @@
                     </svg>
                     Send
                 </button>
-
+    
             </form>
-
+    
         </div>
 
 
