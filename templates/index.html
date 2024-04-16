@@ -41,6 +41,7 @@
             <button id="startButton">Start Your Financial Journey</button>
         </a>
     </div>
+    <button onclick="toggleSpeech()">Toggle Text-to-Speech</button>
     
     <footer class="footer">
         <div class="footer-left">
@@ -59,78 +60,6 @@
             <p><i class="bi bi-geo-alt"></i><a href="https://www.google.com/maps?q=37.243165448876255,-115.82409235658486">A4 Headquarters</a></p>
         </location>
     </footer>
-
-    <button onclick="toggleSpeech()">Toggle Text-to-Speech</button>
-    <script>
-        let speaking = false;
-        let utteranceQueue = [];
-
-        function toggleSpeech() {
-            if (!speaking) {
-                startSpeech();
-            } else {
-                stopSpeech();
-            }
-        }
-
-        function startSpeech() {
-            const elements = document.querySelectorAll('h1, span, label, a, button, p');
-            elements.forEach(element => {
-                if (!element.matches('.bd-mode-toggle *, .dropdown-menu *') && !element.querySelector('a') && !(element.tagName.toLowerCase() === 'button' && element.parentElement.tagName.toLowerCase() === 'a') && !(element.tagName.toLowerCase() === 'a' && element.querySelector('img'))) {
-                    utteranceQueue.push({
-                        element: element,
-                        text: element.textContent.trim()
-                    });
-                }
-            });
-            speaking = true;
-            speakNext();
-        }
-
-        function speakNext() {
-            if (utteranceQueue.length > 0 && speaking) {
-                const { element, text } = utteranceQueue.shift();
-                if (element.textContent.trim() === "Login" || element.textContent.trim() === "About Us") {
-                    element.style.backgroundColor = 'yellow';
-                } else {
-                    element.classList.add('highlight');
-                }
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.onend = function() {
-                    if (element.textContent.trim() === "Login" || element.textContent.trim() === "About Us") {
-                        element.style.backgroundColor = '';
-                    } else {
-                        element.classList.remove('highlight');
-                    }
-                    speakNext();
-                };
-                speechSynthesis.speak(utterance);
-            } else {
-                speaking = false;
-            }
-        }
-
-        function stopSpeech() {
-            const elements = document.querySelectorAll('h1, span, label, a, button, p');
-            elements.forEach(element => {
-                if (!element.matches('.bd-mode-toggle *, .dropdown-menu *') && !element.querySelector('a') && !(element.tagName.toLowerCase() === 'button' && element.parentElement.tagName.toLowerCase() === 'a') && !(element.tagName.toLowerCase() === 'a' && element.querySelector('img'))) {
-                    if (element.textContent.trim() === "Login" || element.textContent.trim() === "About Us") {
-                        element.style.backgroundColor = '';
-                    }
-                }
-            });
-
-            speaking = false;
-            speechSynthesis.cancel();
-            utteranceQueue = [];
-            const highlightedElements = document.querySelectorAll('.highlight');
-            highlightedElements.forEach(element => {
-                if (element.textContent.trim() === "Login" || element.textContent.trim() === "About Us") {
-                    element.style.backgroundColor = '';
-                }
-                element.classList.remove('highlight');
-            });
-        }
-    </script> 
+    <script src="/static/js/textToSpeech.js"></script> 
 </body>
 </html>

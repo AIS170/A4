@@ -161,6 +161,15 @@
                         <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
                     </button>
                 </li>
+                <li>
+                    <button onclick="toggleSpeech()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mic-fill" viewBox="0 0 16 16">
+                            <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z"/>
+                            <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5"/>
+                        </svg>
+                        Toggle Text-to-Speech
+                    </button>
+                </li>                
             </ul>
         </div>
 
@@ -172,23 +181,23 @@
                 <h1 class="h3 mb-3 fw-normal text-center">Enter your details</h1>
 
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Bruce" required>
+                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="" required>
                     <label for="firstName">First Name</label>
                 </div>
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Wayne" required>
+                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="" required>
                     <label for="lastName">Last Name</label>
                 </div>
                 <div class="form-floating">
-                    <input type="email" class="form-control" id="email" name="email" placeholder="brucewayne@dc.com" required>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="" required>
                     <label for="email">Email address</label>
                 </div>
                 <div class="form-floating">
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password1234" required>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="" required>
                     <label for="email">Password</label>
                 </div>
                 <div class="form-floating mb-4">
-                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Password1234" required>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="" required>
                     <label for="password">Confirm Password</label>
                 </div>
 
@@ -205,78 +214,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
-        <button onclick="toggleSpeech()">Toggle Text-to-Speech</button>
-
-        <script>
-            let speaking = false;
-            let utteranceQueue = [];
-
-            function toggleSpeech() {
-                if (!speaking) {
-                    startSpeech();
-                } else {
-                    stopSpeech();
-                }
-            }
-
-            function startSpeech() {
-                const elements = document.querySelectorAll('h1, span, label, a, button, p');
-                elements.forEach(element => {
-                    if (!element.matches('.bd-mode-toggle *, .dropdown-menu *')) {
-                        utteranceQueue.push({
-                            element: element,
-                            text: element.textContent.trim()
-                        });
-                    }
-                });
-                speaking = true;
-                speakNext();
-            }
-
-            function speakNext() {
-                if (utteranceQueue.length > 0 && speaking) {
-                    const { element, text } = utteranceQueue.shift();
-                    if (element.textContent.trim() === "Sign in" || element.textContent.trim() === "Return Home") {
-                        element.style.backgroundColor = 'yellow';
-                    } else {
-                        element.classList.add('highlight');
-                    }
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.onend = function () {
-                        if (element.textContent.trim() === "Sign in" || element.textContent.trim() === "Return Home") {
-                            element.style.backgroundColor = '';
-                        } else {
-                            element.classList.remove('highlight');
-                        }
-                        speakNext();
-                    };
-                    speechSynthesis.speak(utterance);
-                } else {
-                    speaking = false;
-                }
-            }
-
-            function stopSpeech() {
-                const elements = document.querySelectorAll('h1, span, label, a, button, p');
-                elements.forEach(element => {
-                    if (!element.matches('.bd-mode-toggle *, .dropdown-menu *')) {
-                        if (element.textContent.trim() === "Sign in" || element.textContent.trim() === "Return Home") {
-                            element.style.backgroundColor = '';
-                        }
-                    }
-                });
-
-                speaking = false;
-                speechSynthesis.cancel();
-                utteranceQueue = [];
-                const highlightedElements = document.querySelectorAll('.highlight');
-                highlightedElements.forEach(element => {
-                    if (element.textContent.trim() === "Sign in" || element.textContent.trim() === "Return Home") {
-                        element.style.backgroundColor = '';
-                    }
-                    element.classList.remove('highlight');
-                });
-            }
-        </script>
+        <script src="/static/js/textToSpeech.js"></script>
     </body>
 </html>
