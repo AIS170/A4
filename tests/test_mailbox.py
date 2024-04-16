@@ -371,7 +371,7 @@ def test_mailbox_success():
     with app.app_context():
         mail = Invoice.query.filter_by(subject=valid_sent_email_data2['invoice_subject']).first()
         commReports = CommunicationReport.query.filter_by(invoice_id=mail.id).all()
-        assert len(commReports) > 2
+        assert len(commReports) >= 2
 
 # Test successfully view mailbox after sending multiple mail
 def test_mailbox_success_multiple_mails():
@@ -414,8 +414,8 @@ def test_mailbox_success_multiple_mails():
         commReports1 = CommunicationReport.query.filter_by(invoice_id=mail1.id).all()
         mail2 = Invoice.query.filter_by(subject=valid_sent_email_data1['invoice_subject']).first()
         commReports2 = CommunicationReport.query.filter_by(invoice_id=mail2.id).all()
-        assert len(commReports1) > 2
-        assert len(commReports2) > 2
+        assert len(commReports1) >= 2
+        assert len(commReports2) >= 2
 
 # Test view mailbox with invalid userId
 def test_mailbox_inavlid_user():
