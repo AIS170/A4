@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, session
+from sqlalchemy import and_
 from backend.src.models import User, Invoice, CommunicationReport
 import os
 import json
@@ -7,9 +8,8 @@ from backend.src.database import db
 from xml.etree import ElementTree as ET
 from datetime import datetime
 
-#made change
 mailbox = Blueprint('mailbox_route', __name__)
-# View all received/incoming e-invoices for specified user through userId. Returns senderAddress, timeSent and invoiceSubject
+
 @mailbox.route('', methods=['GET'])
 def mailBox():
     user_id_a = session.get('user_id')
@@ -56,23 +56,29 @@ def mailBox():
         formatted_mail.append(new_mail)
 
     for i in received_mails:
+        # Check if a communication report already exists for this invoice and user
+        existing_report = CommunicationReport.query.filter_by(invoice_id=i.id, user_id=user_id_a).first()
+        
+        if existing_report:
+            # If a report already exists for this user and invoice, skip creating a new one
+            continue
+
         sender = User.query.filter_by(id=i.user_id).first()
-        recepient = User.query.filter_by(id=i.sent_to_user_id).first()
-        report_details = "Invoice Sent Details:\nSubject: {}\nRecipient: {}\nSender: {}\nDate Sent: {}".format(i.subject, recepient.email, sender.email, datetime.now())
+        recipient = User.query.filter_by(id=i.sent_to_user_id).first()
+        report_details = "Invoice Received Details:\nSubject: {}\nRecipient: {}\nSender: {}\nDate Received: {}".format(i.subject, recipient.email, sender.email, datetime.now())
         new_comm_report = CommunicationReport(id=os.urandom(24).hex(), invoice_id=i.id, user_id=user_id_a, details=report_details, date_reported=datetime.now())
         db.session.add(new_comm_report)
         db.session.commit()
 
     return render_template(
-        'mailbox.html', 
-        received_mails=formatted_mail, 
-        current_datetime=current_datetime, 
-        search_subject=search_subject, 
+        'mailbox.html',
+        received_mails=formatted_mail,
+        current_datetime=current_datetime,
+        search_subject=search_subject,
         search_sender_address=search_sender_address,
         # user_first_name=user.first_name,
         # user_last_name=user.last_name
     )
-
 
 # Sends e-invoice to desired recepient given userId, recepientAddress, invoiceSubject, 
 # invoiceBody and list of eInvoices containing name, content, timeCreated and owner. Returns list for sentReport containing content
