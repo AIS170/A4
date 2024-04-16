@@ -58,9 +58,9 @@ def mailBox():
     for i in received_mails:
         sender = User.query.filter_by(id=i.user_id).first()
         recepient = User.query.filter_by(id=i.sent_to_user_id).first()
-        report_details = "Invoice Sent Details:\nSubject: {}\nRecipient: {}\nSender: {}\nDate Sent: {}".format(i.subject, recepient.email, sender.email, datetime.now())
-        new_comm_report = CommunicationReport(id=os.urandom(24).hex(), invoice_id=i.id, user_id=user_id_a, details=report_details, date_reported=datetime.now())
-        db.session.add(new_comm_report)
+        # report_details = "Invoice Sent Details:\nSubject: {}\nRecipient: {}\nSender: {}\nDate Sent: {}".format(i.subject, recepient.email, sender.email, datetime.now())
+        # new_comm_report = CommunicationReport(id=os.urandom(24).hex(), invoice_id=i.id, user_id=user_id_a, details=report_details, date_reported=datetime.now())
+        # db.session.add(new_comm_report)
         db.session.commit()
 
     return render_template(
