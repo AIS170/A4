@@ -63,7 +63,15 @@ def mailBox():
         db.session.add(new_comm_report)
         db.session.commit()
 
-    return render_template('mailbox.html', received_mails=formatted_mail, current_datetime=current_datetime, search_subject=search_subject, search_sender_address=search_sender_address)
+    return render_template(
+        'mailbox.html', 
+        received_mails=formatted_mail, 
+        current_datetime=current_datetime, 
+        search_subject=search_subject, 
+        search_sender_address=search_sender_address,
+        # user_first_name=user.first_name,
+        # user_last_name=user.last_name
+    )
 
 
 # Sends e-invoice to desired recepient given userId, recepientAddress, invoiceSubject, 

@@ -87,8 +87,12 @@ def login():
 # Ends the current users session and redirects them to the login page
 def logout():
     user_id_a = session.get('user_id')
-    token_entry = Token.query.filter_by(user_id=user_id_a).first()
+    if user_id_a:
+        token_entry = Token.query.filter_by(user_id=user_id_a).first()
+        if token_entry:
+            db.session.delete(token_entry)
+            db.session.commit()
     session.clear()
-    return token_entry
+    return 
     
 
