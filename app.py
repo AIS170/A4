@@ -40,6 +40,10 @@ CORS(app)
 def home():
     return render_template('index.html') 
 
+@app.route('/pricing')
+def price():
+    return render_template('price.html')
+
 @app.route('/auth/logout')
 def userLogout():
     token = logout()

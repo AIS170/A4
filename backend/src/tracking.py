@@ -24,7 +24,7 @@ def calculate_user_financials_and_history(user_id):
     # Process invoices
     for invoice in user.sent_invoices + user.received_invoices:
         invoice_data = xml_to_dict(invoice.body)
-        if invoice_data:
+        if invoice_data: 
             amount = float(invoice_data.get('tax_inclusive_amount', 0))
             
             # Check if the invoice is sent or received
@@ -59,10 +59,11 @@ def calculate_user_financials_and_history(user_id):
 
     return financial_summary, transactions, None
     
-
+#need to fix tracking not working if user sends to himself
 @tracking.route('/', methods=['GET'])
 def get_financials():
     user_id = session.get('user_id')
+    user = User.query.filter_by(id=user_id).first()
     if not user_id:
         return jsonify({'error': 'User not authenticated'}), 401
 
@@ -70,4 +71,4 @@ def get_financials():
     if error:
         return jsonify({'error': error}), 404
     else:
-        return render_template('tracking.html', financials=financial_data, transactions=transactions, user_id=user_id)
+        return render_template('tracking.html', financials=financial_data, transactions=transactions, user=user)

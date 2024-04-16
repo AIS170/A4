@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A4 E-Invoicing</title>
+    <style>
+        .highlight {
+            background-color: yellow;
+            color: black;
+        }
+    </style>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='indexStyle.css') }}">
@@ -18,7 +24,7 @@
                 <ul>
                     <li>
                         <a href="{{ url_for('authenticate_user.login') }}" class="login-button">Login</a>
-                        <a href="{{ url_for('about') }}" class="about-button">About Us</a>
+                        <a href="{{ url_for('price') }}" class="about-button">Pricing</a>
                     </li>
                 </ul>
             </nav>
@@ -35,6 +41,7 @@
             <button id="startButton">Start Your Financial Journey</button>
         </a>
     </div>
+    <button onclick="toggleSpeech()">Toggle Text-to-Speech</button>
     
     <footer class="footer">
         <div class="footer-left">
@@ -53,6 +60,6 @@
             <p><i class="bi bi-geo-alt"></i><a href="https://www.google.com/maps?q=37.243165448876255,-115.82409235658486">A4 Headquarters</a></p>
         </location>
     </footer>
-
+    <script src="/static/js/textToSpeech.js"></script> 
 </body>
 </html>
