@@ -24,7 +24,7 @@ class Invoice(db.Model):
     body = db.Column(db.Text, nullable=False)
     date_sent = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.String(80), db.ForeignKey('user.id'))
-    is_incoming = db.Column(db.Boolean, default=True, nullable=False)
+    read = db.Column(db.Boolean, default=True, nullable=False)
     communication_report = relationship("CommunicationReport", back_populates="invoice", uselist=False)
     sent_to_user_id = db.Column(db.String(80), db.ForeignKey('user.id'))
 

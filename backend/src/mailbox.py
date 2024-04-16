@@ -50,25 +50,22 @@ def mailBox():
             'body': mail.body,
             'date_sent': mail.date_sent,
             'user_id': mail.user_id,
-            'is_incoming': mail.is_incoming,
+            'read': mail.read,
             'sender_mail': user.email
         }
         formatted_mail.append(new_mail)
 
     for i in received_mails:
-        # Check if a communication report already exists for this invoice and user
-        existing_report = CommunicationReport.query.filter_by(invoice_id=i.id, user_id=user_id_a).first()
-        
-        if existing_report:
-            # If a report already exists for this user and invoice, skip creating a new one
+        if i.read:
             continue
-
-        sender = User.query.filter_by(id=i.user_id).first()
-        recipient = User.query.filter_by(id=i.sent_to_user_id).first()
-        report_details = "Invoice Received Details:\nSubject: {}\nRecipient: {}\nSender: {}\nDate Received: {}".format(i.subject, recipient.email, sender.email, datetime.now())
-        new_comm_report = CommunicationReport(id=os.urandom(24).hex(), invoice_id=i.id, user_id=user_id_a, details=report_details, date_reported=datetime.now())
-        db.session.add(new_comm_report)
-        db.session.commit()
+        else:
+            i.read = True
+            sender = User.query.filter_by(id=i.user_id).first()
+            recipient = User.query.filter_by(id=i.sent_to_user_id).first()
+            report_details = "Invoice Received Details:\nSubject: {}\nRecipient: {}\nSender: {}\nDate Received: {}".format(i.subject, recipient.email, sender.email, datetime.now())
+            new_comm_report = CommunicationReport(id=os.urandom(24).hex(), invoice_id=i.id, user_id=user_id_a, details=report_details, date_reported=datetime.now())
+            db.session.add(new_comm_report)
+            db.session.commit()
 
     return render_template(
         'mailbox.html',
@@ -140,7 +137,7 @@ def sending():
                     body=xml_content, 
                     date_sent=datetime.now(), 
                     user_id=user_id_a, 
-                    is_incoming=False, 
+                    read=False, 
                     sent_to_user_id=recipient.id
                 )
                 db.session.add(new_mail)
