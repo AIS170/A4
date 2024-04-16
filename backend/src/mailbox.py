@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, session
-from .models import User, Invoice, CommunicationReport
+from backend.src.models import User, Invoice, CommunicationReport
 import os
 import json
 from datetime import datetime
-from .database import db
+from backend.src.database import db
 from xml.etree import ElementTree as ET
 from datetime import datetime
 
@@ -63,7 +63,15 @@ def mailBox():
         db.session.add(new_comm_report)
         db.session.commit()
 
-    return render_template('mailbox.html', received_mails=formatted_mail, user=user, current_datetime=current_datetime, search_subject=search_subject, search_sender_address=search_sender_address)
+    return render_template(
+        'mailbox.html', 
+        received_mails=formatted_mail, 
+        current_datetime=current_datetime, 
+        search_subject=search_subject, 
+        search_sender_address=search_sender_address,
+        # user_first_name=user.first_name,
+        # user_last_name=user.last_name
+    )
 
 
 # Sends e-invoice to desired recepient given userId, recepientAddress, invoiceSubject, 
@@ -71,8 +79,7 @@ def mailBox():
 # and sentReportId.
 @mailbox.route('/sending', methods=['GET', 'POST'])
 def sending():
-    user_id_a = session.get('user_id')
-    user = User.query.filter_by(id=user_id_a).first()
+    
     if request.method == 'POST':
         user_id_a = session.get('user_id')
         if user_id_a == None:
@@ -80,9 +87,10 @@ def sending():
         
         recipient_addresses_raw = request.form.get('recipient_addresses')
         invoice_subject = request.form.get('invoice_subject')
-        user = User.query.filter_by(id=user_id_a).first()
+        # user = User.query.filter_by(id=user_id_a).first()
 
         # recipient = User.query.filter_by(email=recipient_addresses_raw).first()
+        #the user
         sender = User.query.filter_by(id=user_id_a).first()
 
         # if recipient == None:
@@ -123,7 +131,7 @@ def sending():
                 new_mail = Invoice(
                     id=os.urandom(24).hex(), 
                     subject=invoice_subject, 
-                    body=invoice_json, 
+                    body=xml_content, 
                     date_sent=datetime.now(), 
                     user_id=user_id_a, 
                     is_incoming=False, 
@@ -144,23 +152,33 @@ def sending():
         
         db.session.commit()
         return redirect(url_for('mailbox_route.mailBox'))
-    return render_template('send.html', user=user)
+    return render_template('send.html')
 
 
 # Helper function to check if a file is valid
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'xml'}
 
-# Helper function to convert XML content into a Python dictionary
+
 def xml_to_dict(xml_content):
-    if not xml_content.strip():  # Check if the content is empty or just whitespace
-        # Return an empty dictionary or None to indicate that the content was empty
+    if not xml_content.strip():
         return {}
     try:
         root = ET.fromstring(xml_content)
-        return {child.tag: child.text for child in root}
+        ns = {'cac': 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+              'cbc': 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2'}
+
+        # Extract relevant data
+        tax_amount = root.find('.//cac:TaxTotal/cbc:TaxAmount', ns).text
+        tax_exclusive_amount = root.find('.//cac:LegalMonetaryTotal/cbc:TaxExclusiveAmount', ns).text
+        tax_inclusive_amount = root.find('.//cac:LegalMonetaryTotal/cbc:TaxInclusiveAmount', ns).text
+
+        return {
+            'tax_amount': tax_amount,
+            'tax_exclusive_amount': tax_exclusive_amount,
+            'tax_inclusive_amount': tax_inclusive_amount
+        }
     except ET.ParseError as e:
-        # Handle the error appropriately.
         print("An error occurred while parsing XML: ", e)
         return None
 

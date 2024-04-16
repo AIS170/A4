@@ -269,7 +269,7 @@
                             <path
                                 d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
                         </svg>
-                        Send Invoice
+                        <span class="text-padding">&nbsp;&nbsp;Send Invoice</span>
                     </a>
                 </li>
                 <li>
@@ -307,12 +307,12 @@
             <div class="dropdown">
                 <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
                     data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="{{ url_for('static', filename='profile_pictures/' + user.image_file) }}" alt="" width="32"
-                        height="32" class="rounded-circle me-2">
-                    <strong>{{ user.first_name + " " + user.last_name }}</strong>
+                    <img src="/static/profile_pictures/default.png" alt="" width="32" height="32" class="rounded-circle me-2">
+                    
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
                     <li><a class="dropdown-item" href="{{ url_for('user_route.details')}}">Profile</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('tracking.get_financials')}}">Statistics</a></li>
                     <li><a class="dropdown-item" href="#">Text to Speech <svg xmlns="http://www.w3.org/2000/svg"
                                 width="16" height="16" fill="currentColor" class="bi bi-mic-fill" viewBox="0 0 16 16">
                                 <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z" />
@@ -336,20 +336,52 @@
                 style="font-size: 40px !important; text-align: center;">
                 Communication Reports
             </span>
+
+            <!-- Search Form -->
+        <div class="p-3">
+            <form class="row g-3">
+                                
+                <div class="col-md-3">
+                    <input type="text" class="form-control" placeholder="Subject" name="subject">
+                </div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" placeholder="Invoice ID" name="invoice_id">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary mb-3">Search</button>
+                </div>
+                <div class="col-md-2">
+                    <!-- Remove Filters Button -->
+                    <a href="{{ url_for('reports.reportBox') }}" class="btn btn-secondary mb-3">Remove Filters</a>
+                </div>
+            </form>
+        </div>
+
             
-            <table>
-                <tbody>
-                    {% for report in formatted_reports %}
-                    <tr>
-                        <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary" style="width: 1200px;">
-                            <div class="list-group list-group-flush border-bottom scrollarea">
-                                <div class="d-flex w-100 align-items-center justify-content-between">
-                                  <strong class="mb-1">{{ report.details }}</strong>
-                        </div>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            
+            <div class="table-responsive p-3">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Details</th>
+                            <th scope="col">Date Reported</th>
+                            <th scope="col">Invoice Subject</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in formatted_reports %}
+                        <tr>
+                            <td>{{ report.details }}</td>
+                            <td>{{ report.date_reported }}</td>
+                            <td>{{ report.invoice_subject }}</td>
+                            
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
 
     </main>
     <script src="/static/js/bootstrap.bundle.min.js"

@@ -269,7 +269,7 @@
                             <path
                                 d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
                         </svg>
-                        Send Invoice
+                        <span class="text-padding">&nbsp;&nbsp;Send Invoice</span>
                     </a>
                 </li>
                 <li>
@@ -307,12 +307,12 @@
             <div class="dropdown">
                 <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
                     data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="{{ url_for('static', filename='profile_pictures/' + user.image_file) }}" alt="" width="32"
-                        height="32" class="rounded-circle me-2">
-                    <strong>{{ user.first_name + " " + user.last_name }}</strong>
+                    <img src="/static/profile_pictures/default.png" alt="" width="32" height="32" class="rounded-circle me-2">
+                    
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
                     <li><a class="dropdown-item" href="{{ url_for('user_route.details')}}">Profile</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('tracking.get_financials')}}">Statistics</a></li>
                     <li><a class="dropdown-item" href="#">Text to Speech <svg xmlns="http://www.w3.org/2000/svg"
                                 width="16" height="16" fill="currentColor" class="bi bi-mic-fill" viewBox="0 0 16 16">
                                 <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z" />
@@ -339,24 +339,17 @@
             <form action="{{ url_for('mailbox_route.sending') }}" method="post" enctype="multipart/form-data">
                 
                 <input type="text" id="recipient_address" name="recipient_addresses" placeholder="Recipients" required
-                    class="form-control">
+                    class="form-control my-3"> <!-- Added my-3 for spacing -->
                     
                 <input type="text" id="invoice_subject" name="invoice_subject" required placeholder="Subject"
-                    class="form-control">
-
-                <div class="custom-file-upload">
-                    <div class="icon" onclick="document.getElementById('file').click();">
-                        <i class="bi bi-file-earmark-arrow-up"></i>
-                    </div>
-                    <div class="text">
-                        <span>Click to upload XML file</span>
-                    </div>
+                    class="form-control my-3"> <!-- Added my-3 for spacing -->
+    
+                <div class="input-group mb-3"> <!-- Added Bootstrap input group for better alignment and size -->
+                    <input type="file" id="file" name="invoice_files[]" class="form-control" style="height: auto;" onchange="handleFileSelect(this)" multiple>
+                    <label class="input-group-text" for="file">Upload XML file</label>
                 </div>
-
-                <input type="file" id="file" name="invoice_files[]" style="display:none;"
-                    onchange="handleFileSelect(this)" multiple>
-
-                <button type="submit" class="btn btn-outline-primary">
+    
+                <button type="submit" class="btn btn-outline-primary mt-3"> <!-- Added mt-3 for spacing -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send"
                         viewBox="0 0 16 16">
                         <path
@@ -365,9 +358,9 @@
                     </svg>
                     Send
                 </button>
-
+    
             </form>
-
+    
         </div>
 
 

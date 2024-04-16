@@ -1,6 +1,7 @@
 import io
 from flask import Flask, jsonify, render_template, request, redirect, url_for, session
 import requests
+from backend.src.tracking import tracking
 from backend.src.render_invoice import render_invoice
 from backend.src.create_invoice import create_invoice
 from backend.src.auth import authenticateUser, logout 
@@ -72,6 +73,8 @@ app.register_blueprint(create_invoice, url_prefix='/invoice/')
 app.register_blueprint(user_route, url_prefix='/user/')
 
 app.register_blueprint(render_invoice, url_prefix='/render/')
+
+app.register_blueprint(tracking, url_prefix='/tracking/')
 
 if __name__ == '__main__':
     with app.app_context():

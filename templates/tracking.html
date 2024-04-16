@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financial Summary</title>
+</head>
+<body>
+    <h1>Financial Summary for User ID: {{ user_id }}</h1>
+    <h2>Transaction History</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Invoice #</th>
+                <th>Description</th>
+                <th>Debit</th>
+                <th>Credit</th>
+                <th>Running Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.invoice_number }}</td>
+                <td>{{ transaction.description }}</td>
+                <td>{{ '%0.2f' | format(transaction.debit) }}</td>
+                <td>{{ '%0.2f' | format(transaction.credit) }}</td>
+                <td>{{ '%0.2f' | format(transaction.balance) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

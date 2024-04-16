@@ -108,7 +108,7 @@
         }
     </style>
     <style>
-        /* Other styles... */
+
       
         .list-group-item {
           border: none; /* Remove borders from list items */
@@ -266,7 +266,7 @@
                             <path
                                 d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
                         </svg>
-                        Send Invoice
+                        <span class="text-padding">&nbsp;&nbsp;Send Invoice</span>
                     </a>
                 </li>
                 <li>
@@ -302,11 +302,12 @@
             <div class="dropdown">
                 <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
                     data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="{{ url_for('static', filename='profile_pictures/' + user.image_file) }}" alt="" width="32" height="32" class="rounded-circle me-2">
-                    <strong>{{ user.first_name + " " + user.last_name }}</strong>
+                    <img src="/static/profile_pictures/default.png" alt="" width="32" height="32" class="rounded-circle me-2">
+                    
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
                     <li><a class="dropdown-item" href="{{ url_for('user_route.details')}}">Profile</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('tracking.get_financials')}}">Statistics</a></li>
                     <li><a class="dropdown-item" href="#">Text to Speech <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mic-fill" viewBox="0 0 16 16">
                         <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z"/>
                         <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5"/>
@@ -324,25 +325,43 @@
 
         <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary" style="width: 1200px;">
             <span class="d-flex align-items-center flex-shrink-0 p-3 link-body-emphasis text-decoration-none border-bottom fs-5 fw-semibold" style="font-size: 40px !important; text-align: center;">
-                Welcome, {{ user.first_name }}!
+                Welcome!
             </span>
             <div class="content">
                 <!-- Search Form Start -->
-                <form action="{{ url_for('mailbox_route.mailBox') }}" method="get" class="search-form">
-                    <input type="text" name="subject" placeholder="Search by Subject" value="{{ request.args.get('subject', '') }}" class="form-control">
-                    <input type="text" name="sender_address" placeholder="Search by Sender's Address" value="{{ request.args.get('sender_address', '') }}" class="form-control">
-                    <input type="text" name="invoice_id" placeholder="Search by Invoice ID" value="{{ request.args.get('invoice_id', '') }}" class="form-control">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                    
+                <form action="{{ url_for('mailbox_route.mailBox') }}" method="get" class="row g-3">
+                    <!-- Search by Subject -->
+                    <div class="col-md-3">
+                        <input type="text" name="subject" placeholder="Search by Subject" value="{{ request.args.get('subject', '') }}" class="form-control">
+                    </div>
+            
+                    <!-- Search by Sender's Address -->
+                    <div class="col-md-3">
+                        <input type="text" name="sender_address" placeholder="Search by Sender's Address" value="{{ request.args.get('sender_address', '') }}" class="form-control">
+                    </div>
+            
+                    <!-- Search by Invoice ID -->
+                    <div class="col-md-3">
+                        <input type="text" name="invoice_id" placeholder="Search by Invoice ID" value="{{ request.args.get('invoice_id', '') }}" class="form-control">
+                    </div>
+            
+                    <!-- Submit Button -->
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-primary mb-3">Search</button>
+                    </div>
+            
+                    <!-- Remove Filters Button -->
+                    <div class="col-md-2">
+                        <a href="{{ url_for('mailbox_route.mailBox') }}" class="btn btn-secondary mb-3">Remove Filters</a>
+                    </div>
                 </form>
                 
-                <form action="{{ url_for('mailbox_route.mailBox') }}">
-                    <button type="submit" class="btn btn-primary">Remove Filters</button>
+                
                     
                 </form>
                 {% if received_mails %}
                 <div class="list-group list-group-flush mt-4">
-                    {% for mail in received_mails %}
+                    {% for mail in received_mails|reverse %}
                     <div class="list-group-item py-3 lh-sm" aria-current="true" onclick="window.location='{{ url_for('mailbox_route.invoiceShow', invoiceId=mail.id) }}'">
                         <div class="d-flex justify-content-between">
                             <div class="pe-3">
