@@ -360,28 +360,30 @@
 
             
             
-            <div class="table-responsive p-3">
+        <div class="table-responsive p-3">
+            {% if formatted_reports %}
                 <table class="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col">Details</th>
                             <th scope="col">Date Reported</th>
                             <th scope="col">Invoice Subject</th>
-                            
                         </tr>
                     </thead>
                     <tbody>
-                        {% for report in formatted_reports %}
+                        {% for report in formatted_reports|reverse %}
                         <tr>
                             <td>{{ report.details }}</td>
                             <td>{{ report.date_reported }}</td>
                             <td>{{ report.invoice_subject }}</td>
-                            
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-            </div>
+            {% else %}
+                <h3 style="text-align: center; margin-top: 240px;">ReportBox empty!</h3>
+            {% endif %}
+        </div>
             
 
     </main>
