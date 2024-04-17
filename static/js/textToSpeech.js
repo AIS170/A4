@@ -43,6 +43,7 @@ function speakNext() {
             text === "Sign in" ||
             text === "Return Home" ||
             text === "Login" ||
+            text === "Pricing" ||
             text === "About Us" ||
             text === "Home" ||
             text === "Send Invoice" ||
@@ -70,6 +71,7 @@ function speakNext() {
                 text === "Sign in" ||
                 text === "Return Home" ||
                 text === "Login" ||
+                text === "Pricing" ||
                 text === "About Us" ||
                 text === "Home" ||
                 text === "Send Invoice" ||
@@ -116,26 +118,28 @@ function stopSpeech() {
             !(element.tagName.toLowerCase() === 'p' &&
                 element.querySelector('img'))
         ) {
+            const text = element.tagName.toLowerCase() === 'input' ? element.getAttribute('placeholder') : element.textContent.trim();
             if (
-                element.textContent.trim() === "Sign in" ||
-                element.textContent.trim() === "Return Home" ||
-                element.textContent.trim() === "Login" ||
-                element.textContent.trim() === "About Us" ||
-                element.textContent.trim() === "Home" ||
-                element.textContent.trim() === "Send Invoice" ||
-                element.textContent.trim() === "Communication Reports" ||
-                element.textContent.trim() === "External APIs" ||
-                element.textContent.trim() === "Search" ||
-                element.textContent.trim() === "Remove Filters" ||
-                element.textContent.trim() === "Send an Invoice" ||
-                element.textContent.trim() === "Recipients" ||
-                element.textContent.trim() === "Subject" ||
-                element.textContent.trim() === "Upload XML file" ||
-                element.textContent.trim() === "Send" ||
-                element.textContent.trim() === "Search by Subject" ||
-                element.textContent.trim() === "Search by Sender's Address" ||
-                element.textContent.trim() === "Search by Invoice ID" ||
-                element.textContent.trim() === "Invoice ID"
+                text === "Sign in" ||
+                text === "Return Home" ||
+                text === "Login" ||
+                text === "Pricing" ||
+                text === "About Us" ||
+                text === "Home" ||
+                text === "Send Invoice" ||
+                text === "Communication Reports" ||
+                text === "External APIs" ||
+                text === "Search" ||
+                text === "Remove Filters" ||
+                text === "Send an Invoice" ||
+                text === "Recipients" ||
+                text === "Subject" ||
+                text === "Upload XML file" ||
+                text === "Send" ||
+                text === "Search by Subject" ||
+                text === "Search by Sender's Address" ||
+                text === "Search by Invoice ID" ||
+                text === "Invoice ID"
             ) {
                 element.style.backgroundColor = '';
                 element.classList.remove('highlight');
