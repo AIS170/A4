@@ -6,8 +6,61 @@
     <title>Rendering</title>
     <link rel="stylesheet" href="../style/uploadStyles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #121212; /* Dark background */
+            color: #e0e0e0; /* Light text for readability */
+        }
+
+        .label {
+            color: #adb5bd; /* Lighter gray for labels */
+        }
+
+        .input, .custom-select, .form-control {
+            background-color: #333333; /* Darker elements for inputs */
+            border: 1px solid #444444; /* Slight border for definition */
+            color: #ffffff; /* White text for input */
+        }
+
+        .input:focus, .custom-select:focus, .form-control:focus {
+            background-color: #484848; /* Slightly lighter background on focus */
+            border-color: #555555; /* Lighter border on focus */
+        }
+
+        #buttonContainer {
+            text-align: center; /* Center align the buttons */
+        }
+
+        .btn {
+            margin: 5px; /* Spacing between buttons */
+        }
+
+        .btn-success {
+            background-color: #198754; /* Bootstrap success green */
+            border-color: #198754; /* Consistent border color */
+        }
+
+        .btn-danger {
+            background-color: #dc3545; /* Bootstrap danger red */
+            border-color: #dc3545; /* Consistent border color */
+        }
+
+        #headerContainer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div></div>
+        <a href="{{ url_for('mailbox_route.mailBox') }}" class="btn btn-primary">Mailbox</a>
+
+    </div>
+
+
+
     <div id="headerContainer">
         <h2>Render a new invoice</h2>
     </div>
