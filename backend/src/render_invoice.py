@@ -7,6 +7,7 @@ import requests
 render_invoice = Blueprint('render_invoice', __name__)
 
 
+# Helper function to register a user in the external API for invoice rendering
 def register_user():
     data = {
         'email': 'A4@gmail.com',
@@ -21,6 +22,7 @@ def register_user():
     return response.status_code == 200
 
 
+# Helper function to login a user in the external API for invoice rendering
 def login_user():
     data = {'email': 'A4@gmail.com', 'password': 'yoA4'}
     response = requests.post(
@@ -33,6 +35,7 @@ def login_user():
     return None
 
 
+# Calls an external API to return a rendered XML invoice
 @render_invoice.route('/', methods=['GET', 'POST'])
 def render_invoice_function():
     # Register user on external API (you need to implement this)

@@ -6,6 +6,8 @@ from backend.src.models import User
 tracking = Blueprint('tracking', __name__)
 
 
+# Helper function to calculate user financial statistics from their sent and
+# received invoices
 def calculate_user_financials_and_history(user_id):
     user = User.query.filter_by(id=user_id).first()
     if not user:
@@ -61,7 +63,8 @@ def calculate_user_financials_and_history(user_id):
     return financial_summary, transactions, None
 
 
-# Need to fix tracking not working if user sends to himself
+# Displays the users financial information based on their sent and received
+# invoices
 @tracking.route('/', methods=['GET'])
 def get_financials():
     user_id = session.get('user_id')

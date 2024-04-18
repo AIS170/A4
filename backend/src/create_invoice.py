@@ -6,6 +6,7 @@ import requests
 create_invoice = Blueprint('create_invoice', __name__)
 
 
+# Calls an external API to create a valid XML invoice
 @create_invoice.route('/create/', methods=['GET', 'POST'])
 def invoice_create():
     if request.method == 'POST':

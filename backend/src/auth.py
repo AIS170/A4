@@ -10,8 +10,8 @@ import os
 authenticateUser = Blueprint('authenticate_user', __name__)
 
 
-@authenticateUser.route('/signup/', methods=['GET', 'POST'])
 # Registers a new user and redirects them to their mailbox
+@authenticateUser.route('/signup/', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         first_name = request.form.get('firstName')
@@ -105,8 +105,8 @@ def login():
         return render_template('login.html')
 
 
-@authenticateUser.route('/logout')
 # Ends the current users session and redirects them to the login page
+@authenticateUser.route('/logout')
 def logout():
     user_id_a = session.get('user_id')
     if user_id_a:

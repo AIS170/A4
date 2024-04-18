@@ -10,6 +10,7 @@ import os
 user_route = Blueprint('user_route', __name__)
 
 
+# Retrieves the user's registration details
 @user_route.route('/details', methods=['GET'])
 def details():
     user_id_a = session.get('user_id')
@@ -27,6 +28,7 @@ def details():
     return render_template('user.html', user=user_details), 200
 
 
+# Allows the user to change their email
 @user_route.route('/email', methods=['PUT'])
 def email():
     user_id_a = session.get('user_id')
@@ -56,6 +58,7 @@ def validEmail(email):
         return False
 
 
+# Allows the user to change their password
 @user_route.route('/password', methods=['PUT'])
 def password():
     user_id_a = session.get('user_id')
@@ -81,6 +84,7 @@ def password():
     return redirect(url_for('user_route.details'))
 
 
+# Allows the user to change their profile picture
 @user_route.route('/update-profile-picture', methods=['POST'])
 def update_profile_picture():
     user_id_a = session.get('user_id')

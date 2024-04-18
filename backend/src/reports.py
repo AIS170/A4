@@ -4,6 +4,7 @@ from .models import Invoice, CommunicationReport
 reports = Blueprint('reports', __name__)
 
 
+# Retrieves a list of all communication reports relating to the current user
 @reports.route('', methods=['GET'])
 def reportBox():
     user_id_a = session.get('user_id')

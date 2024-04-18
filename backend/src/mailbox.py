@@ -9,6 +9,7 @@ from datetime import datetime
 mailbox = Blueprint('mailbox_route', __name__)
 
 
+# Retrieves the current users received mails
 @mailbox.route('', methods=['GET'])
 def mailBox():
     user_id_a = session.get('user_id')
@@ -216,6 +217,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'xml'}
 
 
+# Helper functionto convert xml to a json dictionary
 def xml_to_dict(xml_content):
     if not xml_content.strip():
         return {}
@@ -249,6 +251,7 @@ def xml_to_dict(xml_content):
         return None
 
 
+# Provides detailed information on a specified invoice
 @mailbox.route('/<string:invoiceId>', methods=['GET'])
 def invoiceShow(invoiceId):
     user_id_a = session.get('user_id')
@@ -262,6 +265,7 @@ def invoiceShow(invoiceId):
         return jsonify({'error': 'Invoice not found'}), 404
 
 
+# Deletes a specified invoice from the database
 @mailbox.route('/<string:invoiceId>/delete', methods=['GET', 'DELETE'])
 def delete_invoice(invoiceId):
     if request.method == 'DELETE':
