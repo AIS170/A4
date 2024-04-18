@@ -1,4 +1,3 @@
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify, session
+from flask import Blueprint
 
 admin_route = Blueprint('admin_route', __name__)
-

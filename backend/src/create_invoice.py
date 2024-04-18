@@ -1,13 +1,10 @@
-from .database import db
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify, session
-from .models import User, Token
-import uuid
-import re
-import os
+from flask import (Blueprint, render_template, request, redirect, url_for,
+                   jsonify)
 import requests
 
 
 create_invoice = Blueprint('create_invoice', __name__)
+
 
 @create_invoice.route('/create/', methods=['GET', 'POST'])
 def invoice_create():
@@ -15,17 +12,22 @@ def invoice_create():
         form_data = request.form
 
         # Assuming the external API routes
-        gui_route = "https://ubl-invoice-generator.vercel.app/invoices/guest/gui"
-        download_route = "https://ubl-invoice-generator.vercel.app/invoices/guest/file/download"
+        gui_route = "https://ubl-invoice-generator.vercel.app/invoices/guest" \
+            "/gui"
+        download_route = "https://ubl-invoice-generator.vercel.app/invoices/" \
+                         "guest/file/download"
 
         try:
             # Make request to external API to create the invoice
             gui_response = requests.post(gui_route, data=form_data)
-            
+
             if gui_response.status_code == 200:
                 # Optionally handle success response
                 # Make request to download the invoice
-                download_response = requests.get(download_route, data=form_data)
+                download_response = requests.get(
+                    download_route,
+                    data=form_data
+                )
 
                 if download_response.status_code == 200:
                     # Optionally handle success response for download
