@@ -1,8 +1,9 @@
 from .database import db
-from .models import User, Token, Invoice, CommunicationReport 
-from flask import Blueprint, session
+from .models import User, Token, Invoice, CommunicationReport
+from flask import Blueprint
 
 clear_ = Blueprint('clear_route', __name__)
+
 
 # Clears the database
 @clear_.route('', methods=['DELETE'])
